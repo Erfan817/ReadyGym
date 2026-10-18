@@ -42,6 +42,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "abs"
+        ],
+        "secondary": [
+          "glutes",
+          "quadriceps"
+        ],
+        "weights": {
+          "abs": 1.0,
+          "glutes": 0.4,
+          "quadriceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "quadriceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -99,6 +117,24 @@
           "推动手掌以伸直手臂并返回到起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "triceps"
+        ],
+        "secondary": [
+          "shoulders",
+          "chest"
+        ],
+        "weights": {
+          "shoulders": 0.4,
+          "chest": 0.4,
+          "triceps": 1.0
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "chest",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -162,6 +198,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "abs",
+          "hamstrings"
+        ],
+        "weights": {
+          "abs": 0.4,
+          "glutes": 1.0,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -224,6 +278,24 @@
           "继续交替进行所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "abs"
+        ],
+        "secondary": [
+          "lower-back",
+          "hip-flexors"
+        ],
+        "weights": {
+          "abs": 1.0,
+          "lower-back": 0.4,
+          "hip-flexors": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hip flexors",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -283,6 +355,24 @@
           "在顶部停顿片刻，然后慢慢将哑铃放回起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "upper-back"
+        ],
+        "secondary": [
+          "biceps",
+          "forearms"
+        ],
+        "weights": {
+          "upper-back": 1.0,
+          "biceps": 0.4,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "biceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -344,6 +434,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "upper-back"
+        ],
+        "secondary": [
+          "biceps",
+          "forearms"
+        ],
+        "weights": {
+          "upper-back": 1.0,
+          "biceps": 0.4,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "biceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -401,6 +509,24 @@
           "继续降低，直到胸部刚好高于地面，然后伸直手臂，将其推回起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "chest"
+        ],
+        "secondary": [
+          "shoulders",
+          "triceps"
+        ],
+        "weights": {
+          "shoulders": 0.4,
+          "chest": 1.0,
+          "triceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "triceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -464,6 +590,24 @@
           "重复所需的重复次数，然后换边。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "upper-back"
+        ],
+        "secondary": [
+          "biceps",
+          "forearms"
+        ],
+        "weights": {
+          "upper-back": 1.0,
+          "biceps": 0.4,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "biceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -522,6 +666,26 @@
           "当你的胸部刚好高于地面时，暂停片刻，然后伸直手臂，将自己推回起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "chest"
+        ],
+        "secondary": [
+          "shoulders",
+          "triceps",
+          "abs"
+        ],
+        "weights": {
+          "shoulders": 0.4,
+          "chest": 1.0,
+          "triceps": 0.4,
+          "abs": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "triceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -585,6 +749,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "chest"
+        ],
+        "secondary": [
+          "shoulders",
+          "triceps"
+        ],
+        "weights": {
+          "shoulders": 0.4,
+          "chest": 1.0,
+          "triceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "triceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -642,6 +824,24 @@
           "暂停片刻，然后将哑铃推回起始位置，完全伸展双臂。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "chest"
+        ],
+        "secondary": [
+          "shoulders",
+          "triceps"
+        ],
+        "weights": {
+          "shoulders": 0.4,
+          "chest": 1.0,
+          "triceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "triceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -702,6 +902,24 @@
           "弯曲臀部和膝盖，将杠铃放回地面，保持背部挺直。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "lower-back",
+          "hamstrings"
+        ],
+        "weights": {
+          "lower-back": 0.4,
+          "glutes": 1.0,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -766,6 +984,24 @@
           "在动作的最高点挤压臀部。",
           "将杠铃放回起始位置，然后重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "lower-back",
+          "hamstrings"
+        ],
+        "weights": {
+          "lower-back": 0.4,
+          "glutes": 1.0,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -833,6 +1069,28 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "abs",
+          "quadriceps",
+          "hamstrings",
+          "calves"
+        ],
+        "weights": {
+          "abs": 0.4,
+          "glutes": 1.0,
+          "quadriceps": 0.4,
+          "hamstrings": 0.4,
+          "calves": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "quadriceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -892,6 +1150,26 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "quadriceps"
+        ],
+        "secondary": [
+          "glutes",
+          "hamstrings",
+          "calves"
+        ],
+        "weights": {
+          "glutes": 0.4,
+          "quadriceps": 1.0,
+          "hamstrings": 0.4,
+          "calves": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "glutes",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -950,6 +1228,22 @@
           "吸气并慢慢开始将哑铃放回起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "biceps"
+        ],
+        "secondary": [
+          "forearms"
+        ],
+        "weights": {
+          "biceps": 1.0,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "forearms",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -1014,6 +1308,22 @@
           "重复建议的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "biceps"
+        ],
+        "secondary": [
+          "forearms"
+        ],
+        "weights": {
+          "biceps": 1.0,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "forearms",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1070,6 +1380,22 @@
           "在顶部暂停片刻，然后慢慢将手臂放回起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "shoulders"
+        ],
+        "secondary": [
+          "trapezius"
+        ],
+        "weights": {
+          "trapezius": 0.4,
+          "shoulders": 1.0
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "traps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -1128,6 +1454,24 @@
           "在顶部停顿片刻，然后慢慢将哑铃放回肩部高度。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "shoulders"
+        ],
+        "secondary": [
+          "upper-back",
+          "triceps"
+        ],
+        "weights": {
+          "shoulders": 1.0,
+          "upper-back": 0.4,
+          "triceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "triceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -1189,6 +1533,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "shoulders"
+        ],
+        "secondary": [
+          "upper-back",
+          "triceps"
+        ],
+        "weights": {
+          "shoulders": 1.0,
+          "upper-back": 0.4,
+          "triceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "triceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1246,6 +1608,24 @@
           "在动作的最高点暂停片刻，然后慢慢松开手柄回到起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "upper-back"
+        ],
+        "secondary": [
+          "biceps",
+          "forearms"
+        ],
+        "weights": {
+          "upper-back": 1.0,
+          "biceps": 0.4,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "biceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -1308,6 +1688,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "upper-back"
+        ],
+        "secondary": [
+          "shoulders",
+          "biceps"
+        ],
+        "weights": {
+          "shoulders": 0.4,
+          "upper-back": 1.0,
+          "biceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "biceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1369,6 +1767,26 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "lower-back",
+          "quadriceps",
+          "hamstrings"
+        ],
+        "weights": {
+          "lower-back": 0.4,
+          "glutes": 1.0,
+          "quadriceps": 0.4,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1427,6 +1845,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "lower-back",
+          "hamstrings"
+        ],
+        "weights": {
+          "lower-back": 0.4,
+          "glutes": 1.0,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1482,6 +1918,24 @@
           "降低哑铃，直到感觉到腿筋拉伸，然后推动脚后跟并收紧臀肌，回到起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "lower-back",
+          "hamstrings"
+        ],
+        "weights": {
+          "lower-back": 0.4,
+          "glutes": 1.0,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -1544,6 +1998,26 @@
           "交替腿进行所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "quadriceps",
+          "hamstrings",
+          "calves"
+        ],
+        "weights": {
+          "glutes": 1.0,
+          "quadriceps": 0.4,
+          "hamstrings": 0.4,
+          "calves": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "quadriceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1605,6 +2079,26 @@
           "重复所需的重复次数，然后换腿并重复。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "quadriceps"
+        ],
+        "secondary": [
+          "glutes",
+          "hamstrings",
+          "calves"
+        ],
+        "weights": {
+          "glutes": 0.4,
+          "quadriceps": 1.0,
+          "hamstrings": 0.4,
+          "calves": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "glutes",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1664,6 +2158,24 @@
           "将臀部放低至起始位置。",
           "在另一侧重复。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "abs"
+        ],
+        "secondary": [
+          "obliques",
+          "glutes"
+        ],
+        "weights": {
+          "abs": 1.0,
+          "obliques": 0.4,
+          "glutes": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "obliques",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
@@ -1727,6 +2239,24 @@
           "重复所需的重复次数。"
         ]
       },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "abs",
+          "hamstrings"
+        ],
+        "weights": {
+          "abs": 0.4,
+          "glutes": 1.0,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",
         "commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
@@ -1785,6 +2315,26 @@
           "在底部停顿片刻，然后推动脚后跟回到起始位置。",
           "重复所需的重复次数。"
         ]
+      },
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "quadriceps",
+          "hamstrings",
+          "calves"
+        ],
+        "weights": {
+          "glutes": 1.0,
+          "quadriceps": 0.4,
+          "hamstrings": 0.4,
+          "calves": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "quadriceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
       },
       "source_reference": {
         "repository": "https://github.com/hasaneyldrm/exercises-dataset",

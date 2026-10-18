@@ -73,5 +73,40 @@
   ],
   "media_files_downloaded_by_metadata_importer": 0,
   "selected_media_files_fetched": 14,
-  "selected_media_verification_file": "source-media/current-plan-verification.json"
+  "selected_media_verification_file": "source-media/current-plan-verification.json",
+  "muscle_normalisation": {
+    "drawable_muscles": [
+      "trapezius",
+      "shoulders",
+      "chest",
+      "upper-back",
+      "serratus",
+      "biceps",
+      "triceps",
+      "forearms",
+      "abs",
+      "obliques",
+      "lower-back",
+      "glutes",
+      "quadriceps",
+      "hamstrings",
+      "adductors",
+      "hip-flexors",
+      "calves",
+      "tibialis"
+    ],
+    "secondary_weight": 0.4,
+    "source_fields_used": [
+      "target",
+      "secondary_muscles",
+      "body_part (fallback only)"
+    ],
+    "source_fields_not_used": [
+      "muscle_group"
+    ],
+    "muscle_group_is_secondary_echo_count": 1324,
+    "muscle_group_is_secondary_echo_of": 1324,
+    "note": "muscle_group equals secondary_muscles[0] in every upstream record, so it carries no independent information; using it as a primary muscle would promote a supporting muscle to the main one.",
+    "catalog_records_without_drawable_muscle": []
+  }
 }

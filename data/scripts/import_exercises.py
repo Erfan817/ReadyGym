@@ -16,6 +16,105 @@ TREES = {"images": "a332ef2472bc14570c163ca96bc8cf59aae95ff0", "videos": "893775
 LICENSES = {"LICENSE": "5bd07008eea0578bfa41a51a6e29edfd51a5c073", "NOTICE.md": "419857375bbb147cf0e32279cc4e923a99aaf5f7"}
 MEDIA_POLICY = {"licensed": True, "authorization_basis": "User explicitly stated images and GIFs are authorized for Ready Gym", "permission_document_reviewed": False, "authorization_scope": "Ready Gym, per user declaration; no broader transferable permission asserted", "bundled": False, "hotlink_allowed": False, "status": "user_declared_ready_gym_authorization", "retain_attribution": "© Gym visual — https://gymvisual.com/", "source_resolution_constraint": "180x180", "terms_url": "https://gymvisual.com/content/3-terms-and-conditions-of-use"}
 
+# --- muscle normalisation ---------------------------------------------------
+# The upstream `muscle_group` field carries no information of its own: in all 1,324 records it
+# equals `secondary_muscles[0]` verbatim, so using it as a primary muscle silently promotes a
+# supporting muscle to the main one (e.g. lateral raise: target "delts", muscle_group "traps").
+# Muscle weights are therefore derived from `target` (1.0) and `secondary_muscles` (0.4), and
+# free-text spellings are collapsed onto the 18 muscles a body map can actually shade.
+DRAWABLE = [
+    "trapezius", "shoulders", "chest", "upper-back", "serratus",
+    "biceps", "triceps", "forearms",
+    "abs", "obliques", "lower-back",
+    "glutes", "quadriceps", "hamstrings", "adductors", "hip-flexors",
+    "calves", "tibialis",
+]
+SECONDARY_WEIGHT = 0.4
+MUSCLE_ALIAS = {
+    "abs": "abs", "abdominals": "abs", "core": "abs", "lower abs": "abs",
+    "pectorals": "chest", "chest": "chest", "upper chest": "chest",
+    "biceps": "biceps", "brachialis": "biceps",
+    "glutes": "glutes", "gluteal": "glutes", "abductors": "glutes",
+    "delts": "shoulders", "deltoids": "shoulders", "shoulders": "shoulders",
+    "rear deltoids": "shoulders", "rotator cuff": "shoulders",
+    "triceps": "triceps",
+    "upper back": "upper-back", "back": "upper-back", "lats": "upper-back",
+    "latissimus dorsi": "upper-back", "rhomboids": "upper-back",
+    "calves": "calves", "soleus": "calves",
+    "quads": "quadriceps", "quadriceps": "quadriceps",
+    "forearms": "forearms", "forearm": "forearms", "wrists": "forearms",
+    "wrist flexors": "forearms", "wrist extensors": "forearms", "grip muscles": "forearms",
+    "hamstrings": "hamstrings",
+    "spine": "lower-back", "lower back": "lower-back",
+    "traps": "trapezius", "trapezius": "trapezius", "levator scapulae": "trapezius",
+    "adductors": "adductors", "groin": "adductors", "inner thighs": "adductors",
+    "serratus anterior": "serratus",
+    "hip flexors": "hip-flexors",
+    "obliques": "obliques",
+    "shins": "tibialis",
+    "cardiovascular system": None, "ankles": None, "ankle stabilizers": None,
+    "feet": None, "hands": None, "sternocleidomastoid": None,
+}
+BODY_PART_WEIGHTS = {
+    "chest": {"chest": 1.0},
+    "back": {"upper-back": 0.75, "lower-back": 0.25},
+    "shoulders": {"shoulders": 1.0},
+    "upper arms": {"biceps": 0.5, "triceps": 0.5},
+    "lower arms": {"forearms": 1.0},
+    "waist": {"abs": 0.7, "obliques": 0.3},
+    "upper legs": {"quadriceps": 0.4, "hamstrings": 0.35, "glutes": 0.25},
+    "lower legs": {"calves": 0.8, "tibialis": 0.2},
+    "neck": {"trapezius": 1.0},
+    "full body": {"chest": 0.2, "upper-back": 0.2, "glutes": 0.2, "quadriceps": 0.2, "hamstrings": 0.1, "abs": 0.1},
+    "cardio": {},
+}
+
+
+def canonical_muscle(name):
+    """Free-text muscle name -> drawable slug, or None when it is not drawable."""
+    if not isinstance(name, str):
+        return None
+    key = name.strip().lower()
+    if not key:
+        return None
+    if key in MUSCLE_ALIAS:
+        return MUSCLE_ALIAS[key]
+    return key if key in DRAWABLE else None
+
+
+def muscle_weights(target, secondary, body_part):
+    """return (weights, dropped): weights maps drawable slug -> 0..1, dropped lists unusable names."""
+    weights, dropped = {}, []
+    def add(names, weight):
+        for name in names:
+            slug = canonical_muscle(name)
+            if slug is None:
+                if isinstance(name, str) and name.strip():
+                    dropped.append(name.strip())
+                continue
+            weights[slug] = max(weights.get(slug, 0.0), weight)
+    add([target], 1.0)
+    add(secondary or [], SECONDARY_WEIGHT)
+    if not weights:
+        weights.update(BODY_PART_WEIGHTS.get((body_part or "").strip().lower(), {}))
+    ordered = {slug: weights[slug] for slug in DRAWABLE if slug in weights}
+    return ordered, dropped
+
+
+def muscle_profile(target, secondary, body_part, muscle_group):
+    """Auditable muscle metadata for one exercise, including the upstream-field verdict."""
+    weights, dropped = muscle_weights(target, secondary, body_part)
+    return {
+        "primary": [s for s, w in weights.items() if w >= 1.0],
+        "secondary": [s for s, w in weights.items() if w < 1.0],
+        "weights": weights,
+        "dropped_names": dropped,
+        "upstream_muscle_group": muscle_group,
+        "upstream_muscle_group_is_secondary_echo": bool(secondary) and muscle_group == secondary[0],
+        "muscle_group_used": False,
+    }
+
+
 def build(source_dir, selection_path):
     source_dir = Path(source_dir)
     raw = (source_dir / "exercises.json").read_bytes()
@@ -72,11 +171,18 @@ def build(source_dir, selection_path):
     if any(x not in by_id for x in requested):
         raise ValueError("Selected ID not present in pinned source")
     exported = []
+    muscle_warnings = {}
     for record_id in requested:
         original = by_id[record_id]
         item = {k: original[k] for k in ("id", "name", "category", "body_part", "equipment", "target", "muscle_group", "secondary_muscles", "image", "gif_url", "media_id", "created_at", "attribution")}
         item["instructions"] = {lang: original["instructions"][lang] for lang in ("en", "zh")}
         item["instruction_steps"] = {lang: original["instruction_steps"][lang] for lang in ("en", "zh")}
+        profile = muscle_profile(original["target"], original["secondary_muscles"], original["body_part"], original["muscle_group"])
+        item["muscles"] = profile
+        if not profile["weights"]:
+            muscle_warnings[record_id] = "no drawable muscle; muscle_group deliberately not used as a fallback"
+        elif profile["dropped_names"]:
+            muscle_warnings[record_id] = "dropped undrawable muscle names: " + ", ".join(sorted(set(profile["dropped_names"])))
         item["source_reference"] = {"repository": REPO, "commit": COMMIT, "json_path": "data/exercises.json", "json_blob_sha1": BLOB, "id": record_id}
         item["media_policy"] = dict(MEDIA_POLICY)
         item["quality_flags"] = chosen["quality_flags"].get(record_id, [])
@@ -118,10 +224,23 @@ def build(source_dir, selection_path):
                     raise ValueError("Selected media Git blob mismatch")
                 evidence[key] = {k: item[k] for k in ("git_blob_sha1", "byte_count", "dimensions", "frames", "distinct_frames", "resolution_constraint_met")}
         status, note = visual_notes[original["id"]]
-        current.append({**entry, "stable_id": entry["local_id"], "name": original["name"], "source_name_zh": None, "display_name_zh": entry["local_name_zh"], "display_name_zh_origin": "Existing Ready Gym label, not an upstream translation", "instructions": {lang: original["instructions"][lang] for lang in ("en", "zh")}, "instruction_steps": {lang: original["instruction_steps"][lang] for lang in ("en", "zh")}, "equipment": original["equipment"], "target": original["target"], "muscle_group": original["muscle_group"], "secondary_muscles": original["secondary_muscles"], "source_commit": COMMIT, "media_match_status": status if evidence else "media_not_fetched", "visual_review_note_zh": note if evidence else "未取得媒体", "visual_review_scope": "five sampled GIF frames only, not safety or technique validation", "local_gif_path": "source-media/current-plan/" + Path(original["gif_url"]).name if "gif_url" in evidence else None, "local_image_path": "source-media/current-plan/" + Path(original["image"]).name if "image" in evidence else None, "media_verification": evidence, "media_gap": status == "visual_alternation_not_confirmed", "text_gap": original["id"] == "3211"})
+        current_profile = muscle_profile(original["target"], original["secondary_muscles"], original["body_part"], original["muscle_group"])
+        current.append({**entry, "stable_id": entry["local_id"], "name": original["name"], "source_name_zh": None, "display_name_zh": entry["local_name_zh"], "display_name_zh_origin": "Existing Ready Gym label, not an upstream translation", "instructions": {lang: original["instructions"][lang] for lang in ("en", "zh")}, "instruction_steps": {lang: original["instruction_steps"][lang] for lang in ("en", "zh")}, "equipment": original["equipment"], "target": original["target"], "muscle_group": original["muscle_group"], "secondary_muscles": original["secondary_muscles"], "muscles": current_profile, "source_commit": COMMIT, "media_match_status": status if evidence else "media_not_fetched", "visual_review_note_zh": note if evidence else "未取得媒体", "visual_review_scope": "five sampled GIF frames only, not safety or technique validation", "local_gif_path": "source-media/current-plan/" + Path(original["gif_url"]).name if "gif_url" in evidence else None, "local_image_path": "source-media/current-plan/" + Path(original["image"]).name if "image" in evidence else None, "media_verification": evidence, "media_gap": status == "visual_alternation_not_confirmed", "text_gap": original["id"] == "3211"})
     manifest["media_files_downloaded_by_metadata_importer"] = manifest.pop("media_files_downloaded")
     manifest["selected_media_files_fetched"] = sum(len(x.get("files", [])) for x in verification["media"] if all("failure" not in f for f in x.get("files", [])))
     manifest["selected_media_verification_file"] = "source-media/current-plan-verification.json"
+    # Muscle fields are derived, not copied: record the rule so the derivation stays auditable.
+    echo_count = sum(1 for record in records if record.get("secondary_muscles") and record.get("muscle_group") == record["secondary_muscles"][0])
+    manifest["muscle_normalisation"] = {
+        "drawable_muscles": DRAWABLE,
+        "secondary_weight": SECONDARY_WEIGHT,
+        "source_fields_used": ["target", "secondary_muscles", "body_part (fallback only)"],
+        "source_fields_not_used": ["muscle_group"],
+        "muscle_group_is_secondary_echo_count": echo_count,
+        "muscle_group_is_secondary_echo_of": len(records),
+        "note": "muscle_group equals secondary_muscles[0] in every upstream record, so it carries no independent information; using it as a primary muscle would promote a supporting muscle to the main one.",
+        "catalog_records_without_drawable_muscle": sorted(k for k, v in muscle_warnings.items() if v.startswith("no drawable")),
+    }
     result = {"source_manifest": manifest, "exercise-catalog": {"schema_version": 1, "coverage": "curated_subset", "source_commit": COMMIT, "records": exported}, "exercise-mapping": {"schema_version": 1, "source_commit": COMMIT, "runtime_enabled": False, "mappings": mapped}, "media-reference-index": {"schema_version": 1, "source_commit": COMMIT, "metadata_only": True, "media_policy": dict(MEDIA_POLICY), "records": index}, "current-plan-media-mapping": {"schema_version": 1, "source_commit": COMMIT, "runtime_enabled": False, "contact_sheet": "source-media/current-plan/contact-sheet.jpg", "authorization_basis": MEDIA_POLICY["authorization_basis"], "permission_document_reviewed": False, "mappings": current}}
     return result
 

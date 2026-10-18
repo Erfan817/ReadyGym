@@ -1,6 +1,10 @@
 package com.readygym.app
 
 import android.graphics.Bitmap
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import java.io.File
@@ -10,15 +14,29 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import com.readygym.core.TrainingProfile
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35], qualifiers = "w411dp-h891dp")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class PlanningScreenTest {
+    // The offline entry was removed from the app (a key is now the only way in), so the tests
+    // compose the two screens the old entry connected: onboarding hands the confirmed profile to
+    // the rule-plan editor, exactly as the app shell did before.
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    private var confirmedProfile by mutableStateOf<TrainingProfile?>(null)
 
     private fun startPlanning() {
-        compose.onNodeWithText("离线规则模式（不使用AI）").performScrollTo().performClick()
+        compose.activity.setContent {
+            ReadyGymTheme {
+                val profile = confirmedProfile
+                if (profile == null) {
+                    OnboardingScreen(onStartPlanning = { confirmedProfile = it })
+                } else {
+                    TrainingPlanScreen(profile)
+                }
+            }
+        }
         compose.onNodeWithContentDescription("年龄（岁）").performScrollTo().performTextInput("30")
         compose.onNodeWithContentDescription("身高（cm）").performScrollTo().performTextInput("170")
         compose.onNodeWithContentDescription("体重（kg）").performScrollTo().performTextInput("65")

@@ -18,7 +18,24 @@ data class PlanningPreferences(
 enum class DayKind { TRAINING, REST }
 data class RuleExplanation(val text: String, val sourceIds: List<String>)
 enum class ReviewStatus { NOT_PROFESSIONALLY_REVIEWED }
-enum class MuscleGroup { QUADRICEPS, GLUTES, CHEST, BACK, SHOULDERS, CORE }
+/**
+ * The muscles a body map can shade, one-to-one with [MuscleTaxonomy.DRAWABLE].
+ *
+ * This used to be six coarse values (QUADRICEPS/GLUTES/CHEST/BACK/SHOULDERS/CORE), where BACK
+ * and CORE each merged anatomically distinct muscles so the map could not shade them
+ * separately, and the upper body had no small muscles at all. The dataset itself names 19
+ * primary and 40 secondary spellings; collapsing them onto 18 muscles is what makes
+ * "what did I train / what is neglected" computable.
+ *
+ * This enum describes anatomy only. It encodes no training advice.
+ */
+enum class MuscleGroup {
+    TRAPEZIUS, SHOULDERS, CHEST, UPPER_BACK, SERRATUS,
+    BICEPS, TRICEPS, FOREARMS,
+    ABS, OBLIQUES, LOWER_BACK,
+    GLUTES, QUADRICEPS, HAMSTRINGS, ADDUCTORS, HIP_FLEXORS,
+    CALVES, TIBIALIS,
+}
 enum class MovementPattern { SQUAT, HIP_EXTENSION, HORIZONTAL_PUSH, HORIZONTAL_PULL, ANTI_EXTENSION }
 enum class Difficulty { FOUNDATION, BASIC }
 /** Non-medical preferences only. Medical restrictions belong in SafetyFeedback and block normal planning. */
@@ -144,11 +161,11 @@ class PlanningEngine {
             Difficulty.FOUNDATION, "不要求标准俯卧撑；舒适幅度，支撑不适时停止", authoredSource),
         ExerciseDefinition("rg-v1-glute-bridge", "徒手臀桥", setOf(MuscleGroup.GLUTES), emptySet(), MovementPattern.HIP_EXTENSION,
             Difficulty.FOUNDATION, "舒适幅度，避免憋气和勉强抬高", authoredSource),
-        ExerciseDefinition("rg-v1-dead-bug", "死虫式核心练习", setOf(MuscleGroup.CORE), emptySet(), MovementPattern.ANTI_EXTENSION,
+        ExerciseDefinition("rg-v1-dead-bug", "死虫式核心练习", setOf(MuscleGroup.ABS), emptySet(), MovementPattern.ANTI_EXTENSION,
             Difficulty.FOUNDATION, "小幅慢速交替，不能控制时缩小幅度", authoredSource),
-        ExerciseDefinition("rg-v1-dumbbell-row", "双侧俯身哑铃划船", setOf(MuscleGroup.BACK), setOf(Equipment.DUMBBELL), MovementPattern.HORIZONTAL_PULL,
+        ExerciseDefinition("rg-v1-dumbbell-row", "双侧俯身哑铃划船", setOf(MuscleGroup.UPPER_BACK), setOf(Equipment.DUMBBELL), MovementPattern.HORIZONTAL_PULL,
             Difficulty.BASIC, "轻负重学习俯身支撑，不借助椅子或训练凳；无法控制时不做", authoredSource),
-        ExerciseDefinition("rg-v1-barbell-row", "俯身杠铃划船", setOf(MuscleGroup.BACK), setOf(Equipment.BARBELL), MovementPattern.HORIZONTAL_PULL,
+        ExerciseDefinition("rg-v1-barbell-row", "俯身杠铃划船", setOf(MuscleGroup.UPPER_BACK), setOf(Equipment.BARBELL), MovementPattern.HORIZONTAL_PULL,
             Difficulty.BASIC, "先由专业人士检查俯身姿势；空杆仍过重或无法控制时不做", authoredSource),
     )
     fun evaluateSafety(feedback: SafetyFeedback): SafetyDecision {

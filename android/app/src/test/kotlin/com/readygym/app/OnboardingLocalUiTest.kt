@@ -1,6 +1,7 @@
 package com.readygym.app
 
 import android.graphics.Bitmap
+import androidx.activity.compose.setContent
 import java.io.File
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -18,9 +19,11 @@ import org.robolectric.annotation.GraphicsMode
 @Config(sdk = [35], qualifiers = "w411dp-h891dp")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class OnboardingLocalUiTest {
+    // The offline entry was removed from the app (a key is now the only way in), so the tests
+    // render the onboarding component directly instead of navigating to it through the app shell.
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
-    @Before fun enterOfflineRules() {
-        compose.onNodeWithText("离线规则模式（不使用AI）").performScrollTo().performClick()
+    @Before fun renderOnboarding() {
+        compose.activity.setContent { ReadyGymTheme { OnboardingScreen() } }
     }
     private fun conditions() {
         compose.onNodeWithContentDescription("年龄（岁）").performScrollTo().performTextInput("30")

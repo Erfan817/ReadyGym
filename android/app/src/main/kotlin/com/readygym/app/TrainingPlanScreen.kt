@@ -27,33 +27,156 @@ import java.util.UUID
 fun ReadyGymApp(client: CoachClient? = null, serviceConfigured: Boolean = BuildConfig.DEBUG && BuildConfig.SERVICE_BASE_URL.isNotBlank()) {
     val activity = androidx.compose.ui.platform.LocalContext.current as androidx.activity.ComponentActivity
     val demo = remember(activity) { androidx.lifecycle.ViewModelProvider(activity)[DemoConfig::class.java] }
-    val actualClient = remember(client, demo) { client ?: demo }
+    val keyStore = remember(activity) { ApiKeyStore(activity) }
+    // Null means "no key yet". Decrypted once per key change, not on every message.
+    var storedKey by remember(activity) { mutableStateOf(keyStore.load()) }
+    // Keyed on the key text, so a new key produces a new client and therefore a new conversation.
+    val keyClient = remember(storedKey) { storedKey?.let { DeepSeekCoachClient(it) } }
+    val actualClient = remember(client, demo, keyClient) { client ?: keyClient ?: demo }
     var showDemoConfig by remember { mutableStateOf(false) }
     if (showDemoConfig) DemoConfigDialog(demo) { showDemoConfig = false }
-    val coach = remember(activity, actualClient) {
-        androidx.lifecycle.ViewModelProvider(activity, object : androidx.lifecycle.ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = CoachConversation(actualClient) as T
-        })[if (client == null) "coach-default" else "coach-test-${System.identityHashCode(actualClient)}", CoachConversation::class.java]
-    }
+    var keyError by remember { mutableStateOf<String?>(null) }
     var preferences by remember { mutableStateOf<PlanningPreferences?>(null) }
     var offline by remember { mutableStateOf(false) }
     var profile by remember { mutableStateOf<TrainingProfile?>(null) }
-    androidx.activity.compose.BackHandler(offline || profile != null) {
-        if (profile != null) profile = null else offline = false
+    var tab by remember { mutableStateOf(AppTab.CHAT) }
+    // The plan the user confirmed, lifted so the train and profile destinations can show it.
+    var confirmedPlan by remember { mutableStateOf<PlanDraft?>(null) }
+    // A generation counter, not a boolean.
+    //
+    // The chat holds one client for its whole lifetime, so changing the client has to produce a
+    // *new* conversation: remembering it on `actualClient` alone is not sufficient when the client
+    // is a different instance of the same type. Bumping this key forces a fresh ViewModel that is
+    // bound to the client the user just configured.
+    var clientGeneration by remember { mutableIntStateOf(0) }
+    val coachKey = coachViewModelKey(client, actualClient, clientGeneration)
+    val coach = remember(activity, actualClient, clientGeneration) {
+        androidx.lifecycle.ViewModelProvider(activity, object : androidx.lifecycle.ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = CoachConversation(actualClient) as T
+        })[coachKey, CoachConversation::class.java]
+    }
+    // Entry: key setup -> welcome -> chat.
+    var entered by remember { mutableStateOf(false) }
+    if (coach.session != null) entered = true
+    // Set when the user has just saved a key: the conversation should open by itself, once,
+    // against the client that holds that key.
+    var startOnNextComposition by remember { mutableStateOf(false) }
+    androidx.compose.runtime.LaunchedEffect(startOnNextComposition, coach) {
+        if (startOnNextComposition) {
+            startOnNextComposition = false
+            coach.start()
+        }
+    }
+    // Explicitly requested from the account screen. Without this there is no way back to the key
+    // form once a key is stored, which leaves a user with a bad key unable to replace it.
+    var editingKey by remember { mutableStateOf(false) }
+    //
+    // A key is the only thing that makes the key-mode client usable, so that is the whole test.
+    // `demo.configured` is deliberately NOT accepted here: the demo transport is a leftover from
+    // the self-hosted flow, and letting it count as "configured" routes a user with no key into a
+    // chat that fails on every message with api_config_not_set.
+    val configured = if (client != null) serviceConfigured else keyClient != null
+    val showKeyScreen = client == null && (editingKey || !configured)
+    androidx.activity.compose.BackHandler(offline || profile != null || tab != AppTab.CHAT || editingKey) {
+        when {
+            profile != null -> profile = null
+            offline -> offline = false
+            editingKey -> editingKey = false
+            else -> tab = AppTab.CHAT
+        }
     }
     val current = profile
     when {
-        current != null -> TrainingPlanScreen(current, preferences, coach.retainedSafety, coach::recordSafety)
+        // The rule-plan editor is a full-screen task, not a destination, so it stays outside the
+        // tab scaffold: it owns its own confirm/revert buttons and must not be left half-finished
+        // by a tab switch.
+        current != null -> TrainingPlanScreen(current, preferences, coach.retainedSafety, coach::recordSafety,
+            onPlanConfirmed = { confirmedPlan = it })
         offline -> OnboardingScreen(onStartPlanning = { preferences = null; profile = it })
-        else -> CoachChatScreen(coach, if (client == null) demo.configured else serviceConfigured, onOffline = { offline = true }, onConfirmed = { preferences = it.preferences; profile = it.profile }, onConfigure = if (client == null) ({ showDemoConfig = true }) else null)
+        showKeyScreen -> ApiKeyScreen(
+            onSave = { key ->
+                keyError = null
+                try {
+                    keyStore.save(key)
+                    storedKey = key
+                    // Bump the generation so the chat is rebuilt against the client that now
+                    // holds this key. Without this the conversation keeps the pre-key client and
+                    // every message fails with "还没有填 API Key".
+                    clientGeneration += 1
+                    editingKey = false
+                    entered = true
+                    // Open the conversation immediately: the user just pressed "保存并开始", so
+                    // waiting for a second consent tap on a screen that says the same thing would
+                    // be a dead end (the composer stays disabled until a session exists).
+                    startOnNextComposition = true
+                } catch (e: Exception) {
+                    keyError = "无法在本机安全保存 Key，请重试。"
+                }
+            },
+            busy = coach.busy,
+            error = keyError,
+            hasStoredKey = keyStore.hasKey(),
+            onForget = { keyStore.clear(); storedKey = null; clientGeneration += 1 },
+            // Only offer a way out when the user already had somewhere to go back to.
+            onCancel = if (configured) ({ editingKey = false }) else null,
+            keyHint = keyHint(storedKey),
+        )
+        !entered -> WelcomeScreen(
+            serviceConfigured = configured,
+            onStart = { entered = true; coach.start() },
+            onConfigure = if (client == null) null else ({ showDemoConfig = true }),
+            busy = coach.busy,
+        )
+        else -> ReadyGymScaffold(
+            tab = tab,
+            onTabChange = { tab = it },
+            chat = {
+                CoachChatScreen(coach, configured,
+                    onConfirmed = { preferences = it.preferences; profile = it.profile },
+                    onConfigure = if (client == null) ({ showDemoConfig = true }) else null)
+            },
+            train = {
+                TrainScreen(
+                    plan = confirmedPlan,
+                    profile = profile,
+                    onOpenChat = { tab = AppTab.CHAT },
+                    onOpenDay = { },
+                )
+            },
+            profile = {
+                ProfileScreen(
+                    profile = profile,
+                    plan = confirmedPlan,
+                    serviceConfigured = configured,
+                    onClear = { },
+                    onChangeKey = { editingKey = true },
+                    keyHint = keyHint(storedKey),
+                )
+            },
+        )
     }
 }
 
 private data class ReplacementTarget(val plan: PlanDraft, val sessionId: String, val item: PlannedExercise)
-
 private enum class DiscomfortChoice { NONE, OTHER, URGENT }
 private enum class MedicalChoice { NONE, RESTRICTIONS }
+
+/**
+ * The ViewModel store key for the conversation.
+ *
+ * Exposed (internal) so tests can reach the exact instance the UI is rendering, including after a
+ * client swap. The generation suffix is what makes a new API key produce a *new* conversation
+ * rather than reusing the one still bound to the previous client.
+ */
+internal fun coachViewModelKey(injected: CoachClient?, actual: CoachClient, generation: Int): String =
+    if (injected == null) "coach-default-$generation"
+    else "coach-test-${System.identityHashCode(actual)}-$generation"
+
+/** A short, safe echo of the stored key for the account screen: never the full key. */
+internal fun keyHint(storedKey: String?): String? = storedKey?.let {
+    if (it.length <= 8) "已保存" else "…${it.takeLast(4)}"
+}
 
 internal fun SafetyRoute.localRiskPriority() = when (this) {
     SafetyRoute.TEMPLATE_ALLOWED -> 0
@@ -83,7 +206,8 @@ private class SafetyForm {
 
 @Composable
 fun TrainingPlanScreen(profile: TrainingProfile, initialPreferences: PlanningPreferences? = null,
-    retainedSafety: SafetyFeedback? = null, onSafetyChanged: (SafetyFeedback) -> Unit = {}) {
+    retainedSafety: SafetyFeedback? = null, onSafetyChanged: (SafetyFeedback) -> Unit = {},
+    onPlanConfirmed: (PlanDraft) -> Unit = {}) {
     val engine = remember { PlanningEngine() }
     val safety = remember { SafetyForm().apply {
         // Only a validated, explicitly confirmed chat self-report may seed untouched fields.
@@ -223,7 +347,7 @@ fun TrainingPlanScreen(profile: TrainingProfile, initialPreferences: PlanningPre
                 if (!editing) draft?.let { pending -> Button(onClick = {
                     when (val result = engine.confirm(pending, pending.revision, userAccepted = true,
                         safety = activeSafety(), confirmedAtEpochMillis = System.currentTimeMillis())) {
-                        is ConfirmationResult.Confirmed -> { confirmed = result.plan; confirmedVersion = draftVersion; draft = null; previousDraft = null; replacementProposal = false; message = null }
+                        is ConfirmationResult.Confirmed -> { confirmed = result.plan; confirmedVersion = draftVersion; draft = null; previousDraft = null; replacementProposal = false; message = null; onPlanConfirmed(result.plan) }
                         is ConfirmationResult.Rejected -> message = result.errors.joinToString("\n") { it.message }
                         is ConfirmationResult.SafetyBlocked -> message = result.decision.message
                     }
@@ -322,8 +446,13 @@ private fun ExerciseFacts(item: PlannedExercise) {
 }
 private fun dayLabel(day: Int) = listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")[day - 1]
 private fun muscleLabel(muscle: MuscleGroup) = when (muscle) {
-    MuscleGroup.QUADRICEPS -> "股四头肌"; MuscleGroup.GLUTES -> "臀部"; MuscleGroup.CHEST -> "胸部"
-    MuscleGroup.BACK -> "背部"; MuscleGroup.SHOULDERS -> "肩部"; MuscleGroup.CORE -> "核心"
+    MuscleGroup.TRAPEZIUS -> "斜方肌"; MuscleGroup.SHOULDERS -> "肩部"; MuscleGroup.CHEST -> "胸部"
+    MuscleGroup.UPPER_BACK -> "上背"; MuscleGroup.SERRATUS -> "前锯肌"
+    MuscleGroup.BICEPS -> "肱二头肌"; MuscleGroup.TRICEPS -> "肱三头肌"; MuscleGroup.FOREARMS -> "前臂"
+    MuscleGroup.ABS -> "腹部"; MuscleGroup.OBLIQUES -> "腹斜肌"; MuscleGroup.LOWER_BACK -> "下背"
+    MuscleGroup.GLUTES -> "臀部"; MuscleGroup.QUADRICEPS -> "股四头肌"; MuscleGroup.HAMSTRINGS -> "腘绳肌"
+    MuscleGroup.ADDUCTORS -> "内收肌"; MuscleGroup.HIP_FLEXORS -> "髋屈肌"
+    MuscleGroup.CALVES -> "小腿"; MuscleGroup.TIBIALIS -> "胫骨前肌"
 }
 
 @Composable
