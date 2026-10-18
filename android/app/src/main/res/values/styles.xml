@@ -2,10 +2,12 @@
     <style name="Theme.ReadyGym" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:statusBarColor">#FFF9F1</item>
-        <item name="android:navigationBarColor">#FFF9F1</item>
-        <item name="android:windowBackground">#FFF9F1</item>
-        <item name="android:colorAccent">#BE4708</item>
+        <!-- Matches ReadyGymColors.Background so the window behind Compose never flashes a
+             different colour during launch. -->
+        <item name="android:statusBarColor">#F3F2F7</item>
+        <item name="android:navigationBarColor">#F3F2F7</item>
+        <item name="android:windowBackground">#F3F2F7</item>
+        <item name="android:colorAccent">#34C85A</item>
         <item name="android:forceDarkAllowed">false</item>
     </style>
 </resources>

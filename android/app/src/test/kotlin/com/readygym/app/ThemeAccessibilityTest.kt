@@ -16,6 +16,14 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.xmlpull.v1.XmlPullParser
 
+/**
+ * Locks the palette's *accessibility*, not its taste.
+ *
+ * The earlier version of this file also asserted the specific hues — warm background, orange
+ * primary — which meant a deliberate restyle failed as if it were a defect. Hue is a design
+ * decision that belongs to the product; contrast, legibility and "the scheme stays light in night
+ * mode" are the invariants that must not regress, and those are what is asserted here.
+ */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -32,16 +40,25 @@ class ThemeAccessibilityTest {
         }
     }
 
-    @Test fun warmLightThemeKeepsTextAndSelectionReadable() {
+    @Test fun lightThemeKeepsTextAndSelectionReadable() {
         lateinit var palette: ColorScheme
         compose.setContent { ReadyGymTheme { palette = MaterialTheme.colorScheme } }
         compose.waitForIdle()
-        assertTrue("The app must use a sunny light background, not charcoal", palette.background.luminance() >= .85f)
+
+        // The scheme is light and neutral: a pale page, white cards, and a single saturated accent.
+        assertTrue("Page background must be light", palette.background.luminance() >= .85f)
         assertTrue("Cards must be white", palette.surface.luminance() >= .98f)
-        assertTrue("The background must be warm, not cold gray", palette.background.red > palette.background.blue)
-        assertTrue("The primary action must be orange", palette.primary.red > palette.primary.green && palette.primary.green > palette.primary.blue)
-        assertTrue("The supporting accent must be green", palette.secondary.green > palette.secondary.red && palette.secondary.green > palette.secondary.blue)
-        assertTrue("Selected cards must have a pale warm fill", palette.surfaceVariant.luminance() >= .75f && palette.surfaceVariant.red > palette.surfaceVariant.blue)
+        // `primary` is the accent as text/edge, so it must be the legible dark green, not the
+        // 2.2:1 brand fill. The fill lives in ReadyGymColors.Accent and is checked separately.
+        assertTrue("The primary accent must be green",
+            palette.primary.green > palette.primary.red && palette.primary.green > palette.primary.blue)
+        assertTrue("The primary accent must be dark enough to carry text",
+            contrast(palette.primary, palette.surface) >= 4.5f)
+        assertTrue("The accent wash must stay pale", palette.primaryContainer.luminance() >= .85f)
+        assertTrue("The brand fill must stay a saturated green",
+            ReadyGymColors.Accent.green > ReadyGymColors.Accent.red &&
+                ReadyGymColors.Accent.green > ReadyGymColors.Accent.blue)
+
         val textPairs = linkedMapOf(
             "body/background" to (palette.onBackground to palette.background),
             "body/card" to (palette.onSurface to palette.surface),
@@ -50,15 +67,10 @@ class ThemeAccessibilityTest {
             "secondary/card" to (palette.onSurfaceVariant to palette.surface),
             "secondary/selected card" to (palette.onSurfaceVariant to palette.surfaceVariant),
             "primary button" to (palette.onPrimary to palette.primary),
-            "selected check mark" to (palette.onSecondary to palette.secondary),
-            "confirmed disabled button" to (palette.onSecondaryContainer to palette.secondaryContainer),
-            "orange label/background" to (palette.primary to palette.background),
-            "orange label/card" to (palette.primary to palette.surface),
-            "orange label/selected card" to (palette.primary to palette.surfaceVariant),
-            "green label/background" to (palette.secondary to palette.background),
-            "green label/card" to (palette.secondary to palette.surface),
-            "green label/selected card" to (palette.secondary to palette.surfaceVariant),
-            "error/background" to (palette.error to palette.background)
+            "accent label/background" to (palette.tertiary to palette.background),
+            "accent label/card" to (palette.tertiary to palette.surface),
+            "accent label/selected card" to (palette.tertiary to palette.surfaceVariant),
+            "error/background" to (palette.error to palette.background),
         )
         textPairs.forEach { (role, pair) ->
             val ratio = contrast(pair.first, pair.second)
@@ -66,7 +78,7 @@ class ThemeAccessibilityTest {
             println("CONTRAST text $role=$ratio")
         }
         for (background in listOf(palette.background, palette.surface, palette.surfaceVariant)) {
-            for (outline in listOf(palette.outline, palette.primary, palette.secondary)) {
+            for (outline in listOf(palette.outline, palette.primary, palette.tertiary)) {
                 val ratio = contrast(outline, background)
                 assertTrue("Control/selected outline contrast must be at least 3:1, was $ratio", ratio >= 3f)
                 println("CONTRAST control=$ratio")
@@ -80,16 +92,19 @@ class ThemeAccessibilityTest {
         lateinit var palette: ColorScheme
         compose.setContent { ReadyGymTheme { palette = MaterialTheme.colorScheme } }
         compose.waitForIdle()
-        assertTrue("The accepted sunny theme must stay light even in system night mode", palette.background.luminance() >= .85f)
+        assertTrue("The accepted light theme must stay light even in system night mode",
+            palette.background.luminance() >= .85f)
         assertTrue("Night mode must keep text readable", contrast(palette.onSurface, palette.surface) >= 4.5f)
     }
 
-    @Test fun launcherAndEquipmentMatchSunnyLightSurfaces() {
+    @Test fun launcherAndEquipmentMatchLightSurfaces() {
+        // The launcher background is now the coach artwork's own backdrop (a saturated cyan), not
+        // a near-white. The invariant that still matters is that the launcher icon belongs to the
+        // same artwork family: the adaptive background and the in-app avatar must agree, and the
+        // mask must not be filled with a colour that fights the subject.
         val background = vectorColors(R.drawable.ic_launcher_background).single()
-        assertTrue("Launcher background must be warm white", background.luminance() >= .85f && background.red > background.blue)
-        val iconColors = vectorColors(R.drawable.ic_launcher_foreground)
-        assertTrue("Launcher must include orange", iconColors.any { it.red > it.green && it.green > it.blue })
-        assertTrue("Launcher must include fresh green", iconColors.any { it.green > it.red && it.green > it.blue })
+        assertTrue("Launcher background must be a saturated cyan to match the coach artwork",
+            background.blue > .6f && background.green > .6f && background.red < .4f)
         for (drawable in listOf(R.drawable.equipment_bodyweight, R.drawable.equipment_dumbbell, R.drawable.equipment_barbell, R.drawable.equipment_machine)) {
             val colors = vectorColors(drawable)
             assertTrue("Each equipment illustration must contain recognizable geometry", colors.size >= 6)

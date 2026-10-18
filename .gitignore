@@ -1,7 +1,38 @@
+# Node / frontend
 frontend/node_modules/
 frontend/dist/
 frontend/coverage/
+
+# Logs and local config
 *.log
 .env
 .env.*
 !.env.example
+
+# Android build outputs
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/exercise-demos/*.gif
+*.apk
+*.aab
+
+# Local verification artifacts
+build/
+
+# Downloaded / third-party media and skills (not project source)
+gifdb/
+handraw-style/
+
+# Design exploration files kept out of the repo (choose one icon, then delete the rest)
+readygym_ai_coach_icon.png
+readygym_cartoon_coach_ff002.png
+readygym_cartoon_coach_ff002_prompt.txt
+readygym_icon_prompt.txt
+readygym_icon_v1_guardian.png
+readygym_icon_v1_guardian.txt
+readygym_icon_v2_motion.png
+readygym_icon_v2_motion.txt
+readygym_icon_v3_duo.png
+readygym_icon_v3_duo.txt

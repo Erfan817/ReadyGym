@@ -64,6 +64,24 @@
         "quadriceps",
         "glutes"
       ],
+      "muscles": {
+        "primary": [
+          "abs"
+        ],
+        "secondary": [
+          "glutes",
+          "quadriceps"
+        ],
+        "weights": {
+          "abs": 1.0,
+          "glutes": 0.4,
+          "quadriceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "quadriceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
       "media_match_status": "visual_match",
       "visual_review_note_zh": "联系图可见无器械双脚深蹲，未见额外支撑。",
@@ -153,6 +171,24 @@
         "triceps",
         "shoulders"
       ],
+      "muscles": {
+        "primary": [
+          "chest"
+        ],
+        "secondary": [
+          "shoulders",
+          "triceps"
+        ],
+        "weights": {
+          "shoulders": 0.4,
+          "chest": 1.0,
+          "triceps": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "triceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
       "media_match_status": "visual_match_instruction_conflict",
       "visual_review_note_zh": "联系图可见膝盖支撑；上游中英文指导却写脚掌支撑。GIF可用于跪姿候选，不能直接采用矛盾指导。",
@@ -244,6 +280,24 @@
         "hamstrings",
         "core"
       ],
+      "muscles": {
+        "primary": [
+          "glutes"
+        ],
+        "secondary": [
+          "abs",
+          "hamstrings"
+        ],
+        "weights": {
+          "abs": 0.4,
+          "glutes": 1.0,
+          "hamstrings": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hamstrings",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
       "media_match_status": "visual_match",
       "visual_review_note_zh": "联系图可见双侧地面臀桥，无凳、无外加负重。",
@@ -337,6 +391,24 @@
         "hip flexors",
         "lower back"
       ],
+      "muscles": {
+        "primary": [
+          "abs"
+        ],
+        "secondary": [
+          "lower-back",
+          "hip-flexors"
+        ],
+        "weights": {
+          "abs": 1.0,
+          "lower-back": 0.4,
+          "hip-flexors": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "hip flexors",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
       "media_match_status": "visual_alternation_not_confirmed",
       "visual_review_note_zh": "联系图可见仰卧腿屈伸，手臂交替和对侧配合不清楚；不声称完整交替死虫变式已视觉核实。",
@@ -428,6 +500,24 @@
         "biceps",
         "forearms"
       ],
+      "muscles": {
+        "primary": [
+          "upper-back"
+        ],
+        "secondary": [
+          "biceps",
+          "forearms"
+        ],
+        "weights": {
+          "upper-back": 1.0,
+          "biceps": 0.4,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "biceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
       "media_match_status": "visual_match",
       "visual_review_note_zh": "联系图可见站姿双手各持哑铃同时俯身划船，未见凳子。",
@@ -519,6 +609,24 @@
         "biceps",
         "forearms"
       ],
+      "muscles": {
+        "primary": [
+          "upper-back"
+        ],
+        "secondary": [
+          "biceps",
+          "forearms"
+        ],
+        "weights": {
+          "upper-back": 1.0,
+          "biceps": 0.4,
+          "forearms": 0.4
+        },
+        "dropped_names": [],
+        "upstream_muscle_group": "biceps",
+        "upstream_muscle_group_is_secondary_echo": true,
+        "muscle_group_used": false
+      },
       "source_commit": "7455efae41b330c265e7cd4b78dfa848e7ce5ebd",
       "media_match_status": "visual_match",
       "visual_review_note_zh": "联系图可见站姿双手握杠铃俯身划船，无额外支撑。",

@@ -1,6 +1,10 @@
 package com.readygym.app
 
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.readygym.core.*
@@ -33,8 +37,28 @@ class CoachStructuredSafetyTest {
         compose.waitUntil(10_000) { compose.onAllNodesWithText("服务端已选择安全路径").fetchSemanticsNodes().isNotEmpty() }
     }
 
-    private fun completeOfflineSafeForm() {
-        compose.onNodeWithText("离线规则模式（不使用AI）").performScrollTo().performClick()
+    private fun completeOfflineSafeForm(client: CoachClient) {
+        // The offline entry no longer exists in the app shell (a key is the only way in). These
+        // tests verify that a server-returned safety route survives any *separate* onboarding
+        // flow and still blocks a rule draft, so the onboarding+planning pair is composed here
+        // directly, exactly as the shell composed it behind the old offline button. The
+        // Activity-scoped CoachConversation (which holds retainedSafety) survives this setContent
+        // and is the one bound to the same client `open(client)` used.
+        val conversation = compose.activity.viewModelStore[coachViewModelKey(client, client, 0)] as CoachConversation
+        compose.runOnUiThread {
+            compose.activity.setContent {
+                ReadyGymTheme {
+                    var profile by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<TrainingProfile?>(null) }
+                    val p = profile
+                    if (p == null) {
+                        OnboardingScreen(onStartPlanning = { profile = it })
+                    } else {
+                        TrainingPlanScreen(p, retainedSafety = conversation.retainedSafety,
+                            onSafetyChanged = { conversation.recordSafety(it) })
+                    }
+                }
+            }
+        }
         compose.onNodeWithContentDescription("年龄（岁）").performScrollTo().performTextInput("30")
         compose.onNodeWithContentDescription("身高（cm）").performScrollTo().performTextInput("170")
         compose.onNodeWithContentDescription("体重（kg）").performScrollTo().performTextInput("65")
@@ -56,11 +80,11 @@ class CoachStructuredSafetyTest {
         ScriptedLoopbackFixture(listOf(201 to first, 200 to blocked("stop_and_seek_care"))).use { server ->
             val client = HttpCoachClient(server.url, true)
             open(client)
-            completeOfflineSafeForm()
+            completeOfflineSafeForm(client)
             compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertDoesNotExist()
             compose.onNodeWithText("确认采用 v1").assertDoesNotExist()
             compose.onNodeWithText("停止训练，不用替换动作继续", substring = true).assertExists()
-            val state = compose.activity.viewModelStore["coach-test-${System.identityHashCode(client)}"] as CoachConversation
+            val state = compose.activity.viewModelStore[coachViewModelKey(client, client, 0)] as CoachConversation
             assertEquals(SafetyRoute.STOP_AND_SEEK_CARE, PlanningEngine().evaluateSafety(requireNotNull(state.retainedSafety)).route)
             val calls = server.requests.get(6, java.util.concurrent.TimeUnit.SECONDS)
             assertEquals(2, calls.size)
@@ -97,10 +121,10 @@ class CoachStructuredSafetyTest {
             compose.onNodeWithText("发送").performClick()
             compose.waitUntil(10_000) { compose.onAllNodesWithText("服务端响应不符合契约", substring = true).fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithTag("coach-input").assertTextContains("review this answer")
-            completeOfflineSafeForm()
+            completeOfflineSafeForm(client)
             compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertDoesNotExist()
             compose.onNodeWithText("确认采用 v1").assertDoesNotExist()
-            val state = compose.activity.viewModelStore["coach-test-${System.identityHashCode(client)}"] as CoachConversation
+            val state = compose.activity.viewModelStore[coachViewModelKey(client, client, 0)] as CoachConversation
             assertEquals(SafetyRoute.PROFESSIONAL_REVIEW, PlanningEngine().evaluateSafety(requireNotNull(state.retainedSafety)).route)
         }
     }
@@ -131,10 +155,10 @@ class CoachStructuredSafetyTest {
             compose.onNodeWithText("确认资料，进入规则计划").performScrollTo().performClick()
             compose.waitUntil(10_000) { compose.onAllNodesWithText("正在等待服务端…").fetchSemanticsNodes().isEmpty() }
             compose.onNodeWithText("安排你的训练周").assertDoesNotExist()
-            val state = compose.activity.viewModelStore["coach-test-${System.identityHashCode(client)}"] as CoachConversation
+            val state = compose.activity.viewModelStore[coachViewModelKey(client, client, 0)] as CoachConversation
             assertNotNull("confirm response safety must survive a rejected confirmation", state.retainedSafety)
             assertEquals(SafetyRoute.STOP_AND_SEEK_CARE, PlanningEngine().evaluateSafety(requireNotNull(state.retainedSafety)).route)
-            completeOfflineSafeForm()
+            completeOfflineSafeForm(client)
             compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertDoesNotExist()
             val calls = server.requests.get(6, java.util.concurrent.TimeUnit.SECONDS)
             assertTrue(calls[2].startsWith("POST /api/intake/sessions/risk-session/confirm HTTP/1.1"))
@@ -142,7 +166,7 @@ class CoachStructuredSafetyTest {
         }
     }
 
-    private fun state(client: CoachClient) = compose.activity.viewModelStore["coach-test-${System.identityHashCode(client)}"] as CoachConversation
+    private fun state(client: CoachClient) = compose.activity.viewModelStore[coachViewModelKey(client, client, 0)] as CoachConversation
     private fun assertRetainedRoute(client: CoachClient, route: SafetyRoute) {
         assertNotNull(state(client).retainedSafety)
         assertEquals(route, PlanningEngine().evaluateSafety(requireNotNull(state(client).retainedSafety)).route)
@@ -189,7 +213,7 @@ class CoachStructuredSafetyTest {
             compose.runOnUiThread { compose.activity.setContent { ReadyGymTheme { ReadyGymApp(client, true) } } }
             assertSame(before, state(client))
             assertOldSummaryCannotConfirm(client)
-            completeOfflineSafeForm()
+            completeOfflineSafeForm(client)
             compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertDoesNotExist()
             compose.onNodeWithText("确认采用 v1").assertDoesNotExist()
             assertEquals(listOf("POST", "POST", "POST", "DELETE", "GET", "POST", "POST", "POST", "POST"),
@@ -204,7 +228,7 @@ class CoachStructuredSafetyTest {
             open(client)
             assertRetainedRoute(client, SafetyRoute.PROFESSIONAL_REVIEW)
             compose.onNodeWithText("服务端安全路线：暂停普通训练并寻求专业评估，不作诊断。").assertExists()
-            completeOfflineSafeForm()
+            completeOfflineSafeForm(client)
             compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertDoesNotExist()
             compose.onNodeWithText("确认采用 v1").assertDoesNotExist()
             compose.onNodeWithText("暂停普通模板生成", substring = true).assertExists()
@@ -219,7 +243,7 @@ class CoachStructuredSafetyTest {
             compose.onNodeWithText("当前训练经验暂不支持规则模板；这不代表急性身体风险。").assertExists()
             compose.onNodeWithText("当前资料不适合普通规则计划。请停止训练并按服务端提示寻求专业评估；可继续说明或纠正资料。").assertDoesNotExist()
             compose.onNodeWithText("确认资料，进入规则计划").assertDoesNotExist()
-            completeOfflineSafeForm()
+            completeOfflineSafeForm(client)
             compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertExists()
             compose.onNodeWithText("确认采用 v1").assertIsEnabled()
             assertNull(state(client).retainedSafety)
@@ -332,7 +356,7 @@ class CoachStructuredSafetyTest {
                 compose.waitUntil(10_000) { compose.onAllNodesWithText("服务端响应不符合契约", substring = true).fetchSemanticsNodes().isNotEmpty() }
                 compose.onNodeWithTag("coach-input").assertTextContains("please review this answer")
                 assertRetainedRoute(client, SafetyRoute.PROFESSIONAL_REVIEW)
-                completeOfflineSafeForm()
+                completeOfflineSafeForm(client)
                 compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertDoesNotExist()
                 compose.onNodeWithText("确认采用 v1").assertDoesNotExist()
                 assertEquals(2, server.requests.get(6, java.util.concurrent.TimeUnit.SECONDS).size)
@@ -378,7 +402,7 @@ class CoachStructuredSafetyTest {
             compose.waitUntil(10_000) { compose.onAllNodesWithText("服务端响应不符合契约", substring = true).fetchSemanticsNodes().isNotEmpty() }
             assertNull("bad returned session must not become the current session", state(client).session)
             assertRetainedRoute(client, expected)
-            completeOfflineSafeForm()
+            completeOfflineSafeForm(client)
             compose.onNodeWithText("RULE TEMPLATE · 未接模型 · 未专业审核").assertDoesNotExist()
             compose.onNodeWithText("确认采用 v1").assertDoesNotExist()
             assertRetainedRoute(client, expected)

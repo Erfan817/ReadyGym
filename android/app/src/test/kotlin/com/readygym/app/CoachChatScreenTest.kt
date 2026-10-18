@@ -1,6 +1,11 @@
 package com.readygym.app
 
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.readygym.core.TrainingProfile
 import kotlinx.coroutines.CompletableDeferred
 import org.junit.Assert.*
 import androidx.compose.ui.test.*
@@ -139,7 +144,7 @@ class CoachChatScreenTest {
         compose.activityRule.scenario.recreate()
         compose.runOnUiThread { compose.activity.setContent { ReadyGymTheme { ReadyGymApp(client, true) } } }
         assertSummaryBlockedWithoutProviderConfirmation(client)
-        val state = compose.activity.viewModelStore["coach-test-${System.identityHashCode(client)}"] as CoachConversation
+        val state = compose.activity.viewModelStore[coachViewModelKey(client, client, 0)] as CoachConversation
         compose.runOnIdle { state.restart() }
         assertEquals(1, client.starts)
         compose.onNodeWithText("同意并开始").performScrollTo().performClick()
@@ -155,10 +160,26 @@ class CoachChatScreenTest {
     }
 
     @Test fun urgentRiskCannotBeClearedByOfflineReentryAndSafeForm() {
-        openSafeChatDraft()
+        val client = openSafeChatDraft()
         reportUrgentFeedback()
-        compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
-        compose.onNodeWithText("离线规则模式（不使用AI）").performScrollTo().performClick()
+        // The offline entry is gone; the equivalent "separate onboarding attempt" is composing
+        // the onboarding+planning pair directly against the same Activity-scoped conversation,
+        // whose retainedSafety must still block a symptom-free rule draft.
+        val conversation = compose.activity.viewModelStore[coachViewModelKey(client, client, 0)] as CoachConversation
+        compose.runOnUiThread {
+            compose.activity.setContent {
+                ReadyGymTheme {
+                    var profile by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<TrainingProfile?>(null) }
+                    val p = profile
+                    if (p == null) {
+                        OnboardingScreen(onStartPlanning = { profile = it })
+                    } else {
+                        TrainingPlanScreen(p, retainedSafety = conversation.retainedSafety,
+                            onSafetyChanged = { conversation.recordSafety(it) })
+                    }
+                }
+            }
+        }
         compose.onNodeWithContentDescription("年龄（岁）").performScrollTo().performTextInput("30")
         compose.onNodeWithContentDescription("身高（cm）").performScrollTo().performTextInput("170")
         compose.onNodeWithContentDescription("体重（kg）").performScrollTo().performTextInput("65")
@@ -246,23 +267,28 @@ class CoachChatScreenTest {
     @Test
     @Config(qualifiers = "w320dp-h640dp")
     fun largeTextWelcomeAndOfflineButtonRemainReachable() {
+        // An injected client stands in for "the user has already supplied a key". The invariant is
+        // that the consent screen stays reachable at 1.6x font on a small viewport; the key screen
+        // has its own coverage.
+        val client = TestOnlyCoachClient().apply { startGate.complete(Unit) }
         compose.runOnUiThread { compose.activity.setContent {
             val density = androidx.compose.ui.platform.LocalDensity.current
             androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalDensity provides androidx.compose.ui.unit.Density(density.density, 1.6f)) {
-                ReadyGymTheme { ReadyGymApp() }
+                ReadyGymTheme { ReadyGymApp(client, serviceConfigured = true) }
             }
         } }
-        compose.onNodeWithText("服务未配置，不能连接AI").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("同意并开始").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText("离线规则模式（不使用AI）").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("仅限18岁及以上 · 训练模板未经专业审核，不构成医疗建议").performScrollTo().assertIsDisplayed()
         capture("04-small-large-font")
     }
 
     @Test
     @Config(qualifiers = "w640dp-h320dp-land")
     fun landscapeWelcomeKeepsConsentAndOfflineActionScrollable() {
+        val client = TestOnlyCoachClient().apply { startGate.complete(Unit) }
+        compose.runOnUiThread { compose.activity.setContent { ReadyGymTheme { ReadyGymApp(client, serviceConfigured = true) } } }
         compose.onNodeWithText("同意并开始").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText("离线规则模式（不使用AI）").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("仅限18岁及以上 · 训练模板未经专业审核，不构成医疗建议").performScrollTo().assertIsDisplayed()
         capture("05-landscape")
     }
 
@@ -399,14 +425,13 @@ class CoachChatScreenTest {
     }
 
     @Test fun firstLaunchIsConversationNotMandatoryOnboarding() {
-        capture("01-welcome-unconfigured")
+        // First launch opens the API-key screen, because there is no server to point at any more.
+        // The invariant this test protects is unchanged: the first thing a user meets is a way to
+        // start talking, never a mandatory profile form.
+        capture("01-first-launch")
         compose.onNodeWithText("你的AI训练教练").assertIsDisplayed()
         compose.onNodeWithText("服务未配置，不能连接AI").assertExists()
         compose.onNodeWithContentDescription("年龄（岁）").assertDoesNotExist()
-        compose.onNodeWithText("同意并开始").assertExists()
-        compose.onNodeWithText("离线规则模式（不使用AI）").performScrollTo().performClick()
-        compose.onNodeWithContentDescription("年龄（岁）").assertExists()
-        compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
-        compose.onNodeWithText("你的AI训练教练").assertExists()
+        compose.onNodeWithTag("api-key-input").assertExists()
     }
 }
