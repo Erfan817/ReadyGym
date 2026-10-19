@@ -15,6 +15,7 @@ android/build/
 android/app/build/
 android/local.properties
 android/app/src/main/assets/exercise-demos/*.gif
+android/app/src/main/assets/exercises/
 *.apk
 *.aab
 

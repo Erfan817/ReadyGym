@@ -98,13 +98,11 @@ class ThemeAccessibilityTest {
     }
 
     @Test fun launcherAndEquipmentMatchLightSurfaces() {
-        // The launcher background is now the coach artwork's own backdrop (a saturated cyan), not
-        // a near-white. The invariant that still matters is that the launcher icon belongs to the
-        // same artwork family: the adaptive background and the in-app avatar must agree, and the
-        // mask must not be filled with a colour that fights the subject.
+        // The launcher background is the icon artwork's own orange backdrop, so the adaptive mask
+        // never shows a seam between the art and the padding around it.
         val background = vectorColors(R.drawable.ic_launcher_background).single()
-        assertTrue("Launcher background must be a saturated cyan to match the coach artwork",
-            background.blue > .6f && background.green > .6f && background.red < .4f)
+        assertTrue("Launcher background must be the artwork's saturated orange",
+            background.red > .9f && background.green in .35f..0.55f && background.blue < .1f)
         for (drawable in listOf(R.drawable.equipment_bodyweight, R.drawable.equipment_dumbbell, R.drawable.equipment_barbell, R.drawable.equipment_machine)) {
             val colors = vectorColors(drawable)
             assertTrue("Each equipment illustration must contain recognizable geometry", colors.size >= 6)
