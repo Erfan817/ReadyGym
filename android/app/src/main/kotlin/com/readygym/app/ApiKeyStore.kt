@@ -11,7 +11,8 @@ import javax.crypto.spec.GCMParameterSpec
 import android.util.Base64
 
 /**
- * Stores the user's own DeepSeek API key in the Android Keystore, encrypted at rest.
+ * Stores one bearer credential (now the ReadyGym account TOKEN; [slot] names it) in the Android
+ * Keystore, encrypted at rest.
  *
  * Why not plain SharedPreferences: an API key is a bearer credential that bills its owner. Storing
  * it in the clear would put it in every backup the OS or a third party app takes of this app's data
@@ -24,7 +25,9 @@ import android.util.Base64
  * The key is bound to this app and this device. It does not survive an app-data wipe or move to
  * another device, which is the correct behaviour for a credential: the user re-pastes it.
  */
-internal class ApiKeyStore(context: Context) {
+internal class ApiKeyStore(context: Context, slot: String = "deepseek_key") {
+    private val keyCiphertext = "${slot}_ciphertext"
+    private val keyIv = "${slot}_iv"
     private val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     /** Encrypt and persist. The plaintext is not logged and not written anywhere else. */
@@ -35,8 +38,8 @@ internal class ApiKeyStore(context: Context) {
         val iv = cipher.iv
         val encrypted = cipher.doFinal(key.trim().toByteArray(Charsets.UTF_8))
         prefs.edit()
-            .putString(KEY_CIPHERTEXT, Base64.encodeToString(encrypted, Base64.NO_WRAP))
-            .putString(KEY_IV, Base64.encodeToString(iv, Base64.NO_WRAP))
+            .putString(keyCiphertext, Base64.encodeToString(encrypted, Base64.NO_WRAP))
+            .putString(keyIv, Base64.encodeToString(iv, Base64.NO_WRAP))
             .apply()
     }
 
@@ -46,8 +49,8 @@ internal class ApiKeyStore(context: Context) {
      * asks the user to paste the key again.
      */
     fun load(): String? {
-        val encrypted = prefs.getString(KEY_CIPHERTEXT, null) ?: return null
-        val iv = prefs.getString(KEY_IV, null) ?: return null
+        val encrypted = prefs.getString(keyCiphertext, null) ?: return null
+        val iv = prefs.getString(keyIv, null) ?: return null
         return try {
             val cipher = Cipher.getInstance(TRANSFORMATION)
             cipher.init(Cipher.DECRYPT_MODE, secretKey(),
@@ -60,10 +63,10 @@ internal class ApiKeyStore(context: Context) {
         }
     }
 
-    fun hasKey(): Boolean = prefs.contains(KEY_CIPHERTEXT)
+    fun hasKey(): Boolean = prefs.contains(keyCiphertext)
 
     fun clear() {
-        prefs.edit().remove(KEY_CIPHERTEXT).remove(KEY_IV).apply()
+        prefs.edit().remove(keyCiphertext).remove(keyIv).apply()
     }
 
     private fun secretKey(): SecretKey {
@@ -88,7 +91,5 @@ internal class ApiKeyStore(context: Context) {
         const val TRANSFORMATION = "AES/GCM/NoPadding"
         const val GCM_TAG_BITS = 128
         const val PREFS = "readygym.credentials"
-        const val KEY_CIPHERTEXT = "deepseek_key_ciphertext"
-        const val KEY_IV = "deepseek_key_iv"
     }
 }

@@ -60,6 +60,9 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
         private set
     var correction by mutableStateOf(false)
         private set
+    /** Latest gender the user stated in this conversation, for the chat avatar. */
+    var statedGender by mutableStateOf<Gender?>(null)
+        private set
     private var retryAction: (() -> Unit)? = null
     fun edit(text: String) { if (!busy) {
         input = text
@@ -136,7 +139,7 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
         scope.launch {
             try {
                 client.delete(current)
-                session = null; reply = null; messages = emptyList(); input = ""; correction = false; retryAction = null; planConfirmationUnknown = false
+                session = null; reply = null; messages = emptyList(); input = ""; correction = false; retryAction = null; planConfirmationUnknown = false; statedGender = null
             } catch (e: CoachException) { e.safetyFeedback?.let(::recordSafety); error = e }
             catch (_: IOException) { error = CoachException("network_error", true) }
             finally { busy = false }
@@ -144,7 +147,7 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
     }
     fun restart() {
         if (busy) return
-        session = null; reply = null; error = null; messages = emptyList(); correction = false; retryAction = null; planConfirmationUnknown = false
+        session = null; reply = null; error = null; messages = emptyList(); correction = false; retryAction = null; planConfirmationUnknown = false; statedGender = null
         // Keep unsent input. No network until another explicit consent tap.
     }
     private fun launch(text: String?) {
@@ -158,6 +161,7 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
                 if (text != null) { messages = messages + CoachBubble(true, text); input = "" }
                 messages = messages + CoachBubble(false, result.assistantText, result.responseSource)
                 reply = result; correction = false; retryAction = null
+                (result.confirmedCandidate?.profile?.gender ?: result.statedGender)?.let { statedGender = it }
             } catch (e: CoachException) { e.safetyFeedback?.let(::recordSafety); error = e }
             catch (_: IOException) { error = CoachException("network_error", true) }
             finally { busy = false }
@@ -166,3 +170,11 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
     override fun onCleared() { scope.cancel() }
 }
 
+
+internal fun SafetyRoute.localRiskPriority() = when (this) {
+    SafetyRoute.TEMPLATE_ALLOWED -> 0
+    SafetyRoute.SCREEN_REQUIRED -> 1
+    SafetyRoute.PAUSE_AND_REASSESS -> 2
+    SafetyRoute.PROFESSIONAL_REVIEW -> 3
+    SafetyRoute.STOP_AND_SEEK_CARE -> 4
+}

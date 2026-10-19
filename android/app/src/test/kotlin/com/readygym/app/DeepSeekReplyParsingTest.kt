@@ -27,7 +27,7 @@ import org.robolectric.annotation.Config
 @Config(sdk = [35])
 class DeepSeekReplyParsingTest {
 
-    private val client = DeepSeekCoachClient(apiKey = "sk-test")
+    private val client = DeepSeekCoachClient(DeepSeekApi("sk-test"))
 
     private fun ready(profile: String): JSONObject = JSONObject(
         """{"status":"ready","message":"确认一下","profile":$profile}"""
@@ -167,9 +167,14 @@ class DeepSeekReplyParsingTest {
     // ---------- fence stripping ----------
 
     @Test fun markdownFencesAroundTheJsonAreStripped() {
-        val method = client.javaClass.getDeclaredMethod("stripFence", String::class.java)
-            .apply { isAccessible = true }
-        assertEquals("""{"a":1}""", method.invoke(client, "```json\n{\"a\":1}\n```"))
-        assertEquals("""{"a":1}""", method.invoke(client, """{"a":1}"""))
+        assertEquals("""{"a":1}""", DeepSeekApi.stripFence("```json\n{\"a\":1}\n```"))
+        assertEquals("""{"a":1}""", DeepSeekApi.stripFence("""{"a":1}"""))
+    }
+
+    @Test fun collectingReplyCarriesStatedGenderForTheAvatar() {
+        org.junit.Assert.assertEquals(com.readygym.core.Gender.FEMALE,
+            parse(JSONObject().put("status", "collecting").put("message", "好的").put("gender", "female")).statedGender)
+        org.junit.Assert.assertNull(parse(JSONObject().put("status", "collecting").put("message", "好的")).statedGender)
+        org.junit.Assert.assertNull(parse(JSONObject().put("status", "collecting").put("message", "好的").put("gender", "girl")).statedGender)
     }
 }
