@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  application.name: readygym-server
+  datasource:
+    # Local development: an H2 file next to the server, nothing to install.
+    url: jdbc:h2:file:./data/readygym;MODE=MySQL;AUTO_SERVER=TRUE
+    username: sa
+    password: ""
+  jpa:
+    hibernate.ddl-auto: update
+    open-in-view: false
+
+readygym:
+  # Never commit a real key: set DEEPSEEK_API_KEY / READYGYM_ADMIN_TOKEN in the environment.
+  deepseek:
+    api-key: ${DEEPSEEK_API_KEY:}
+    base-url: https://api.deepseek.com
+    model: deepseek-chat
+  ai:
+    daily-limit-per-device: 60
+    max-tokens: 1500
+  admin-token: ${READYGYM_ADMIN_TOKEN:}
+  zone: Asia/Shanghai
+
+---
+spring:
+  config.activate.on-profile: mysql
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/readygym?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8}
+    username: ${MYSQL_USER:readygym}
+    password: ${MYSQL_PASSWORD:}

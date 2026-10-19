@@ -109,7 +109,6 @@ internal fun MessageBubble(user: Boolean, author: String, text: String, modifier
     val shape = if (user) GymShapes.BubbleUser else GymShapes.BubbleCoach
     Column(
         modifier
-            .fillMaxWidth(if (user) 0.88f else 1f)
             .clip(shape)
             .background(if (user) ReadyGymColors.SelectedSurface else ReadyGymColors.Surface)
             .padding(horizontal = GymSpacing.Lg, vertical = GymSpacing.Md),
