@@ -1,0 +1,9 @@
+# Copy to local.properties, which is gitignored. Android Studio can set sdk.dir.
+# sdk.dir=C:/Users/YOUR_NAME/AppData/Local/Android/Sdk
+# Optional direct OpenAI-compatible AI endpoint. Empty uses your own backend proxy.
+readyGymAiBaseUrl=
+readyGymAiModel=deepseek-chat
+readyGymAiApiKey=
+# Optional update checks; empty disables them.
+readyGymPgyerApiKey=
+readyGymPgyerAppKey=

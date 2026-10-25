@@ -1,0 +1,33 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+local.properties
+*.local.properties
+*.jks
+*.keystore
+*.pem
+*.key
+# Build/tool/IDE output
+**/build/
+**/.gradle/
+**/.kotlin/
+.idea/
+.vscode/
+.tmp-tools/
+__pycache__/
+*.pyc
+*.log
+*.apk
+*.aab
+# Runtime databases
+*.db
+*.db-*
+*.sqlite*
+server/data/
+# Restricted media are optional local additions, never part of this source release
+android/app/src/main/assets/exercises/
+android/app/src/main/assets/exercise-demos/*
+!android/app/src/main/assets/exercise-demos/squats-wensceslao.gif
+server/src/main/resources/static/gifs/
+gifdb/

@@ -1,0 +1,24 @@
+# Reproducible bytes for files whose SHA-256 is recorded in data/source_manifest.json.
+# Without this, a Windows checkout rewrites these to CRLF, the recorded hashes stop matching,
+# and the pinned-source importer's integrity checks fail for reasons that have nothing to do
+# with the data.
+*.json            text eol=lf
+*.md              text eol=lf
+*.py              text eol=lf
+*.kt              text eol=lf
+*.kts             text eol=lf
+*.java            text eol=lf
+*.sh              text eol=lf
+*.yml             text eol=lf
+*.yaml            text eol=lf
+*.gradle          text eol=lf
+*.txt             text eol=lf
+*.gif             binary
+*.jpg             binary
+*.jpeg            binary
+*.png             binary
+*.mp4             binary
+*.webp            binary
+*.jar             binary
+
+# gradlew.bat is checked in with CRLF and is left to core.autocrlf rather than pinned here.

@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReadyGym 运营面板</title>
+<style>
+  :root {
+    --accent: #f97316;
+    --accent-soft: #ffedd5;
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --danger: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.6 -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--card); border-bottom: 1px solid var(--line);
+    padding: 14px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  header h1 { font-size: 18px; margin: 0; }
+  header .spacer { flex: 1; }
+  .token-box { display: flex; align-items: center; gap: 8px; }
+  .token-box input {
+    width: 240px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px;
+    font: inherit; outline: none;
+  }
+  .token-box input:focus { border-color: var(--accent); }
+  button {
+    padding: 7px 14px; border: none; border-radius: 8px; font: inherit; cursor: pointer;
+    background: var(--accent); color: #fff;
+  }
+  button:hover { filter: brightness(1.05); }
+  button.ghost { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  #token-msg { font-size: 13px; color: var(--danger); }
+  main { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+  #gate {
+    max-width: 380px; margin: 80px auto; text-align: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 32px 28px;
+  }
+  #gate h2 { margin-top: 0; }
+  #gate p { color: var(--muted); font-size: 14px; }
+  #gate input {
+    width: 100%; padding: 9px 12px; margin: 8px 0; border: 1px solid var(--line);
+    border-radius: 8px; font: inherit; text-align: center;
+  }
+  #gate button { width: 100%; margin-top: 6px; }
+  #error-banner {
+    background: #fef2f2; color: var(--danger); border: 1px solid #fecaca;
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none;
+  }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  }
+  .card .num { font-size: 26px; font-weight: 700; line-height: 1.3; }
+  .card .label { font-size: 13px; color: var(--muted); }
+  .panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 18px; margin-bottom: 20px;
+  }
+  .panel-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .panel-head h2 { font-size: 16px; margin: 0; }
+  .panel-head .spacer { flex: 1; }
+  .tabs { display: flex; gap: 6px; }
+  .tabs button { background: transparent; color: var(--muted); padding: 5px 12px; }
+  .tabs button.active { background: var(--accent-soft); color: var(--accent); }
+  .range-note { font-size: 13px; color: var(--muted); }
+  #chart svg { width: 100%; height: auto; display: block; }
+  .bar { fill: var(--accent); }
+  .bar:hover { fill: #ea580c; }
+  .gridline { stroke: var(--line); stroke-width: 1; }
+  .axis-text { fill: var(--muted); font-size: 11px; }
+  .fb-filter {
+    width: 240px; max-width: 100%; padding: 6px 10px; border: 1px solid var(--line);
+    border-radius: 8px; font: inherit; outline: none;
+  }
+  .fb-item { border-top: 1px solid var(--line); padding: 12px 2px; }
+  .fb-item:first-of-type { border-top: none; }
+  .fb-content { white-space: pre-wrap; word-break: break-word; margin: 0 0 6px; }
+  .fb-meta { font-size: 13px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  .fb-contact { color: var(--accent); font-weight: 600; }
+  .empty { color: var(--muted); text-align: center; padding: 24px 0; }
+  footer {
+    display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏋️ ReadyGym 运营面板</h1>
+  <div class="spacer"></div>
+  <div class="token-box" id="header-token" style="display:none">
+    <input type="password" id="token-input" placeholder="Admin Token">
+    <button class="ghost" id="save-token">连接</button>
+    <span id="token-msg"></span>
+  </div>
+</header>
+
+<div id="gate">
+  <h2>输入管理 Token</h2>
+  <p>即服务器环境变量 <code>READYGYM_ADMIN_TOKEN</code> 的值。<br>Token 只保存在本机浏览器里。</p>
+  <input type="password" id="gate-input" placeholder="Admin Token">
+  <button id="gate-go">进入面板</button>
+  <p id="gate-msg" style="color:var(--danger);min-height:1.5em;margin-bottom:0"></p>
+</div>
+
+<main id="app" style="display:none">
+  <div id="error-banner"></div>
+  <section class="cards" id="cards"></section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>每日趋势</h2>
+      <div class="spacer"></div>
+      <div class="tabs" id="metric-tabs">
+        <button data-metric="newUsers" class="active">新增用户</button>
+        <button data-metric="workouts">训练次数</button>
+        <button data-metric="aiCalls">AI 调用</button>
+      </div>
+    </div>
+    <div id="chart"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>用户反馈 <span class="range-note" id="fb-count"></span></h2>
+      <div class="spacer"></div>
+      <input class="fb-filter" id="fb-filter" placeholder="筛选：内容 / 联系方式 / 机型…">
+    </div>
+    <div id="feedback"></div>
+  </section>
+
+  <footer>
+    <button class="ghost" id="refresh">刷新数据</button>
+    <span id="updated-at"></span>
+    <span class="spacer" style="flex:1"></span>
+    <span>每 60 秒自动刷新</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var TOKEN_KEY = "readygym-admin-token";
+  var token = localStorage.getItem(TOKEN_KEY) || "";
+  var daily = [];          // [{date,newUsers,workouts,aiCalls}, ...] oldest first
+  var metric = "newUsers";
+  var METRIC_LABEL = { newUsers: "新增用户", workouts: "训练次数", aiCalls: "AI 调用" };
+  var METRIC_UNIT = { newUsers: "人", workouts: "次", aiCalls: "次" };
+  var feedback = [];
+  var timer = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function showGate(message) {
+    $("app").style.display = "none";
+    $("gate").style.display = "block";
+    $("header-token").style.display = "none";
+    $("gate-msg").textContent = message || "";
+    if (!message) $("gate-input").focus();
+  }
+
+  function showApp() {
+    $("gate").style.display = "none";
+    $("app").style.display = "block";
+    $("header-token").style.display = "flex";
+    $("token-input").value = "";
+    $("token-msg").textContent = "";
+  }
+
+  function fail(message) {
+    var banner = $("error-banner");
+    banner.textContent = message;
+    banner.style.display = "block";
+  }
+
+  function clearError() {
+    $("error-banner").style.display = "none";
+  }
+
+  // One API call with the admin token. Failures carry {auth:true} (403), {status:404} (old jar)
+  // or a plain message (network), so loadAll can tell the operator exactly what to fix.
+  function api(path) {
+    return fetch(path, { headers: { "X-Admin-Token": token } }).then(function (res) {
+      if (res.status === 403) throw { auth: true };
+      if (!res.ok) throw { status: res.status, message: path + " 返回 HTTP " + res.status };
+      return res.json();
+    }, function () {
+      throw { message: path + " 网络错误（服务器没启动？）" };
+    });
+  }
+
+  function describeError(err) {
+    if (err && err.auth) {
+      return "Token 不正确，或服务器没有配置 READYGYM_ADMIN_TOKEN（403）。";
+    }
+    if (err && err.status === 404) {
+      return "服务器上没有这个接口（404）：跑的还是旧版 jar，需要按 docs/deploy-vps.md 发布新版。" +
+        (err.message ? "（" + err.message + "）" : "");
+    }
+    return "连不上服务器：" + (err && err.message ? err.message : "") +
+      "。确认服务器已启动后再点一次「进入面板」即可重试。";
+  }
+
+  function loadAll() {
+    clearError();
+    return Promise.all([
+      api("/api/admin/stats"),
+      api("/api/admin/stats/daily?days=30"),
+      api("/api/admin/feedback")
+    ]).then(function (results) {
+      renderCards(results[0]);
+      daily = results[1];
+      renderChart();
+      feedback = results[2];
+      renderFeedback();
+      $("updated-at").textContent = "更新于 " + new Date().toLocaleTimeString("zh-CN", { hour12: false });
+    }).catch(function (err) {
+      if (err && err.auth) {
+        // 保留已保存的 token：输错了直接在输入框里改，服务器补配好 token 后刷新即恢复。
+        if (timer) { clearInterval(timer); timer = null; }
+        $("gate-input").value = token;
+        showGate(describeError(err));
+        return;
+      }
+      if ($("app").style.display === "block") fail(describeError(err));
+      else $("gate-msg").textContent = describeError(err);
+      throw err;
+    });
+  }
+
+  function enter(savedToken) {
+    token = (savedToken || "").trim();
+    if (!token) {
+      showGate("请输入 Token。");
+      return;
+    }
+    localStorage.setItem(TOKEN_KEY, token);   // 先记住：本次连接失败，刷新后也不用重填
+    loadAll().then(function () {
+      showApp();
+      if (timer) clearInterval(timer);
+      timer = setInterval(loadAll, 60000);
+    }).catch(function () {});                 // 原因已显示在面板横幅或登录页提示里
+  }
+
+  function renderCards(stats) {
+    var cards = [
+      { label: "总用户", num: stats.totalUsers },
+      { label: "今日新增", num: stats.newUsersToday },
+      { label: "近 7 天活跃", num: stats.activeUsers7d },
+      { label: "总训练次数", num: stats.workoutsTotal },
+      { label: "今日训练", num: stats.workoutsToday },
+      { label: "今日 AI 调用", num: stats.aiCallsToday }
+    ];
+    var host = $("cards");
+    host.textContent = "";
+    cards.forEach(function (c) {
+      var div = document.createElement("div");
+      div.className = "card";
+      var num = document.createElement("div");
+      num.className = "num";
+      num.textContent = c.num;
+      var label = document.createElement("div");
+      label.className = "label";
+      label.textContent = c.label;
+      div.appendChild(num);
+      div.appendChild(label);
+      host.appendChild(div);
+    });
+  }
+
+  // Hand-rolled SVG bar chart: zero dependencies, works offline.
+  function renderChart() {
+    var host = $("chart");
+    if (!daily.length) {
+      host.textContent = "暂无数据";
+      host.className = "empty";
+      return;
+    }
+    host.className = "";
+    var n = daily.length;
+    var values = daily.map(function (d) { return d[metric]; });
+    var maxVal = Math.max.apply(null, values.concat([1]));
+    var step = Math.ceil(maxVal / 4);
+    var niceMax = step * 4;
+    var left = 34, bottom = 22, top = 8, barGap = 28, barW = 18;
+    var width = left + n * barGap + 6;
+    var height = 190;
+    var plotH = height - bottom - top;
+    var svg = ['<svg viewBox="0 0 ' + width + ' ' + height + '" preserveAspectRatio="xMidYMid meet">'];
+    for (var g = 0; g <= 4; g++) {
+      var y = top + plotH - (plotH * g * step / niceMax);
+      svg.push('<line class="gridline" x1="' + left + '" y1="' + y + '" x2="' + (width - 4) + '" y2="' + y + '"/>');
+      svg.push('<text class="axis-text" x="' + (left - 6) + '" y="' + (y + 4) + '" text-anchor="end">' + (g * step) + '</text>');
+    }
+    var tickEvery = Math.ceil(n / 6);
+    daily.forEach(function (d, i) {
+      var v = d[metric];
+      var h = niceMax ? Math.round(plotH * v / niceMax) : 0;
+      var x = left + i * barGap;
+      var y = top + plotH - h;
+      var label = d.date.slice(5) + "：" + METRIC_LABEL[metric] + " " + v + " " + METRIC_UNIT[metric];
+      svg.push('<rect class="bar" x="' + (x + (barGap - barW) / 2) + '" y="' + y + '" width="' + barW +
+        '" height="' + h + '" rx="3"><title>' + label + '</title></rect>');
+      if (i % tickEvery === 0 || i === n - 1) {
+        svg.push('<text class="axis-text" x="' + (x + barGap / 2) + '" y="' + (height - 6) +
+          '" text-anchor="middle">' + d.date.slice(5) + '</text>');
+      }
+    });
+    svg.push("</svg>");
+    host.innerHTML = svg.join("");
+  }
+
+  function renderFeedback() {
+    var host = $("feedback");
+    var q = $("fb-filter").value.trim().toLowerCase();
+    var shown = feedback.filter(function (f) {
+      if (!q) return true;
+      return [f.content, f.contact, f.deviceModel, f.appVersion, f.osVersion]
+        .some(function (s) { return (s || "").toLowerCase().indexOf(q) !== -1; });
+    });
+    $("fb-count").textContent = shown.length === feedback.length
+      ? "共 " + shown.length + " 条"
+      : shown.length + " / " + feedback.length + " 条";
+    host.textContent = "";
+    if (!shown.length) {
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = feedback.length ? "没有匹配的反馈" : "还没有用户提交反馈";
+      host.appendChild(empty);
+      return;
+    }
+    shown.forEach(function (f) {
+      var item = document.createElement("div");
+      item.className = "fb-item";
+      var content = document.createElement("p");
+      content.className = "fb-content";
+      content.textContent = f.content;            // user input: textContent, never innerHTML
+      var meta = document.createElement("div");
+      meta.className = "fb-meta";
+      meta.appendChild(span("fb-contact", f.contact || ""));
+      meta.appendChild(span("", f.createdAt));
+      meta.appendChild(span("", [f.appVersion, f.deviceModel, f.osVersion].filter(Boolean).join(" · ")));
+      item.appendChild(content);
+      item.appendChild(meta);
+      host.appendChild(item);
+    });
+  }
+
+  function span(cls, text) {
+    var el = document.createElement("span");
+    if (cls) el.className = cls;
+    el.textContent = text;
+    return el;
+  }
+
+  $("gate-go").addEventListener("click", function () { enter($("gate-input").value); });
+  $("gate-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") enter($("gate-input").value);
+  });
+  $("save-token").addEventListener("click", function () { enter($("token-input").value); });
+  $("token-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") enter($("token-input").value);
+  });
+  $("refresh").addEventListener("click", function () {
+    $("refresh").disabled = true;
+    Promise.resolve(loadAll()).catch(function () {}).then(function () {
+      $("refresh").disabled = false;
+    });
+  });
+  $("metric-tabs").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-metric]");
+    if (!btn) return;
+    metric = btn.dataset.metric;
+    document.querySelectorAll("#metric-tabs button").forEach(function (b) {
+      b.classList.toggle("active", b === btn);
+    });
+    renderChart();
+  });
+  $("fb-filter").addEventListener("input", renderFeedback);
+
+  // Boot: with a saved token go straight in (pre-filling the gate input so a visible failure
+  // still shows what would be retried); a 403 keeps the token and explains itself on the gate.
+  if (token) {
+    $("gate-input").value = token;
+    enter(token);
+  } else {
+    showGate();
+  }
+})();
+</script>
+</body>
+</html>

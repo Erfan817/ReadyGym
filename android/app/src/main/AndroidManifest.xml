@@ -1,0 +1,42 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Workout reminders: an inexact daily alarm plus a notification when it fires. No exact-alarm
+         permission is asked for; a few minutes of drift is fine for "time to train". -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Push-to-talk voice input in the coach chat -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- The equipment guide delegates to the camera app, so a camera is optional at install time. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <application android:usesCleartextTraffic="false" android:networkSecurityConfig="@xml/network_security" android:label="Ready Gym" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:supportsRtl="true" android:theme="@style/Theme.ReadyGym">
+        <activity android:name=".MainActivity" android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <receiver
+            android:name=".ReminderReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".ReminderBootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

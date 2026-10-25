@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application.name: readygym-server
+  datasource:
+    # Local development: an H2 file next to the server, nothing to install.
+    url: jdbc:h2:file:./data/readygym;MODE=MySQL;AUTO_SERVER=TRUE
+    username: sa
+    password: ""
+  jpa:
+    hibernate.ddl-auto: update
+    open-in-view: false
+
+readygym:
+  # Never commit a real key: set DEEPSEEK_API_KEY / READYGYM_ADMIN_TOKEN in the environment.
+  deepseek:
+    # Any OpenAI-compatible gateway works (e.g. PackyAPI): point base-url at the /v1 root
+    # and model at the gateway's id. api-key never falls back to a default.
+    api-key: ${DEEPSEEK_API_KEY:}
+    base-url: ${READYGYM_DEEPSEEK_BASE_URL:https://api.deepseek.com}
+    model: ${READYGYM_DEEPSEEK_MODEL:deepseek-chat}
+  ai:
+    daily-limit-per-device: 60
+    max-tokens: 1500
+  admin-token: ${READYGYM_ADMIN_TOKEN:}
+  # Optional host path of the full ExerciseGymGifsDB mirror (repo gifdb). Blank = serve the
+  # curated subset packaged in the jar. Windows paths work: D:/readygym/gifdb
+  gifs-dir: ${READYGYM_GIFS_DIR:}
+  # Optional dir of installer artifacts served at /download/<file> (e.g. /opt/readygym/downloads).
+  downloads-dir: ${READYGYM_DOWNLOADS_DIR:}
+  # XunFei 语音听写 (push-to-talk ASR relay). Keys from https://www.xfyun.cn — blank = disabled.
+  xfyun:
+    app-id: ${READYGYM_XFYUN_APP_ID:}
+    api-key: ${READYGYM_XFYUN_API_KEY:}
+    api-secret: ${READYGYM_XFYUN_API_SECRET:}
+  zone: Asia/Shanghai
+
+---
+spring:
+  config.activate.on-profile: mysql
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/readygym?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8}
+    username: ${MYSQL_USER:readygym}
+    password: ${MYSQL_PASSWORD:}
