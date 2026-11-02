@@ -1,90 +1,277 @@
-# Ready Gym · v0.8.12
+<div align="center">
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Ready Gym 图标" width="88" />
+  <h1>Ready Gym</h1>
+  <p><strong>从不知道练什么，到知道今天怎么练。</strong></p>
+  <p>面向健身新手的安卓 AI 健身教练，用对话制定计划，用演示认识动作，用记录看见进步。</p>
+  <p><strong>v0.8.12</strong> · Android 8.0+ · Kotlin / Jetpack Compose · Spring Boot</p>
+  <p>
+    <a href="https://www.pgyer.com/readygym">下载安装</a> ·
+    <a href="#功能一览">功能一览</a> ·
+    <a href="#开始使用">开始使用</a> ·
+    <a href="#本地开发">本地开发</a> ·
+    <a href="AGENTS.md">开发手册</a>
+  </p>
+</div>
 
-面向健身新手的安卓 AI 健身教练：聊天建档 → 确认资料 → 生成训练计划 → 跟着练 → 反馈与调整。
+## 为什么做 Ready Gym
 
-[下载安装（蒲公英）](https://www.pgyer.com/readygym) · [Android 构建说明](android/README.md) · [项目开发手册](AGENTS.md)
+刚开始健身时，难的往往不只是坚持，还有一连串具体的问题：今天练什么？这个器械怎么用？计划里的动作做不了，能换成什么？上次做到哪一组了？
 
-## 这次更新
+Ready Gym 把这些问题放进同一个训练流程：先聊清楚你的目标、时间和器械条件，再生成计划；训练时看动作演示、记录每一组，遇到不合适的动作就和教练讨论替代方案。计划的修改会先展示给你，确认之后才生效。
 
-**聊天选择调整方案前，就能看到新动作的 GIF 演示。** 每套方案标出动作名称、器械和对应训练日；多个新动作可左右滑动查看，加载失败可重试。看演示、切换方案只是预览，点击“确认采用这套调整”后才保存。
+适合希望按计划训练的健身新手，也适合在家用哑铃、徒手练习，或在健身房需要器械使用指引的人。
 
-![选择前查看新动作演示](screenshots/v0.8.12/online-demo.png)
+## 功能一览
 
-## 当前功能
+| 你想做的事 | Ready Gym 提供的帮助 |
+| --- | --- |
+| 不知道怎么开始 | 通过聊天收集训练目标、身体资料、每周天数、单次时长和器械条件，确认后建档 |
+| 想要一份可执行的安排 | 按档案生成整周训练计划，列出动作、组数、次数或时长；计划经过代码校验 |
+| 不喜欢某个动作，或现场缺器械 | 和教练讨论，比较 1–3 套调整方案，查看变化与整周安排后确认采用 |
+| 看不懂新动作的名字 | 在选择替代方案前直接看 GIF，了解动作、所需器械及对应训练日 |
+| 想补充某个部位的训练 | 点选正面、背面人体图上的 18 个肌群，查看筛选后的动作和演示，再加入指定训练日 |
+| 器械不会用 | 浏览 16 台器械的教程，或拍照识别；额外覆盖 9 类常见器械的动作建议 |
+| 想知道练了多少、有没有坚持 | 记录每组的次数、时长与重量，查看训练历史、活动热力、肌群分布、勋章和周榜 |
+| 想追踪体重变化 | 记录到 0.1 kg，补记日期、修改记录、设置目标，查看体重趋势 |
+| 打字不方便 | 按住说话转文字，识别后先回到输入框，检查内容再发送 |
 
-- AI 对话建档，读取已保存资料；按场地、器械和训练经验生成计划。新手与恢复训练者过滤高风险杠铃动作。
-- 聊天提出 1–3 套调整方案，逐项比较并预览整周；确认后同步当前训练待做动作，保留已完成记录。
-- 287 个动作，60 个 GIF 随 APK 提供，其余通过服务器加载；按 18 个肌群选动作加入计划。
-- 训练按本地自然日推进，固定训练星期显示休息日；不再提供组间休息计时。
-- 器械指南与拍照识别、按住说话转文字、训练记录与统计、本机体重趋势、用户反馈及检查更新。
+### 用对话调整计划
 
-## 技术与运行
+你可以直接告诉教练：
 
-- 正式客户端：`android/`，Kotlin + Jetpack Compose；计划规则与校验在纯 Kotlin `core` 模块，Room 保存档案、计划版本、训练组记录和体重数据。
-- 当前后端：`server/`，Spring Boot + Java 21，提供注册、排行榜、GIF、反馈、语音识别中转与 APK 分发。AI 聊天、计划生成和视觉识别由 App 直连配置的 OpenAI 兼容网关。
-- `agent-python/`、`business-java/` 和 `frontend/` 保留为早期实现与实验，当前安卓功能以 `android/`、`server/` 和 [AGENTS.md](AGENTS.md) 为准。
-- 本地密钥放在被忽略的 `android/local.properties`，服务器凭据通过环境变量配置；部署说明见 [docs/deploy-vps.md](docs/deploy-vps.md)。仓库不包含密钥、个人数据库、构建缓存或 APK。
+> “这个动作我不想做，帮我找几个替代。”
+>
+> “今天健身房没有这台器械，我可以用哑铃。”
+>
+> “我想调整这个动作的组数和次数。”
+
+教练会结合已保存的档案、当前整周计划和可用动作给出建议。每套方案都会说明调整原因，列出前后变化；涉及新动作时可以先看演示，再决定采用哪套。
+
+- **先预览，再保存**：播放 GIF、左右浏览和选择方案都不会修改当前计划。
+- **确认后同步当前训练**：正在进行的训练中，待做动作、组次和重量会跟着更新，已经完成的实际记录保留。
+- **新动作重新选重量**：替换动作不会自动沿用旧动作的重量。
+- **保存前再次检查**：档案或原计划发生变化时，旧方案不能直接覆盖新状态。
+
+### 跟着计划练，进度留得住
+
+训练页突出当前动作和当前组，支持完成与撤销；次数、时长和重量随组记录。退出后再次打开，可以继续未结束的训练。
+
+训练按本地自然日推进：当天有已结束且至少完成一组的训练，就显示“今天已经训练完了”，下一天恢复下一训练日。设置了固定训练星期时，首页、计划页和开始页会明确显示休息日。当前版本已取消组间休息计时。
+
+### 按自己的条件找动作
+
+动作库共有 **287 个动作**，其中 **60 个 GIF 随 APK 提供**，其余 **227 个通过服务器加载**。动作筛选会参考场地、器械和训练经验；新手与恢复训练者的计划会排除标记为高风险的杠铃动作。
+
+按肌肉选动作时，可以先看演示，再选择加入哪一天；同一天不重复添加同一动作，每天最多 8 个动作。器械指南也可以直接按名称浏览，拍照识别未匹配时可以回到手动选择。
+
+### 用真实记录看变化
+
+统计页汇总已保存的训练记录，展示本周进度、活动热力、肌群平衡与训练日历。体重记录独立保存在本机，支持同日覆盖、历史修改和确认删除，也可以设置或清除目标体重。
+
+没有称重记录时不会生成虚构的历史曲线；档案里填写的体重也不会自动变成过去的称重记录。
+
+## 页面预览
+
+以下为 **0.8.12 正式包在 Android API 35 模拟器中的实际截图**。截图里的训练安排是验证样例。
+
+<table>
+  <tr>
+    <th>选择前看新动作</th>
+    <th>左右浏览多个演示</th>
+    <th>预览采用后的整周安排</th>
+  </tr>
+  <tr>
+    <td><img src="screenshots/v0.8.12/online-demo.png" alt="调整方案内的绳索夹胸演示" width="260" /></td>
+    <td><img src="screenshots/v0.8.12/bundled-demo.png" alt="滑动查看同一方案中的器械推胸演示" width="260" /></td>
+    <td><img src="screenshots/v0.8.12/selected-week.png" alt="整周预览与明确确认按钮" width="260" /></td>
+  </tr>
+</table>
+
+GIF 在 App 内动态播放；这里展示的是页面截图。
+
+## 开始使用
+
+1. **安装 App**：前往 [蒲公英下载页](https://www.pgyer.com/readygym)，下载并安装当前安卓版本。已有用户可以在“我的”中检查更新。
+2. **完成初次设置**：填写昵称，进入首页；首次使用 AI 功能时阅读并确认资料发送说明。
+3. **告诉教练你的情况**：说明目标、每周可练天数、单次时间、场地与器械；核对档案卡片后确认保存。之后再进入聊天，教练会读取已存档案。
+4. **生成并查看计划**：到计划页生成训练安排，查看各训练日的动作与组次，也可以按肌肉选择动作补充进去。
+5. **开始训练**：按动作逐组记录，完成后查看回顾并反馈感受。需要换动作时回到聊天，先看建议和演示，再确认调整。
+
+## 技术结构
+
+当前正式客户端为 **Kotlin + Jetpack Compose 安卓 App**，业务后端为 **Spring Boot**。AI 聊天、计划生成和照片识别使用 App 直连的 OpenAI 兼容网关；当前发行配置采用 PackyAPI 的 `deepseek-flash`。
+
+```mermaid
+flowchart LR
+    User[用户] --> App[Android App]
+    App --> AI[AI 网关：聊天、计划、视觉识别]
+    AI --> Check[本地解析与规则校验]
+    Check --> Preview[方案预览与用户确认]
+    Preview --> DB[(Room 本地数据库)]
+    App --> Server[Spring Boot 服务]
+    Server --> Services[注册、训练摘要、周榜、反馈、GIF 与安装包]
+    Server --> ASR[讯飞语音识别]
+```
+
+| 层级 | 技术与职责 |
+| --- | --- |
+| 界面 | Jetpack Compose、Material 3；首页、计划、训练、统计和个人资料 |
+| 状态管理 | ViewModel、StateFlow、Kotlin Coroutines；处理请求、页面状态与训练进度 |
+| 规则层 | 纯 Kotlin `core` 模块；动作筛选、计划契约、差异比较、自然日推进和会话同步 |
+| 本地存储 | Room；保存档案、计划版本、训练组记录和体重数据 |
+| 图片与动图 | Coil；APK 内置媒体优先，其余从服务器加载 |
+| 业务后端 | Spring Boot 3.4.1、Java 21、Spring Data JPA；默认 H2，可配置 MySQL |
+| 分发 | 蒲公英主下载入口，App 内检查更新；服务器保留安装包下载能力 |
+
+### 数据如何流转
+
+- **档案、计划与详细训练记录**：保存在手机本地；AI 建议会按需使用聊天内容、档案与当前计划。
+- **体重记录与目标**：保存在本机，与训练档案体重分开管理。
+- **训练完成摘要**：结束训练后会尝试上传训练时间、组数与训练量等汇总信息，供周榜使用；打开周榜时也会补传本周记录。
+- **语音输入**：优先使用系统识别服务，缺少服务时通过后端转发到讯飞；转写结果先交给用户检查。
+- **器械照片**：在拍照识别时压缩后发送到 AI 网关，用于匹配器械教程与动作建议。
+- **意见反馈**：提交反馈文字、填写的联系方式及 App 版本、机型和系统信息。
+
+本地数据保存不等于云端备份，当前也没有跨设备恢复本地档案、计划和体重记录的完整功能。
+
+## 本地开发
+
+### 环境准备
+
+- JDK 21；Android 编译目标为 Java 17。
+- Android SDK 35、Android Studio 或命令行 SDK 工具。
+- 使用仓库内 Gradle Wrapper：Gradle 8.9、AGP 8.7.3、Kotlin 2.0.21。
+- 如需使用 AI 功能，准备可用的 OpenAI 兼容网关配置。
 
 ```bash
+git clone https://github.com/Erfan817/ready-gym.git
+cd ready-gym
+```
+
+### 配置客户端
+
+在 `android/local.properties` 中填写 SDK 路径和服务配置。该文件被 Git 忽略，示例中的占位内容需要替换为自己的配置。
+
+```properties
+sdk.dir=<本机 Android SDK 路径>
+
+# AI 聊天、计划生成与照片识别
+readyGymAiBaseUrl=https://www.packyapi.ai/v1
+readyGymAiModel=deepseek-flash
+readyGymAiApiKey=<AI 网关密钥>
+
+# 可选：App 内检查蒲公英更新
+readyGymPgyerApiKey=<蒲公英 API 密钥>
+readyGymPgyerAppKey=<蒲公英 App Key>
+```
+
+AI 与更新配置在构建时注入 App；修改后需要重新打包。业务服务地址由 `android/gradle.properties` 中的 `readyGymServiceBaseUrl` 指定，也可通过 Gradle 参数覆盖。
+
+### 测试与构建
+
+在仓库根目录运行：
+
+```bash
+# Android app 与 core 单元测试
 cd android
 ./gradlew :app:testDebugUnitTest :core:test
+
+# 调试包 / 正式包
+./gradlew :app:assembleDebug
 ./gradlew :app:assembleRelease
+
+# 后端测试与可部署 jar
 cd ../server
 ./gradlew test bootJar
 ```
 
-Android 需要 SDK 35；后端需要 JDK 21。Windows 环境与完整命令见 [AGENTS.md](AGENTS.md#3-构建与测试windows--git-bash)。
+Windows PowerShell 下将 `./gradlew` 换成 `.\gradlew.bat`。正式包启用 R8 与资源压缩，当前个人分发版本沿用 debug 签名。
 
-## 0.8.12 验证
+本地启动后端与模拟器调试：
 
-版本号 **0.8.12 / code 31**，全量测试 **367 项通过、1 项原有跳过**。正式包在 API 35 模拟器覆盖安装后逐表核对旧数据一致；实际聊天方案已验证在线与本地 GIF 动态播放、横向浏览、预览不写入，以及明确确认后保存和同步当前训练。未做真机验证。
+```bash
+# 在 server/ 中启动后端，默认端口 8080
+./gradlew bootRun
 
-[验证记录](releases/ReadyGym-0.8.12-validation.json) · [更新说明](releases/ReadyGym-0.8.12-notes.txt) · [功能设计](docs/design/chat-plan-gif-v0.8.12.md)
+# 在另一个终端的 android/ 中构建，连接宿主机后端
+./gradlew :app:assembleDebug -PreadyGymServiceBaseUrl=http://10.0.2.2:8080
+```
 
-媒体保留 **© Gym visual** 署名，用户已声明取得 Ready Gym 使用授权，媒体不属于 MIT；见 [动作数据源评估](动作数据源评估.md) 与 [媒体署名](android/docs/media-attribution.md)。训练建议和动作说明未经专业训练或医疗认证。
+讯飞语音、管理员入口和数据库等后端配置通过环境变量提供。详细字段、Windows 构建环境与服务器部署步骤见 [Android 说明](android/README.md)、[开发手册](AGENTS.md) 和 [部署文档](docs/deploy-vps.md)。
 
----
+### 目录导航
 
-<details>
-<summary>历史：v0.4.0 Foundation Demo（以下描述不代表当前版本）</summary>
+```text
+ready-gym/
+├── android/
+│   ├── app/              # Compose 界面、ViewModel、网络与本地数据
+│   └── core/             # 动作库模型、计划规则、校验与训练逻辑
+├── server/               # Spring Boot 业务服务
+├── docs/                 # 功能设计、部署与历史验收文档
+├── data/                 # 动作数据来源、导入工具与媒体映射
+├── releases/             # 版本说明与可提交的验证记录
+├── screenshots/          # 已选取的实际页面截图
+└── AGENTS.md             # 项目机制、构建方式与维护约束
+```
 
-# Ready Gym · Agent Foundation Demo v0.4.0
+`agent-python/`、`business-java/` 和 `frontend/` 保留了早期 Demo 与实验实现。当前安卓版本以 `android/` 和 `server/` 为准；历史架构说明见 [Foundation Demo 文档](docs/foundation-demo-runbook.md)。
 
-安卓健身 App，以教练对话为中枢。按 [`docs/agent-as-foundation.md`](docs/agent-as-foundation.md) 做出的窄范围可运行 Demo；不是完整商业产品或医疗/训练专业认证。
+## 版本与验证
 
-## 一条对话完成的闭环
+当前版本：**0.8.12 / versionCode 31**。
 
-1. 打开明亮的教练聊天，配置专用 Demo 访问码；明确同意后，才把训练资料发到 Ready Gym 服务端与 DeepSeek。
-2. 自然语言建档、多字段提取与缺项追问 → 摘要卡 → **明确确认资料**。
-3. **真实 DeepSeek `deepseek-flash` 工具调用**编排 `get_profile / check_entitlement / search_exercises / propose_plan / propose_revision / get_training_history`。Python 只编排读取和提案，不能调用保存/确认工具。
-4. 在同一聊天展示一周规则草稿、工具轨迹、来源和准确 GIF；**明确确认计划后，Java 才写入 PostgreSQL 并读回验证**。
-5. 直接说“周三没空，改成四天” → 展示差异和待确认 v2；v1 仍生效 → 确认后保存 v2，保留历史。
-6. 身体风险优先于模型与额度，停止普通训练/确认/替换。模型失败可给明确 `rule_fallback` 草稿；不把回退当模型生成，不推算负重。
+| 版本 | 主要变化 |
+| --- | --- |
+| 0.8.12 | 调整方案内直接播放新动作 GIF，支持多动作滑动查看和加载失败重试 |
+| 0.8.11 | 聊天确认后立即同步当前训练待做动作；明确展示休息日，保存固定训练星期 |
+| 0.8.10 | 聊天提供多套计划调整方案，比较变化、预览整周，再明确确认 |
+| 0.8.9 | 改善 AI 请求可靠性，训练按自然日推进，取消组间休息计时 |
+| 0.8.8 | 新增本机体重记录、目标和趋势图，保留旧版训练数据 |
 
-**计划是 Agent 调用经过代码约束的自编规则工具，不是模型自由处方；模板未经专业审核。** 人体快捷输入、训练组日志、RAG/pgvector、支付/会员、账号与自动进阶不在本 Demo 范围。版本历史是已保存计划，不伪造已做训练。
+**0.8.12 测试结果：367 项通过，1 项原有测试跳过。**
 
-## 真实验收与限制
+| 范围 | 通过 | 跳过 |
+| --- | ---: | ---: |
+| Android app | 230 | 1 |
+| Kotlin core | 126 | 0 |
+| Spring Boot server | 11 | 0 |
 
-- 已真实执行官方 DeepSeek + Python API + Java17 + PostgreSQL 的建档→草稿→确认 v1→自然语言修订→确认 v2→历史→风险阻断闭环。一次已验收运行共7次模型调用、已知12,750 TOKENs；另一次早期验收已知11,153 TOKENs。只使用虚构成人样例，验收后删除样例数据并读回404。这不是用户账单，失败请求可能另计费。
-- Android 为 Kotlin/Compose，沿用暖白/橙/绿 SunnyTheme；六个动作的授权原始 GIF/JPG、变式与署名保持不变。聊天资料确认不跳必填表单；离线规则入口仍为可选后备。
-- Demo 服务有可信 HTTPS、私密访问码与独立会话 Bearer 双层门控；访问码只在安卓本次 Activity 内存，不放 APK。模型 Key/数据库密码/内部服务凭据只在服务端私密配置，无 Git/APK/日志明文值。
-- 模型调用有单会话/全局上限、并发上限、超时与有限工具循环，无自动付费重试。提示和卡片由已验证结果整理，不执行检索文本/模型输出中的任意命令。
-- **不是手机验收**：Robolectric/主机 HTTP/GIF 解码与离屏图不等于真机运行。Android26/27 GIF、IME、TalkBack、OEM 系统栏仍待手机验证。
-- 会话 TOKEN/对话只在服务与 Activity 内存，旋转保留、进程结束丢失；PostgreSQL 保存明确确认的档案/计划版本，但没有账号恢复功能。服务按需启停，后台数据过期删除不作准时保证，主动删除会同时移除 Java 业务数据。
+正式包已在 API 35 模拟器验证：覆盖安装后旧数据库逐表一致；本地与在线 GIF 均实际动态播放；左右浏览和方案预览不写入计划；明确确认后仅保存一个新版本，并同步未结束训练的待做动作，保留已完成实际记录。
 
-最终主机测试、APK 与限定独立复验均通过；验收记录见 [`docs/verification-v0.4.0.json`](docs/verification-v0.4.0.json)。安卓142通过、1明确legacy跳过、0失败/错误；Python61、真实PostgreSQL Java13通过。v0.3.0记录保留为历史，不标识新 APK。
+以上为自动化测试与模拟器验证，**尚未做 0.8.12 真机验收**。详情见 [验证记录](releases/ReadyGym-0.8.12-validation.json)、[更新说明](releases/ReadyGym-0.8.12-notes.txt) 和 [本次功能设计](docs/design/chat-plan-gif-v0.8.12.md)。
 
-## 启动与交付
+## 常见问题
 
-- [Demo 操作/安全配置](docs/foundation-demo-runbook.md)
-- [共享实现契约](docs/foundation-demo-contract.md) / [Foundation OpenAPI](docs/foundation-api.json)
-- [Java业务服务](docs/foundation-business.md)
-- [Android构建](android/README.md)
-- [Python接口](agent-python/README.md)
-- [动作媒体署名](android/docs/media-attribution.md)
+**需要一直联网吗？**
 
-固定数据源 `hasaneyldrm/exercises-dataset` 提交 `7455efae41b330c265e7cd4b78dfa848e7ce5ebd`：1,324条真实元数据，当前运行时只用准确映射的六动作。用户明确声明取得 Ready Gym 图片/GIF授权；保留 **© Gym visual**，不转为 MIT，不虚构审阅过授权书。详情见 [`data/README.md`](data/README.md)。
+AI 对话、计划生成、照片识别、周榜和在线 GIF 需要网络。已保存计划的查看与本地训练记录、本机体重记录不依赖每次请求 AI；APK 内置的 GIF 可以离线读取。首次注册仍需要连接业务服务。
 
-`frontend/` 仅保留早期 React 实验，不是正式客户端。源码交付到现有**私有** `Erfan817/ready-gym`；不提交 SDK、依赖 jar、构建缓存、APK、私密配置和个人训练数据。
+**换动作会影响我已经完成的组吗？**
 
-</details>
+确认新方案后，进行中训练的待做部分会更新，已完成的实际记录保留。已结束的训练不会因为修改计划而重新打开。
+
+**想改变每周训练天数，和换动作一样吗？**
+
+调整天数需要先更新并确认档案，再到计划页生成匹配的新计划；聊天中的动作替换方案保持原训练日数量。
+
+**为什么有的演示需要加载？**
+
+60 个常用动作 GIF 随 APK 提供，其他动作通过服务器加载。新方案里的演示加载失败时可以点击“重新加载”，也可以先看名称与说明。
+
+**iPhone 或鸿蒙可以安装吗？**
+
+当前只提供 Android APK，没有 iOS 或原生鸿蒙版本。
+
+## 反馈与交流
+
+遇到问题，可以在 App 的“我的 → 意见反馈”中提交；描述操作步骤、预期结果和实际表现，更方便定位问题。
+
+软件交流群：**QQ 158476703**。App 的“我的 → 软件交流群”提供二维码与群号复制入口。
+
+欢迎通过 [GitHub Issues](https://github.com/Erfan817/ready-gym/issues) 反馈缺陷或提出功能建议。提交代码前可先阅读 [AGENTS.md](AGENTS.md)，了解计划保存、训练记录、数据迁移与动作筛选的约束。
+
+## 动作素材与使用边界
+
+动作图片与 GIF 保留 **© Gym visual** 署名。项目主人已声明取得 Ready Gym 使用授权；媒体不属于代码或数据结构的 MIT 许可，使用本仓库不自动授予额外媒体授权。来源与映射见 [动作数据源评估](动作数据源评估.md)、[媒体署名](android/docs/media-attribution.md) 和 [数据说明](data/README.md)。
+
+Ready Gym 是个人健身辅助项目，训练建议与动作说明未经专业训练或医疗认证；身体疼痛或存在医学限制时，应停止不适合的训练并寻求专业帮助。
