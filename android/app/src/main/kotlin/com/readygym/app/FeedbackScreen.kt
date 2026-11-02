@@ -1,6 +1,7 @@
 package com.readygym.app
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,27 +9,37 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -53,20 +64,29 @@ import com.readygym.core.workout.WorkoutSession
 fun ReviewScreen(vm: GymViewModel, onDone: () -> Unit) {
     val session = vm.reviewing
     val adjustment = vm.adjustment
+    var celebratedSession by rememberSaveable { mutableStateOf<Long?>(null) }
     // Leaving mid-review keeps the session in the history; only the plan change is dropped.
     BackHandler { vm.closeReview(); onDone() }
-    Column(Modifier.fillMaxSize().background(ReadyGymColors.Background).safeDrawingPadding().imePadding()) {
+    // Bottom inset is ime ∪ navigationBars; safeDrawingPadding() stacked with imePadding() would
+    // pad the keyboard height twice (see the same fix in CoachChatScreenUi).
+    Column(
+        Modifier.fillMaxSize().background(ReadyGymColors.Background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top))
+            .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
+    ) {
         when {
             session == null -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
             adjustment != null -> AdjustmentView(vm, adjustment, onDone)
             vm.adjusting -> Adjusting()
-            else -> FeedbackForm(vm, session, onDone)
+            else -> FeedbackForm(vm, session, onDone, celebrate = celebratedSession != session.id,
+                onCelebrated = { celebratedSession = session.id })
         }
     }
 }
 
 @Composable
-private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, onDone: () -> Unit) {
+private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, onDone: () -> Unit,
+                                     celebrate: Boolean, onCelebrated: () -> Unit) {
     var effort by rememberSaveable(session.id) { mutableStateOf<Effort?>(null) }
     var discomfort by rememberSaveable(session.id) { mutableStateOf<Set<BodyArea>>(emptySet()) }
     var noDiscomfort by rememberSaveable(session.id) { mutableStateOf(false) }
@@ -80,9 +100,8 @@ private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, 
         Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(GymSpacing.Xl),
         verticalArrangement = Arrangement.spacedBy(GymSpacing.Md),
     ) {
-        ScreenTitle("训练完成", listOfNotNull(session.dayTitle, session.durationMinutes?.let { "${it.coerceAtLeast(1)} 分钟" },
-            "${session.completedSets.size}/${session.sets.size} 组", session.volumeKg.takeIf { it > 0 }?.let { "${formatKg(it)} kg" })
-            .joinToString(" · "))
+        ScreenTitle("训练已记录", session.dayTitle)
+        WorkoutCompletionSummary(session, celebrate, onCelebrated)
         val history by vm.history.collectAsState()
         val days = vm.profile.collectAsState().value.valueOrNull()?.daysPerWeek ?: 3
         BadgeRules.awards(history, days).firstOrNull { it.sessionId == session.id }?.let { award ->
@@ -93,7 +112,9 @@ private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, 
         }
         Panel {
             SectionHeader("整体感觉怎么样？", Modifier.padding(top = 0.dp))
-            ChoiceRow(Effort.entries, { it.label }, { it == effort }, { effort = it })
+            ChoiceRow(listOf(Effort.TOO_EASY, Effort.JUST_RIGHT), { it.label }, { it == effort }, { effort = it })
+            Text("觉得偏难、没完成？不用选——写在下面的备注里，直接跟教练交流。", fontSize = 12.sp,
+                lineHeight = 18.sp, color = ReadyGymColors.MutedText)
         }
         Panel {
             SectionHeader("有没有哪里不舒服？", Modifier.padding(top = 0.dp))
@@ -124,6 +145,56 @@ private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, 
         if (!ready) Text("选好整体感觉和是否不适后即可提交。", fontSize = 12.sp, color = ReadyGymColors.MutedText)
         PrimaryButton("让教练调整计划", { vm.requestAdjustment(feedback()) }, Modifier.testTag("feedback-adjust"), enabled = ready)
         SecondaryButton("只保存反馈，不改计划", { vm.saveFeedbackOnly(feedback(), onDone) }, Modifier.testTag("feedback-save"), enabled = ready)
+    }
+}
+
+/** Counts recorded work only; the scheduled sets are never presented as completed work. */
+@Composable
+internal fun WorkoutCompletionSummary(session: WorkoutSession, celebrate: Boolean = true, onCelebrated: () -> Unit = {}) {
+    val motion = LocalMotionSettings.current
+    val haptics = rememberHaptics()
+    var welcomed by rememberSaveable(session.id) { mutableStateOf(false) }
+    val scale = remember(session.id) { Animatable(1f) }
+    LaunchedEffect(session.id, motion.reduceMotion) {
+        if (welcomed || !celebrate) { scale.snapTo(1f); return@LaunchedEffect }
+        welcomed = true
+        onCelebrated()
+        haptics.confirm()
+        if (!motion.reduceMotion) {
+            scale.animateTo(SunnyMotion.CelebrationScale, SunnyMotion.tweenShort())
+            scale.animateTo(1f, SunnyMotion.tweenShort())
+        }
+    }
+    val finishedSets = session.completedSets
+    val exercised = finishedSets.map { it.exerciseId }.distinct().size
+    Panel(Modifier.testTag("review-summary"), container = ReadyGymColors.AccentWash) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(GymSpacing.Md)) {
+            Box(Modifier.size(48.dp).graphicsLayer { scaleX = scale.value; scaleY = scale.value }
+                .clip(GymShapes.Md).background(ReadyGymColors.AccentText), contentAlignment = Alignment.Center) {
+                Text("✓", color = ReadyGymColors.OnAction, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+            }
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(if (finishedSets.size == session.sets.size && finishedSets.isNotEmpty()) "这次的训练，完成啦" else "每一组努力都已记下",
+                    fontSize = 18.sp, fontWeight = FontWeight.Bold, color = ReadyGymColors.Text)
+                Text("先缓一缓，再告诉教练这次的感受。", fontSize = 13.sp,
+                    lineHeight = 20.sp, color = ReadyGymColors.MutedText)
+            }
+        }
+        Row(Modifier.fillMaxWidth().padding(top = GymSpacing.Sm), horizontalArrangement = Arrangement.spacedBy(GymSpacing.Md)) {
+            CompletionMetric("记录时长", session.durationMinutes?.let { if (it > 0) "$it 分钟" else "＜1 分钟" } ?: "未记录", Modifier.weight(1f))
+            CompletionMetric("练过的动作", "$exercised 个", Modifier.weight(1f))
+            CompletionMetric("完成组数", "${finishedSets.size}/${session.sets.size}", Modifier.weight(1f))
+        }
+        if (session.volumeKg > 0) Text("累计负重 ${formatKg(session.volumeKg)} kg · 按已完成组的重量和次数计算",
+            fontSize = 12.sp, lineHeight = 18.sp, color = ReadyGymColors.MutedText)
+    }
+}
+
+@Composable
+private fun CompletionMetric(label: String, value: String, modifier: Modifier) {
+    Column(modifier.heightIn(min = 54.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = ReadyGymColors.Text)
+        Text(label, fontSize = 12.sp, color = ReadyGymColors.MutedText)
     }
 }
 

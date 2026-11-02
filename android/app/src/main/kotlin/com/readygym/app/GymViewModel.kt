@@ -9,11 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.readygym.app.data.GymDatabase
 import com.readygym.app.data.GymRepository
+import com.readygym.app.data.ConversationPlanSaveResult
 import com.readygym.core.ai.ChatModel
 import com.readygym.core.ai.PlanCoach
 import com.readygym.core.ai.PlanProposal
 import com.readygym.core.ai.PlanRejectedException
 import com.readygym.core.exercise.ExerciseLibrary
+import com.readygym.core.exercise.MusclePlanEdit
 import com.readygym.core.plan.PlanChange
 import com.readygym.core.plan.PlanDiff
 import com.readygym.core.plan.WorkoutPlan
@@ -21,13 +23,22 @@ import com.readygym.core.profile.UserProfile
 import com.readygym.core.workout.PostWorkoutFeedback
 import com.readygym.core.workout.SetLog
 import com.readygym.core.workout.WorkoutSession
+import com.readygym.core.workout.latestWorkoutOnDate
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /** Where the app is in loading Room: the screens must not flash "no plan" before the first read. */
 sealed interface Loaded<out T> {
@@ -42,8 +53,8 @@ data class PlanAdjustment(val base: WorkoutPlan, val proposal: PlanProposal, val
 
 /**
  * State for the training side of the app: the stored profile and plan, plan generation, and the
- * workout in progress. Everything durable goes through [GymRepository]; only the AI proposal and the
- * rest timer live in memory, because neither should survive a decision the user has not made.
+ * workout in progress. Everything durable goes through [GymRepository]; AI proposals stay in memory
+ * until the user accepts them.
  */
 class GymViewModel(
     private val repo: GymRepository,
@@ -70,6 +81,19 @@ class GymViewModel(
     var planError by mutableStateOf<String?>(null)
         private set
 
+    // A blocking model may return after cancellation. The epoch also guards its late result and
+    // finally block, so neither can resurrect a stale draft or stop a newer request's spinner.
+    private var draftEpoch = 0L
+    private var generationJob: Job? = null
+    private var confirmationJob: Job? = null
+    private var profileSaveJob: Job? = null
+    private var profileSaveEpoch = 0L
+    private var savingProfile = false
+    private var savingChatPlan = false
+    private val workoutWrites = Mutex()
+    private var pendingSetWrite: Job? = null
+    private var proposalProfile: UserProfile? = null
+
     /** Day the next workout should use; recomputed whenever the plan or history changes. */
     var nextDay by mutableStateOf(0)
         private set
@@ -78,11 +102,20 @@ class GymViewModel(
     var lastSets by mutableStateOf<Map<String, List<SetLog>>>(emptyMap())
         private set
 
-    /** Wall-clock end of the current rest, or null when not resting. */
-    var restEndsAt by mutableStateOf<Long?>(null)
+    var today by mutableStateOf(localDate())
         private set
-    var restTotalSeconds by mutableStateOf(0)
+    var dateZone by mutableStateOf(ZoneId.systemDefault())
         private set
+
+    val completedToday: WorkoutSession?
+        get() = latestWorkoutOnDate(history.value, today, dateZone)
+
+    fun refreshDate(date: LocalDate = localDate()) {
+        dateZone = ZoneId.systemDefault()
+        today = date
+    }
+
+    private fun localDate(): LocalDate = Instant.ofEpochMilli(clock()).atZone(ZoneId.systemDefault()).toLocalDate()
 
     /** Local copy of the open session so typing in a field does not wait for a Room round trip. */
     var workout by mutableStateOf<WorkoutSession?>(null)
@@ -114,74 +147,194 @@ class GymViewModel(
         }
         viewModelScope.launch {
             repo.openSession.collect { open ->
-                if (open?.id != workout?.id) {
+                if (open?.id != workout?.id || open?.planVersion != workout?.planVersion) {
                     workout = open
-                    restEndsAt = null
                     lastSets = open?.let { s -> repo.lastSets(s.sets.map { it.exerciseId }) } ?: emptyMap()
                 }
             }
         }
     }
 
-    fun saveProfile(p: UserProfile) {
-        viewModelScope.launch { repo.saveProfile(p) }
-    }
-
-    fun generatePlan() {
-        val p = profile.value.valueOrNull() ?: return
-        val key = apiKey()
-        if (generating) return
-        if (key.isNullOrBlank()) { planError = NOT_SIGNED_IN; return }
-        generating = true; planError = null
-        viewModelScope.launch {
+    fun saveProfile(p: UserProfile, onSaved: () -> Unit = {}) {
+        invalidateDraft()
+        savingProfile = true
+        val saveEpoch = ++profileSaveEpoch
+        profileSaveJob?.cancel()
+        profileSaveJob = viewModelScope.launch {
             try {
-                proposal = withContext(io) { PlanCoach(modelFor(key), library).generate(p) }
-            } catch (e: PlanRejectedException) {
-                planError = "AI 两次给出的计划都不符合要求，请重试。（${e.problems.first()}）"
-            } catch (e: CoachException) {
-                planError = planErrorText(e)
+                repo.saveProfile(p)
+                // The next screen reads this StateFlow, not the repository's completed write.
+                profile.first { it is Loaded.Ready && it.value == p }
+                if (saveEpoch == profileSaveEpoch) {
+                    savingProfile = false
+                    profileSaveJob = null
+                    onSaved()
+                }
             } finally {
-                generating = false
+                if (saveEpoch == profileSaveEpoch) { savingProfile = false; profileSaveJob = null }
             }
         }
     }
 
-    fun discardProposal() { proposal = null }
-
-    fun confirmProposal() {
-        val p = proposal ?: return
-        viewModelScope.launch {
-            repo.savePlan(p.plan)
-            proposal = null
+    fun generatePlan() {
+        if (savingProfile || savingChatPlan || generating || confirmationJob?.isActive == true) return
+        val p = profile.value.valueOrNull() ?: return
+        val key = apiKey()
+        if (key.isNullOrBlank()) { planError = NOT_SIGNED_IN; return }
+        val epoch = ++draftEpoch
+        proposal = null; proposalProfile = null
+        generating = true; planError = null
+        generationJob = viewModelScope.launch {
+            try {
+                val generated = withContext(io) { PlanCoach(modelFor(key), library).generate(p) }
+                if (epoch == draftEpoch && !savingProfile && profile.value.valueOrNull() == p) {
+                    proposal = generated
+                    proposalProfile = p
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: PlanRejectedException) {
+                if (epoch == draftEpoch) planError = "AI 两次给出的计划都不符合要求，请重试。（${e.problems.first()}）"
+            } catch (e: CoachException) {
+                if (epoch == draftEpoch) planError = planErrorText(e)
+            } finally {
+                if (epoch == draftEpoch) { generating = false; generationJob = null }
+            }
         }
     }
 
-    fun startWorkout(dayIndex: Int = nextDay) {
-        val plan = activePlan.value.valueOrNull() ?: return
-        if (workout != null || dayIndex !in plan.days.indices) return
-        viewModelScope.launch { repo.startSession(plan, dayIndex) }
+    private fun invalidateDraft() {
+        draftEpoch++
+        generationJob?.cancel(); generationJob = null
+        confirmationJob?.cancel(); confirmationJob = null
+        generating = false
+        proposal = null; proposalProfile = null; planError = null
     }
 
-    /** Edits one set; marking a set done starts the rest timer for that exercise. */
+    fun discardProposal() { invalidateDraft() }
+
+    fun confirmProposal() {
+        if (savingProfile || savingChatPlan || generating || confirmationJob?.isActive == true) return
+        val p = proposal ?: return
+        val source = proposalProfile
+        if (source == null || source != profile.value.valueOrNull()) {
+            invalidateDraft()
+            planError = "档案刚刚更新了，请重新生成计划。"
+            return
+        }
+        val epoch = draftEpoch
+        confirmationJob = viewModelScope.launch {
+            try {
+                if (epoch != draftEpoch || savingProfile || proposal != p || profile.value.valueOrNull() != source) return@launch
+                repo.savePlan(p.plan)
+                if (epoch == draftEpoch) { proposal = null; proposalProfile = null }
+            } finally {
+                if (epoch == draftEpoch) confirmationJob = null
+            }
+        }
+    }
+
+    /** Null means the append is committed and observable; failures leave the current plan intact. */
+    suspend fun addExerciseToPlan(exerciseId: String, dayIndex: Int, expectedVersion: Int): String? {
+        val p = profile.value.valueOrNull() ?: return "先去填写档案，再添加动作。"
+        if (savingChatPlan || generating || adjusting || proposal != null || adjustment != null) {
+            return "请先处理完计划草稿，再来添加动作。"
+        }
+        return try {
+            when (val result = repo.addExerciseToPlan(exerciseId, dayIndex, expectedVersion, p, library)) {
+                is MusclePlanEdit.Rejected -> result.message
+                is MusclePlanEdit.Added -> {
+                    activePlan.first { (it.valueOrNull()?.version ?: 0) >= result.plan.version }
+                    null
+                }
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            "这次没能保存，请留在这里重试。"
+        }
+    }
+
+    /** The selected option becomes durable only here, after the explicit in-chat confirmation. */
+    suspend fun confirmChatPlan(base: WorkoutPlan, expectedProfile: UserProfile, plan: WorkoutPlan): String? {
+        if (savingProfile) return "档案正在保存，请稍等，再让教练按新档案给出选项。"
+        if (savingChatPlan || generating || adjusting || confirmationJob?.isActive == true || proposal != null || adjustment != null) {
+            return "请先处理完当前计划草稿，再来确认这个选项。"
+        }
+        savingChatPlan = true
+        return try {
+            // A tap may have updated local state before its launched Room write even starts.
+            pendingSetWrite?.join()
+            when (val result = workoutWrites.withLock { repo.applyConversationPlan(base, expectedProfile, plan, library) }) {
+                is ConversationPlanSaveResult.Rejected -> result.message
+                is ConversationPlanSaveResult.Saved -> {
+                    activePlan.first { (it.valueOrNull()?.version ?: 0) >= result.plan.version }
+                    val updated = repo.openSession.first()
+                    workout = updated
+                    lastSets = updated?.let { repo.lastSets(it.sets.map { set -> set.exerciseId }) } ?: emptyMap()
+                    openSession.first { it is Loaded.Ready && it.value == updated }
+                    null
+                }
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            "这次没能保存，当前计划还在，请留在这里重试。"
+        } finally {
+            savingChatPlan = false
+        }
+    }
+
+    fun startWorkout(dayIndex: Int = nextDay, onStarted: (WorkoutSession?) -> Unit = {}) {
+        refreshDate()
+        workout?.let { onStarted(it); return }
+        val plan = activePlan.value.valueOrNull()
+        if (plan == null || completedToday != null || dayIndex !in plan.days.indices) {
+            onStarted(null)
+            return
+        }
+        viewModelScope.launch {
+            val started = repo.startSessionIfAvailable(plan, dayIndex)
+            if (started != null) {
+                workout = started
+                lastSets = repo.lastSets(started.sets.map { it.exerciseId })
+            }
+            onStarted(started)
+        }
+    }
+
+    /** Log or undo a set without starting a rest timer. */
     fun updateSet(index: Int, set: SetLog) {
+        if (savingChatPlan) return
         val s = workout ?: return
-        val before = s.sets.getOrNull(index) ?: return
+        val old = s.sets.getOrNull(index) ?: return
+        if (old.exerciseId != set.exerciseId || old.setIndex != set.setIndex) return
         val updated = s.copy(sets = s.sets.toMutableList().also { it[index] = set })
         workout = updated
-        if (set.done && !before.done) startRest(restFor(updated, set.exerciseId))
-        viewModelScope.launch { repo.updateSets(s.id, updated.sets) }
+        val previousWrite = pendingSetWrite
+        pendingSetWrite = viewModelScope.launch {
+            previousWrite?.join()
+            workoutWrites.withLock { repo.updateSets(s.id, updated.sets, s.planVersion) }
+        }
     }
-
-    fun skipRest() { restEndsAt = null }
-    fun addRest(seconds: Int) { restEndsAt = restEndsAt?.plus(seconds * 1000L)?.also { restTotalSeconds += seconds } }
 
     /** Ends the workout and hands the stored session to [onFinished] (the feedback screen). */
     fun finishWorkout(onFinished: (WorkoutSession) -> Unit = {}) {
+        if (savingChatPlan) return
         val s = workout ?: return
         viewModelScope.launch {
-            repo.updateSets(s.id, s.sets)
-            val finished = repo.finishSession(s.id)
-            restEndsAt = null
+            pendingSetWrite?.join()
+            val finished = workoutWrites.withLock {
+                repo.updateSets(s.id, s.sets, s.planVersion)
+                repo.finishSession(s.id)
+            }
+            if (finished != null) {
+                // Home must observe today's completion before returning from the feedback screen.
+                history.first { sessions -> sessions.any { it.id == finished.id } }
+                openSession.first { it is Loaded.Ready && it.value == null }
+                workout = null
+                refreshDate()
+            }
             finished?.let(onFinished)
             // Best effort: a failed upload is retried the next time the leaderboard opens.
             finished?.let { runCatching { upload(listOf(it)) } }
@@ -189,8 +342,9 @@ class GymViewModel(
     }
 
     fun discardWorkout() {
+        if (savingChatPlan) return
         val s = workout ?: return
-        workout = null; restEndsAt = null
+        workout = null
         viewModelScope.launch { repo.discardSession(s.id) }
     }
 
@@ -211,7 +365,7 @@ class GymViewModel(
         val p = profile.value.valueOrNull() ?: return
         val plan = activePlan.value.valueOrNull() ?: return
         val key = apiKey()
-        if (adjusting) return
+        if (adjusting || savingChatPlan) return
         if (key.isNullOrBlank()) { adjustError = NOT_SIGNED_IN; return }
         adjusting = true; adjustError = null
         viewModelScope.launch {
@@ -232,6 +386,7 @@ class GymViewModel(
 
     /** Stores the adjusted plan as a new version; the old one stays in the history. */
     fun acceptAdjustment(onDone: () -> Unit) {
+        if (savingChatPlan) return
         val a = adjustment ?: return
         viewModelScope.launch { repo.savePlan(a.proposal.plan); closeReview(); onDone() }
     }
@@ -268,15 +423,6 @@ class GymViewModel(
         board?.let { leaderboard = it }
     }
 
-    private fun startRest(seconds: Int) {
-        restTotalSeconds = seconds
-        restEndsAt = clock() + seconds * 1000L
-    }
-
-    private fun restFor(s: WorkoutSession, exerciseId: String): Int =
-        activePlan.value.valueOrNull()?.takeIf { it.version == s.planVersion }
-            ?.days?.getOrNull(s.dayIndex)?.items?.firstOrNull { it.exerciseId == exerciseId }?.restSeconds ?: 60
-
     private fun <T> kotlinx.coroutines.flow.Flow<T>.loaded(): StateFlow<Loaded<T>> =
         kotlinx.coroutines.flow.flow<Loaded<T>> { collect { emit(Loaded.Ready(it)) } }
             .stateIn(viewModelScope, SharingStarted.Eagerly, Loaded.Loading)
@@ -290,7 +436,9 @@ class GymViewModel(
                 val account = AccountStore(app)
                 val server = ServerApi(BuildConfig.SERVICE_BASE_URL) { account.load()?.TOKEN }
                 return GymViewModel(GymRepository(GymDatabase.get(app)), library, apiKey = { account.load()?.TOKEN },
-                    modelFor = { server.chatModel(maxTokens = 4000, readTimeoutMs = 120_000) }, server = server) as T
+                    modelFor = { DeepSeekApi.bundled(maxTokens = 4000, readTimeoutMs = 120_000)
+                        ?: server.chatModel(maxTokens = 4000, readTimeoutMs = 120_000) },
+                    server = server) as T
             }
         }
     }

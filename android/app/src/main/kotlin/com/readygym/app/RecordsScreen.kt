@@ -17,9 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -51,9 +49,16 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 
-/** 记录: a month calendar of workouts, the selected day's sessions, and the badge wall. */
+/**
+ * The month calendar and the selected day's sessions.
+ *
+ * This used to be the whole 记录 tab; it now lives inside 统计, below the analysis, because
+ * "what did I do on the 14th" is a follow-up question to "am I keeping up". The internals are
+ * unchanged on purpose — the stamps, the planned-day outline and the day picker already worked,
+ * and this move should not be an excuse to restyle them.
+ */
 @Composable
-fun RecordsScreen(vm: GymViewModel) {
+fun RecordsCalendar(vm: GymViewModel) {
     val history by vm.history.collectAsState()
     val profile by vm.profile.collectAsState()
     val p = profile.valueOrNull()
@@ -64,25 +69,14 @@ fun RecordsScreen(vm: GymViewModel) {
     var selectedEpochDay by rememberSaveable { mutableStateOf(today.toEpochDay()) }
     val selected = LocalDate.ofEpochDay(selectedEpochDay)
 
-    val byDay = remember(history) { history.groupBy { Instant.ofEpochMilli(it.startedAtMillis).atZone(zone).toLocalDate() } }
+    val byDay = remember(history) {
+        history.groupBy { Instant.ofEpochMilli(it.startedAtMillis).atZone(zone).toLocalDate() }
+    }
     val awards = remember(history, p?.daysPerWeek) {
         BadgeRules.awards(history, p?.daysPerWeek ?: 3, zone).associateBy { it.sessionId }
     }
-    val thisWeek = BadgeRules.weekOf(today)
-    val weekCount = byDay.filterKeys { BadgeRules.weekOf(it) == thisWeek }.values.sumOf { it.size }
 
-    Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(GymSpacing.Xl),
-        verticalArrangement = Arrangement.spacedBy(GymSpacing.Md),
-    ) {
-        ScreenTitle("记录", if (history.isEmpty()) "完成训练后，日历上会盖一个章" else
-            "共 ${history.size} 次训练 · 本周 $weekCount/${p?.daysPerWeek ?: "-"} 次")
-        var showBoard by rememberSaveable { mutableStateOf(false) }
-        Row(horizontalArrangement = Arrangement.spacedBy(GymSpacing.Sm)) {
-            Chip("日历", !showBoard, { showBoard = false }, modifier = Modifier.testTag("records-calendar"))
-            Chip("自律排行榜", showBoard, { showBoard = true }, modifier = Modifier.testTag("records-board"))
-        }
-        if (showBoard) { LeaderboardView(vm); return@Column }
+    Column(verticalArrangement = Arrangement.spacedBy(GymSpacing.Md)) {
         Panel {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = { monthIndex-- }, modifier = Modifier.testTag("cal-prev")) { Text("‹", fontSize = 20.sp) }
@@ -97,7 +91,8 @@ fun RecordsScreen(vm: GymViewModel) {
         val sessions = byDay[selected].orEmpty()
         SectionHeader("${selected.monthValue}月${selected.dayOfMonth}日 ${weekdayLabel(selected.dayOfWeek.value)}")
         if (sessions.isEmpty()) Text(
-            if (selected.dayOfWeek.value in p?.trainingDays.orEmpty() && !selected.isAfter(today)) "计划的训练日，这天没有训练记录。" else "这天没有训练。",
+            if (selected.dayOfWeek.value in p?.trainingDays.orEmpty() && !selected.isAfter(today)) "计划的训练日，这天没有训练记录。"
+            else "这天没有训练。",
             color = ReadyGymColors.MutedText, fontSize = 14.sp)
         sessions.forEach { SessionCard(it, vm, awards[it.id], zone) }
         BadgeWall(BadgeRules.earned(history, p?.daysPerWeek ?: 3, zone))
@@ -224,54 +219,5 @@ private fun BadgeWall(earned: Set<Badge>) {
         }
         Text("点亮条件：" + Badge.entries.filter { it !in earned }.take(2).joinToString("；") { "${it.title}——${it.hint}" }.ifBlank { "全部已点亮！" },
             fontSize = 12.sp, color = ReadyGymColors.MutedText, lineHeight = 18.sp)
-    }
-}
-
-/** This week's ranking by completion rate; opening it also syncs this week's workouts. */
-@Composable
-private fun LeaderboardView(vm: GymViewModel) {
-    androidx.compose.runtime.LaunchedEffect(Unit) { vm.refreshLeaderboard() }
-    val board = vm.leaderboard
-    Panel(container = ReadyGymColors.AccentWash) {
-        Text("本周自律排行榜", fontSize = 17.sp, fontWeight = FontWeight.Bold)
-        Text("完成率 = 本周完成次数 ÷ 自己计划的天数，每周一清零。练 2 天和练 5 天的人公平比较。",
-            fontSize = 12.sp, lineHeight = 18.sp, color = ReadyGymColors.MutedText)
-        board?.me?.let { me ->
-            Text("我的排名：第 ${me.rank} / ${board.participants} 名 · ${me.done}/${me.planned} 次 · ${(me.rate * 100).toInt()}%",
-                fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = ReadyGymColors.AccentText,
-                modifier = Modifier.testTag("board-me"))
-        } ?: board?.let { Text("这周还没有训练，完成一次就能上榜。", fontSize = 14.sp, color = ReadyGymColors.AccentText) }
-    }
-    vm.leaderboardError?.let {
-        Notice(it)
-        SecondaryButton("重试", vm::refreshLeaderboard)
-    }
-    if (board == null && vm.leaderboardLoading) Text("正在加载…", color = ReadyGymColors.MutedText)
-    if (board != null && board.entries.isEmpty()) Text("本周还没有人上榜，做第一个吧！", color = ReadyGymColors.MutedText)
-    board?.entries?.forEach { RankRow(it) }
-}
-
-@Composable
-private fun RankRow(e: RankEntry) {
-    Row(
-        Modifier.fillMaxWidth().clip(GymShapes.Md)
-            .background(if (e.me) ReadyGymColors.AccentSurface else ReadyGymColors.Surface)
-            .padding(horizontal = GymSpacing.Lg, vertical = GymSpacing.Md).testTag("rank-${e.rank}"),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(when (e.rank) { 1 -> "🥇"; 2 -> "🥈"; 3 -> "🥉"; else -> "${e.rank}" }, fontSize = if (e.rank <= 3) 22.sp else 15.sp,
-            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.width(36.dp))
-        Spacer(Modifier.width(GymSpacing.Sm))
-        Column(Modifier.weight(1f)) {
-            Text(e.nickname + if (e.me) "（我）" else "", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-            Box(Modifier.padding(top = 6.dp).fillMaxWidth().height(6.dp).clip(GymShapes.Xs).background(ReadyGymColors.Sunken)) {
-                Box(Modifier.fillMaxWidth(e.rate.toFloat().coerceIn(0f, 1f)).height(6.dp).background(ReadyGymColors.Accent))
-            }
-        }
-        Spacer(Modifier.width(GymSpacing.Md))
-        Column(horizontalAlignment = Alignment.End) {
-            Text("${(e.rate * 100).toInt()}%", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text("${e.done}/${e.planned} 次", fontSize = 12.sp, color = ReadyGymColors.MutedText)
-        }
     }
 }

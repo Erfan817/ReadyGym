@@ -4,7 +4,7 @@ enum class Step { PROFILE, GOAL, CONDITIONS, CONFIRM }
 enum class Gender(val label: String) { UNDISCLOSED("不透露"), FEMALE("女"), MALE("男"), OTHER("其他") }
 enum class Goal(val label: String) { MUSCLE("增肌"), FAT_LOSS("减脂"), HEALTH("保持健康") }
 enum class Location(val label: String) { HOME("家"), GYM("健身房") }
-enum class Equipment(val label: String) { BODYWEIGHT("徒手"), DUMBBELL("哑铃"), BARBELL("杠铃"), MACHINE("固定器械") }
+enum class Equipment(val label: String) { BODYWEIGHT("徒手"), DUMBBELL("哑铃"), BARBELL("杠铃"), CABLE("绳索"), MACHINE("固定器械") }
 data class TrainingProfile(val schemaVersion: Int = 1, val age: Int, val heightCm: Double, val weightKg: Double, val gender: Gender, val goal: Goal, val location: Location, val equipment: Set<Equipment>)
 class Onboarding {
     fun confirmedProfile(): TrainingProfile? {

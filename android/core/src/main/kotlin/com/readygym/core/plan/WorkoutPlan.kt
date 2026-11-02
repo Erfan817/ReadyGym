@@ -17,7 +17,7 @@ data class PlanItem(
     val repsMax: Int? = null,
     val seconds: Int? = null,
     val loadKg: Double? = null,
-    val restSeconds: Int = 60,
+    val restSeconds: Int = PlanLimits.DEFAULT_REST_SECONDS,
     val note: String? = null,
 ) {
     val target: String get() = when {
@@ -40,8 +40,22 @@ data class WorkoutPlan(
     val summary: String,
     val daysPerWeek: Int,
     val days: List<PlanDay>,
+    /** Manual additions continue this rotation; an AI-generated replacement starts a fresh one. */
+    val progressionBaseVersion: Int? = null,
 ) {
     fun toJson(): String = PlanJson.encodeToString(serializer(), this)
+
+    /** Apply the current rest setting without changing the plan version or training prescription. */
+    fun withDefaultRest(): WorkoutPlan {
+        if (days.all { day -> day.items.all { it.restSeconds == PlanLimits.DEFAULT_REST_SECONDS } }) return this
+        return copy(days = days.map { day ->
+            if (day.items.all { it.restSeconds == PlanLimits.DEFAULT_REST_SECONDS }) day
+            else day.copy(items = day.items.map { item ->
+                if (item.restSeconds == PlanLimits.DEFAULT_REST_SECONDS) item
+                else item.copy(restSeconds = PlanLimits.DEFAULT_REST_SECONDS)
+            })
+        })
+    }
 
     companion object {
         fun fromJson(text: String): WorkoutPlan = PlanJson.decodeFromString(serializer(), text)
@@ -54,7 +68,8 @@ fun formatKg(kg: Double): String = if (kg % 1.0 == 0.0) kg.toInt().toString() el
 
 /** Hard limits every plan must respect, whoever wrote it. */
 object PlanLimits {
-    val DAYS = 1..6
+    const val DEFAULT_REST_SECONDS = 30
+    val DAYS = 1..7
     val ITEMS_PER_DAY = 2..8
     val SETS = 1..6
     val REPS = 1..30
@@ -83,7 +98,7 @@ class PlanValidator(private val library: ExerciseLibrary, private val allowedIds
     private fun itemProblems(where: String, item: PlanItem): List<String> = buildList {
         val ex = library[item.exerciseId]
         if (ex == null) { add("$where 动作 ${item.exerciseId} 不在动作库"); return@buildList }
-        if (item.exerciseId !in allowedIds) add("$where ${ex.name} 不符合你的场地或器械")
+        if (item.exerciseId !in allowedIds) add("$where ${ex.name} 不在当前可安排的动作里（受场地、器械或经验等级限制，新手不安排硬拉等高风险动作）")
         if (item.sets !in PlanLimits.SETS) add("$where ${ex.name} 组数 ${item.sets} 超出范围")
         if (item.restSeconds !in PlanLimits.REST) add("$where ${ex.name} 休息 ${item.restSeconds} 秒超出范围")
         when (ex.measure) {

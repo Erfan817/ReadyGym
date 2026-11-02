@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Photos the equipment guide hands to the camera app; they live in cache and never leave the device. -->
+<paths>
+    <cache-path name="equipment_guide" path="equipment-guide/" />
+</paths>

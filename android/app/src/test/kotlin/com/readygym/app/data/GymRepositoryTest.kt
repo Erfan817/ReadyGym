@@ -9,7 +9,11 @@ import com.readygym.core.workout.BodyArea
 import com.readygym.core.workout.Effort
 import com.readygym.core.workout.PostWorkoutFeedback
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.runTest
+import java.time.LocalDate
+import java.time.ZoneId
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
@@ -81,5 +85,53 @@ class GymRepositoryTest {
         repo.saveFeedback(f)
         assertEquals(f, repo.feedback(s.id))
         assertEquals(f, repo.allFeedback.first()[s.id])
+    }
+
+    @Test fun dailyGateSurvivesRepositoryRecreationAndPlanReplacementThenUnlocksAtMidnight() = runTest {
+        val zone = ZoneId.systemDefault()
+        val date = LocalDate.of(2026, 10, 28)
+        now = date.atTime(23, 50).atZone(zone).toInstant().toEpochMilli()
+        val p = repo.savePlan(plan)
+        val session = repo.startSessionIfAvailable(p, 0)!!
+        repo.updateSets(session.id, session.sets.map { it.copy(done = true) })
+        repo.finishSession(session.id)
+        val restored = GymRepository(db) { now }
+        assertNull(restored.startSessionIfAvailable(p, 1))
+        val replacement = repo.savePlan(plan.copy(reason = "练后调整"))
+        assertNull(restored.startSessionIfAvailable(replacement, 0))
+        now = date.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
+        assertNotNull(restored.startSessionIfAvailable(replacement, 0))
+        assertEquals(1, repo.history.first().size)
+    }
+
+    @Test fun finishingAfterMidnightUsesCompletionDateAndKeepsRotation() = runTest {
+        val zone = ZoneId.systemDefault()
+        val date = LocalDate.of(2026, 10, 28)
+        now = date.atTime(23, 59).atZone(zone).toInstant().toEpochMilli()
+        val p = repo.savePlan(plan)
+        val session = repo.startSessionIfAvailable(p, 0)!!
+        repo.updateSets(session.id, session.sets.map { it.copy(done = true) })
+        now = date.plusDays(1).atTime(0, 5).atZone(zone).toInstant().toEpochMilli()
+        repo.finishSession(session.id)
+        assertNull(repo.startSessionIfAvailable(p, 1))
+        assertEquals(1, repo.nextDayIndex(p))
+        now = date.plusDays(2).atStartOfDay(zone).toInstant().toEpochMilli()
+        assertEquals(1, repo.startSessionIfAvailable(p, repo.nextDayIndex(p))!!.dayIndex)
+    }
+
+    @Test fun repeatedConcurrentStartTapsReuseTheExistingSession() = runTest {
+        val p = repo.savePlan(plan)
+        val started = List(4) { async { repo.startSessionIfAvailable(p, 0)!! } }.awaitAll()
+        assertEquals(1, started.map { it.id }.distinct().size)
+        assertEquals(started.first().id, repo.openSession.first()?.id)
+    }
+
+    @Test fun discardedAndEmptyWorkoutsDoNotMarkTheDayCompleted() = runTest {
+        val p = repo.savePlan(plan)
+        val discarded = repo.startSessionIfAvailable(p, 0)!!
+        repo.discardSession(discarded.id)
+        val empty = repo.startSessionIfAvailable(p, 0)!!
+        repo.finishSession(empty.id)
+        assertNotNull(repo.startSessionIfAvailable(p, 0))
     }
 }

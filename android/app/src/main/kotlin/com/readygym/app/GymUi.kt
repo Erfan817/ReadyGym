@@ -2,6 +2,7 @@ package com.readygym.app
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,14 @@ internal fun SectionHeader(text: String, modifier: Modifier = Modifier) {
         fontWeight = FontWeight.Bold, color = ReadyGymColors.Text)
 }
 
-/** The black full-width call to action; shows a spinner instead of the label while [busy]. */
+/**
+ * The black full-width call to action; shows a spinner instead of the label while [busy].
+ *
+ * Every primary action in the app is this one control at 52dp with the default panel radius. The
+ * review found four different "start" buttons (49.9 / 68.5 / 37.7 / 29.7dp tall) which read as four
+ * different products, so secondary actions below are deliberately smaller and outlined, not a
+ * second filled style competing for the same "this is what you click" reading.
+ */
 @Composable
 internal fun PrimaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier,
                            enabled: Boolean = true, busy: Boolean = false) {
@@ -58,6 +66,17 @@ internal fun PrimaryButton(text: String, onClick: () -> Unit, modifier: Modifier
         }
         Text(text, fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+/** A smaller filled action inside a card: the same green, 40dp, for a row-level "start". */
+@Composable
+internal fun InlineAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
+    Box(
+        modifier.heightIn(min = 40.dp).clip(GymShapes.Sm).background(ReadyGymColors.AccentWash)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .padding(horizontal = 12.dp),
+        contentAlignment = Alignment.Center,
+    ) { Text(text, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = ReadyGymColors.AccentText) }
 }
 
 @Composable

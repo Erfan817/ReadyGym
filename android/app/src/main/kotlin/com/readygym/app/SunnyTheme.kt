@@ -1,9 +1,13 @@
 package com.readygym.app
 
+import android.provider.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 
 /**
  * Neutral-first palette with one saturated accent.
@@ -63,7 +67,15 @@ internal object ReadyGymColors {
 
 @Composable
 fun ReadyGymTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
+    val view = LocalView.current
+    // `Animator duration scale = 0` is the accessibility "remove animations" switch. Reading it
+    // once here means every motion component gets the same answer without each one querying
+    // Settings; when the setting changes the activity is recreated by the system.
+    val reduceMotion = remember(view) {
+        Settings.Global.getFloat(view.context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+    }
+    CompositionLocalProvider(LocalMotionSettings provides MotionSettings(reduceMotion)) {
+        MaterialTheme(
         colorScheme = lightColorScheme(
             // `primary` is the brand green but it is a *fill* colour: at 2.2:1 it is unreadable as
             // text or as an outline on white, so `primary` is only used behind dark content. Any
@@ -106,5 +118,6 @@ fun ReadyGymTheme(content: @Composable () -> Unit) {
             scrim = ReadyGymColors.Text,
         ),
         content = content,
-    )
+        )
+    }
 }

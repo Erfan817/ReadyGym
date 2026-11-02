@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "notice": "动作要点为本地整理，未经专业审核；GIF 仅用于动作识别，不构成医疗建议。",
  "exercises": [
   {
@@ -1187,7 +1187,8 @@
     "杠铃在胸口弹起",
     "臀部离凳"
    ],
-   "gifAsset": "exercises/barbell-bench-press.gif"
+   "gifAsset": "exercises/barbell-bench-press.gif",
+   "risk": "HIGH_RISK"
   },
   {
    "id": "barbell-squat",
@@ -1215,7 +1216,8 @@
     "弓背",
     "膝盖内扣"
    ],
-   "gifAsset": "exercises/barbell-squat.gif"
+   "gifAsset": "exercises/barbell-squat.gif",
+   "risk": "HIGH_RISK"
   },
   {
    "id": "barbell-deadlift",
@@ -1243,7 +1245,8 @@
     "弓背拉起",
     "杠铃离身体太远"
    ],
-   "gifAsset": "exercises/barbell-deadlift.gif"
+   "gifAsset": "exercises/barbell-deadlift.gif",
+   "risk": "HIGH_RISK"
   },
   {
    "id": "barbell-rdl",
@@ -1270,7 +1273,8 @@
     "弓背",
     "下放过深超过柔韧度"
    ],
-   "gifAsset": "exercises/barbell-rdl.gif"
+   "gifAsset": "exercises/barbell-rdl.gif",
+   "risk": "HIGH_RISK"
   },
   {
    "id": "barbell-row",
@@ -1321,7 +1325,8 @@
    "mistakes": [
     "腰部过度后仰"
    ],
-   "gifAsset": "exercises/barbell-overhead-press.gif"
+   "gifAsset": "exercises/barbell-overhead-press.gif",
+   "risk": "HIGH_RISK"
   },
   {
    "id": "barbell-curl",
@@ -1597,6 +1602,6695 @@
     "幅度过小"
    ],
    "gifAsset": "exercises/machine-calf-raise.gif"
+  },
+  {
+   "id": "barbell-incline-bench-press",
+   "name": "上斜杠铃卧推",
+   "nameEn": "Barbell Incline Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/barbell-incline-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-decline-bench-press",
+   "name": "下斜杠铃卧推",
+   "nameEn": "Barbell Decline Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/barbell-decline-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-wide-bench-press",
+   "name": "宽握杠铃卧推",
+   "nameEn": "Barbell Wide Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/barbell-wide-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-pullover",
+   "name": "杠铃仰卧上拉",
+   "nameEn": "Barbell Pullover",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/barbell-pullover.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-decline-bench-press",
+   "name": "下斜哑铃卧推",
+   "nameEn": "Dumbbell Decline Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-decline-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-incline-fly",
+   "name": "上斜哑铃飞鸟",
+   "nameEn": "Dumbbell Incline Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-incline-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-decline-fly",
+   "name": "下斜哑铃飞鸟",
+   "nameEn": "Dumbbell Decline Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-decline-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-pullover",
+   "name": "哑铃仰卧上拉",
+   "nameEn": "Dumbbell Pullover",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-pullover.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-one-arm-incline-chest-press",
+   "name": "单臂上斜哑铃推胸",
+   "nameEn": "Dumbbell One Arm Incline Chest Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-one-arm-incline-chest-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-reverse-bench-press",
+   "name": "反握哑铃卧推",
+   "nameEn": "Dumbbell Reverse Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-reverse-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "decline-push-up",
+   "name": "下斜俯卧撑",
+   "nameEn": "Decline Push Up",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/decline-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "archer-push-up",
+   "name": "弓箭手俯卧撑",
+   "nameEn": "Archer Push Up",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/archer-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "clap-push-up",
+   "name": "击掌俯卧撑",
+   "nameEn": "Clap Push Up",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/clap-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "wide-hand-push-up",
+   "name": "宽距俯卧撑",
+   "nameEn": "Wide Hand Push Up",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/wide-hand-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "chest-dip",
+   "name": "双杠胸撑",
+   "nameEn": "Chest Dip",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/chest-dip.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "push-up-plus",
+   "name": "俯卧撑肩胛推出",
+   "nameEn": "Push Up Plus",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/push-up-plus.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "shoulder-tap-push-up",
+   "name": "触肩俯卧撑",
+   "nameEn": "Shoulder Tap Push Up",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/shoulder-tap-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-seated-chest-press",
+   "name": "坐姿绳索推胸",
+   "nameEn": "Cable Seated Chest Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-seated-chest-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-standing-fly",
+   "name": "站姿绳索夹胸",
+   "nameEn": "Cable Standing Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-standing-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-incline-fly",
+   "name": "上斜绳索夹胸",
+   "nameEn": "Cable Incline Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-incline-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-low-fly",
+   "name": "低位绳索夹胸",
+   "nameEn": "Cable Low Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-low-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-middle-fly",
+   "name": "中位绳索夹胸",
+   "nameEn": "Cable Middle Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-middle-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-decline-fly",
+   "name": "下斜绳索夹胸",
+   "nameEn": "Cable Decline Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-decline-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-bench-press",
+   "name": "史密斯卧推",
+   "nameEn": "Smith Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/smith-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-incline-bench-press",
+   "name": "史密斯上斜卧推",
+   "nameEn": "Smith Incline Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/smith-incline-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-decline-bench-press",
+   "name": "史密斯下斜卧推",
+   "nameEn": "Smith Decline Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/smith-decline-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-incline-chest-press",
+   "name": "上斜器械推胸",
+   "nameEn": "Lever Incline Chest Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/lever-incline-chest-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-decline-chest-press",
+   "name": "下斜器械推胸",
+   "nameEn": "Lever Decline Chest Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/lever-decline-chest-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-pendlay-row",
+   "name": "潘德莱划船",
+   "nameEn": "Barbell Pendlay Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/barbell-pendlay-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-incline-row",
+   "name": "上斜杠铃划船",
+   "nameEn": "Barbell Incline Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/barbell-incline-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-one-arm-bent-over-row",
+   "name": "单臂俯身杠铃划船",
+   "nameEn": "Barbell One Arm Bent Over Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/barbell-one-arm-bent-over-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-reverse-grip-bent-over-row",
+   "name": "反握俯身杠铃划船",
+   "nameEn": "Barbell Reverse Grip Bent Over Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/barbell-reverse-grip-bent-over-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-shrug",
+   "name": "杠铃耸肩",
+   "nameEn": "Barbell Shrug",
+   "primary": "TRAPEZIUS",
+   "secondary": [
+    "UPPER_BACK"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "traps/barbell-shrug.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-one-arm-bent-over-row",
+   "name": "单臂俯身哑铃划船",
+   "nameEn": "Dumbbell One Arm Bent Over Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/dumbbell-one-arm-bent-over-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-incline-row",
+   "name": "上斜哑铃划船",
+   "nameEn": "Dumbbell Incline Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/dumbbell-incline-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-shrug",
+   "name": "哑铃耸肩",
+   "nameEn": "Dumbbell Shrug",
+   "primary": "TRAPEZIUS",
+   "secondary": [
+    "UPPER_BACK"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "traps/dumbbell-shrug.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-lying-rear-delt-row",
+   "name": "俯卧哑铃后束划船",
+   "nameEn": "Dumbbell Lying Rear Delt Row",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/dumbbell-lying-rear-delt-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "wide-grip-pull-up",
+   "name": "宽握引体向上",
+   "nameEn": "Wide Grip Pull Up",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/wide-grip-pull-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "close-grip-chin-up",
+   "name": "窄握反手引体",
+   "nameEn": "Close Grip Chin Up",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/close-grip-chin-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "inverted-row-bent-knees",
+   "name": "屈膝反向划船",
+   "nameEn": "Inverted Row Bent Knees",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/inverted-row-bent-knees.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "assisted-pull-up",
+   "name": "辅助引体向上",
+   "nameEn": "Assisted Pull Up",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/assisted-pull-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "archer-pull-up",
+   "name": "弓箭手引体",
+   "nameEn": "Archer Pull Up",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/archer-pull-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "scapular-pull-up",
+   "name": "肩胛引体",
+   "nameEn": "Scapular Pull Up",
+   "primary": "TRAPEZIUS",
+   "secondary": [
+    "UPPER_BACK"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "traps/scapular-pull-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "l-pull-up",
+   "name": "L字引体",
+   "nameEn": "L Pull Up",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/l-pull-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "weighted-pull-up",
+   "name": "负重引体向上",
+   "nameEn": "Weighted Pull Up",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/weighted-pull-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "bench-pull-ups",
+   "name": "矮杠引体",
+   "nameEn": "Bench Pull Ups",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/bench-pull-ups.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-straight-arm-pulldown",
+   "name": "绳索直臂下压",
+   "nameEn": "Cable Straight Arm Pulldown",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/cable-straight-arm-pulldown.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-one-arm-pulldown",
+   "name": "单臂绳索下拉",
+   "nameEn": "Cable One Arm Pulldown",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/cable-one-arm-pulldown.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-underhand-pulldown",
+   "name": "反握绳索下拉",
+   "nameEn": "Cable Underhand Pulldown",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/cable-underhand-pulldown.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-seated-wide-grip-row",
+   "name": "宽握坐姿绳索划船",
+   "nameEn": "Cable Seated Wide Grip Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/cable-seated-wide-grip-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-rope-seated-row",
+   "name": "绳索坐姿划船（绳把）",
+   "nameEn": "Cable Rope Seated Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/cable-rope-seated-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-shrug",
+   "name": "绳索耸肩",
+   "nameEn": "Cable Shrug",
+   "primary": "TRAPEZIUS",
+   "secondary": [
+    "UPPER_BACK"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "traps/cable-shrug.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-high-row-kneeling",
+   "name": "跪姿高位绳索划船",
+   "nameEn": "Cable High Row Kneeling",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/cable-high-row-kneeling.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-straight-back-seated-row",
+   "name": "直背坐姿绳索划船",
+   "nameEn": "Cable Straight Back Seated Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/cable-straight-back-seated-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-t-bar-row",
+   "name": "器械T杆划船",
+   "nameEn": "Lever T Bar Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/lever-t-bar-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-row",
+   "name": "器械坐姿划船",
+   "nameEn": "Lever Seated Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/lever-seated-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-front-pulldown",
+   "name": "器械颈前下拉",
+   "nameEn": "Lever Front Pulldown",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/lever-front-pulldown.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-assisted-chin-up",
+   "name": "辅助引体机",
+   "nameEn": "Lever Assisted Chin Up",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/lever-assisted-chin-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-pullover",
+   "name": "器械直臂上拉",
+   "nameEn": "Lever Pullover",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/lever-pullover.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-shrug",
+   "name": "器械耸肩",
+   "nameEn": "Lever Shrug",
+   "primary": "TRAPEZIUS",
+   "secondary": [
+    "UPPER_BACK"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "traps/lever-shrug.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-bent-over-row",
+   "name": "器械俯身划船",
+   "nameEn": "Lever Bent Over Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/lever-bent-over-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-high-row",
+   "name": "器械高位划船",
+   "nameEn": "Lever High Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/lever-high-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-front-squat",
+   "name": "杠铃前蹲",
+   "nameEn": "Barbell Front Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-front-squat.gif",
+   "risk": "HIGH_RISK"
+  },
+  {
+   "id": "barbell-hack-squat",
+   "name": "杠铃哈克深蹲",
+   "nameEn": "Barbell Hack Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-hack-squat.gif",
+   "risk": "HIGH_RISK"
+  },
+  {
+   "id": "barbell-lunge",
+   "name": "杠铃弓步蹲",
+   "nameEn": "Barbell Lunge",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-lunge.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-rear-lunge",
+   "name": "杠铃后撤弓步",
+   "nameEn": "Barbell Rear Lunge",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-rear-lunge.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-sumo-deadlift",
+   "name": "相扑硬拉",
+   "nameEn": "Barbell Sumo Deadlift",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "髋部向后启动，背部全程平直",
+    "杠铃贴近身体上下",
+    "重量以能标准完成为准，不借力"
+   ],
+   "mistakes": [
+    "弓背拉起",
+    "离身体太远",
+    "猛然放下"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-sumo-deadlift.gif",
+   "risk": "HIGH_RISK"
+  },
+  {
+   "id": "barbell-rack-pull",
+   "name": "架上硬拉",
+   "nameEn": "Barbell Rack Pull",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-rack-pull.gif",
+   "risk": "HIGH_RISK"
+  },
+  {
+   "id": "barbell-glute-bridge",
+   "name": "杠铃臀桥",
+   "nameEn": "Barbell Glute Bridge",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "髋部向后启动，背部全程平直",
+    "杠铃贴近身体上下",
+    "重量以能标准完成为准，不借力"
+   ],
+   "mistakes": [
+    "弓背拉起",
+    "离身体太远",
+    "猛然放下"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-glute-bridge.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-seated-calf-raise",
+   "name": "坐姿杠铃提踵",
+   "nameEn": "Barbell Seated Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/barbell-seated-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-standing-calf-raise",
+   "name": "站姿杠铃提踵",
+   "nameEn": "Barbell Standing Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/barbell-standing-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-step-up",
+   "name": "杠铃登阶",
+   "nameEn": "Barbell Step Up",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-step-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-squat",
+   "name": "哑铃深蹲",
+   "nameEn": "Dumbbell Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/dumbbell-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-deadlift",
+   "name": "哑铃硬拉",
+   "nameEn": "Dumbbell Deadlift",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/dumbbell-deadlift.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-single-leg-deadlift",
+   "name": "单腿哑铃硬拉",
+   "nameEn": "Dumbbell Single Leg Deadlift",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/dumbbell-single-leg-deadlift.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-single-leg-split-squat",
+   "name": "单腿哑铃分腿蹲",
+   "nameEn": "Dumbbell Single Leg Split Squat",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "quads/dumbbell-single-leg-split-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-rear-lunge",
+   "name": "哑铃后撤弓步",
+   "nameEn": "Dumbbell Rear Lunge",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/dumbbell-rear-lunge.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-calf-raise",
+   "name": "坐姿哑铃提踵",
+   "nameEn": "Dumbbell Seated Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/dumbbell-seated-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-single-leg-calf-raise",
+   "name": "单腿哑铃提踵",
+   "nameEn": "Dumbbell Single Leg Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/dumbbell-single-leg-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-bench-squat",
+   "name": "凳上哑铃深蹲",
+   "nameEn": "Dumbbell Bench Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/dumbbell-bench-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "one-leg-squat",
+   "name": "徒手单腿深蹲",
+   "nameEn": "One Leg Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "ADVANCED",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/one-leg-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "glute-ham-raise",
+   "name": "腘绳肌挺身",
+   "nameEn": "Glute Ham Raise",
+   "primary": "HAMSTRINGS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "hamstrings/glute-ham-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "sissy-squat",
+   "name": "西斯深蹲",
+   "nameEn": "Sissy Squat",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "quads/sissy-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "curtsey-squat",
+   "name": "屈膝礼深蹲",
+   "nameEn": "Curtsey Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/curtsey-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "donkey-calf-raise",
+   "name": "驴式提踵",
+   "nameEn": "Donkey Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/donkey-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "one-leg-floor-calf-raise",
+   "name": "单腿站姿提踵",
+   "nameEn": "One Leg Floor Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/one-leg-floor-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "side-hip-abduction",
+   "name": "侧卧髋外展",
+   "nameEn": "Side Hip Abduction",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abductors/side-hip-abduction.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "flutter-kicks",
+   "name": "仰卧交替摆腿",
+   "nameEn": "Flutter Kicks",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/flutter-kicks.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "bench-hip-extension",
+   "name": "凳上挺髋",
+   "nameEn": "Bench Hip Extension",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/bench-hip-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "squat-to-overhead-reach",
+   "name": "深蹲过顶伸展",
+   "nameEn": "Squat To Overhead Reach",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "quads/squat-to-overhead-reach.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "split-squats",
+   "name": "徒手分腿蹲",
+   "nameEn": "Split Squats",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "quads/split-squats.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-pull-through-with-rope",
+   "name": "绳索过胯拉",
+   "nameEn": "Cable Pull Through With Rope",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/cable-pull-through-with-rope.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-hip-adduction",
+   "name": "绳索髋内收",
+   "nameEn": "Cable Hip Adduction",
+   "primary": "ADDUCTORS",
+   "secondary": [],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "adductors/cable-hip-adduction.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-standing-hip-extension",
+   "name": "绳索站姿后蹬",
+   "nameEn": "Cable Standing Hip Extension",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/cable-standing-hip-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-standing-calf-raise",
+   "name": "绳索站姿提踵",
+   "nameEn": "Cable Standing Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/cable-standing-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "sled-hack-squat",
+   "name": "倒蹬机哈克深蹲",
+   "nameEn": "Sled Hack Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/sled-hack-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-squat",
+   "name": "史密斯深蹲",
+   "nameEn": "Smith Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/smith-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-leg-curl",
+   "name": "坐姿腿弯举机",
+   "nameEn": "Lever Seated Leg Curl",
+   "primary": "HAMSTRINGS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "hamstrings/lever-seated-leg-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-hip-abduction",
+   "name": "坐姿髋外展机",
+   "nameEn": "Lever Seated Hip Abduction",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "abductors/lever-seated-hip-abduction.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-hip-adduction",
+   "name": "坐姿髋内收机",
+   "nameEn": "Lever Seated Hip Adduction",
+   "primary": "ADDUCTORS",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "adductors/lever-seated-hip-adduction.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-calf-raise",
+   "name": "坐姿提踵机",
+   "nameEn": "Lever Seated Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/lever-seated-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-standing-calf-raise",
+   "name": "站姿提踵机",
+   "nameEn": "Lever Standing Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/lever-standing-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-sumo-squat",
+   "name": "史密斯相扑蹲",
+   "nameEn": "Smith Sumo Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/smith-sumo-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "sled-lying-squat",
+   "name": "躺式倒蹬",
+   "nameEn": "Sled Lying Squat",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/sled-lying-squat.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "hack-calf-raise",
+   "name": "哈克机提踵",
+   "nameEn": "Hack Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/hack-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-front-raise",
+   "name": "杠铃前平举",
+   "nameEn": "Barbell Front Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/barbell-front-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-upright-row",
+   "name": "杠铃直立划船",
+   "nameEn": "Barbell Upright Row",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/barbell-upright-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-rear-delt-raise",
+   "name": "杠铃俯身平举",
+   "nameEn": "Barbell Rear Delt Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/barbell-rear-delt-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-arnold-press",
+   "name": "阿诺德推举",
+   "nameEn": "Dumbbell Arnold Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-arnold-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-front-raise",
+   "name": "哑铃前平举",
+   "nameEn": "Dumbbell Front Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-front-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-one-arm-lateral-raise",
+   "name": "单臂哑铃侧平举",
+   "nameEn": "Dumbbell One Arm Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-one-arm-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-incline-rear-lateral-raise",
+   "name": "上斜俯身哑铃飞鸟",
+   "nameEn": "Dumbbell Incline Rear Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-incline-rear-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-lateral-raise",
+   "name": "坐姿哑铃侧平举",
+   "nameEn": "Dumbbell Seated Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-seated-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-push-press",
+   "name": "哑铃借力推举",
+   "nameEn": "Dumbbell Push Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-push-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-alternate-front-raise",
+   "name": "坐姿交替哑铃前平举",
+   "nameEn": "Dumbbell Seated Alternate Front Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-seated-alternate-front-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-upright-row",
+   "name": "哑铃直立划船",
+   "nameEn": "Dumbbell Upright Row",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-upright-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-lying-rear-lateral-raise",
+   "name": "俯卧哑铃后飞鸟",
+   "nameEn": "Dumbbell Lying Rear Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-lying-rear-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "scapula-push-up",
+   "name": "肩胛俯卧撑",
+   "nameEn": "Scapula Push Up",
+   "primary": "SERRATUS",
+   "secondary": [
+    "CHEST"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "serratus-anterior/scapula-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "weighted-front-raise",
+   "name": "负重前平举",
+   "nameEn": "Weighted Front Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/weighted-front-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-lateral-raise",
+   "name": "绳索侧平举",
+   "nameEn": "Cable Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/cable-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-front-raise",
+   "name": "绳索前平举",
+   "nameEn": "Cable Front Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/cable-front-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-upright-row",
+   "name": "绳索直立划船",
+   "nameEn": "Cable Upright Row",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/cable-upright-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-rear-delt-row-with-rope",
+   "name": "绳索俯身后束划船",
+   "nameEn": "Cable Rear Delt Row With Rope",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/cable-rear-delt-row-with-rope.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-seated-rear-lateral-raise",
+   "name": "坐姿绳索后飞鸟",
+   "nameEn": "Cable Seated Rear Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/cable-seated-rear-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-shoulder-press",
+   "name": "绳索推肩",
+   "nameEn": "Cable Shoulder Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/cable-shoulder-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-lateral-raise",
+   "name": "器械侧平举",
+   "nameEn": "Lever Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/lever-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-reverse-fly",
+   "name": "器械反向飞鸟",
+   "nameEn": "Lever Seated Reverse Fly",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/lever-seated-reverse-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-shoulder-press",
+   "name": "史密斯推肩",
+   "nameEn": "Smith Shoulder Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/smith-shoulder-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-close-grip-bench-press",
+   "name": "窄距杠铃卧推",
+   "nameEn": "Barbell Close Grip Bench Press",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/barbell-close-grip-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "ez-barbell-curl",
+   "name": "曲杆弯举",
+   "nameEn": "Ez Barbell Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/ez-barbell-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-seated-overhead-triceps-extension",
+   "name": "坐姿杠铃颈后臂屈伸",
+   "nameEn": "Barbell Seated Overhead Triceps Extension",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/barbell-seated-overhead-triceps-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-lying-triceps-extension",
+   "name": "仰卧杠铃臂屈伸",
+   "nameEn": "Barbell Lying Triceps Extension",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/barbell-lying-triceps-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-reverse-curl",
+   "name": "反握杠铃弯举",
+   "nameEn": "Barbell Reverse Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/barbell-reverse-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-wrist-curl",
+   "name": "杠铃腕弯举",
+   "nameEn": "Barbell Wrist Curl",
+   "primary": "FOREARMS",
+   "secondary": [
+    "BICEPS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "forearms/barbell-wrist-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-concentration-curl",
+   "name": "哑铃集中弯举",
+   "nameEn": "Dumbbell Concentration Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-concentration-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-incline-biceps-curl",
+   "name": "上斜哑铃弯举",
+   "nameEn": "Dumbbell Incline Biceps Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-incline-biceps-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-curl",
+   "name": "坐姿哑铃弯举",
+   "nameEn": "Dumbbell Seated Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-seated-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-zottman-curl",
+   "name": "佐特曼弯举",
+   "nameEn": "Dumbbell Zottman Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-zottman-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-kickback",
+   "name": "哑铃俯身臂屈伸",
+   "nameEn": "Dumbbell Kickback",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/dumbbell-kickback.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-triceps-extension",
+   "name": "坐姿哑铃颈后臂屈伸",
+   "nameEn": "Dumbbell Seated Triceps Extension",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/dumbbell-seated-triceps-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-standing-triceps-extension",
+   "name": "站姿哑铃颈后臂屈伸",
+   "nameEn": "Dumbbell Standing Triceps Extension",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/dumbbell-standing-triceps-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-cross-body-hammer-curl",
+   "name": "跨身锤式弯举",
+   "nameEn": "Dumbbell Cross Body Hammer Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-cross-body-hammer-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-standing-reverse-curl",
+   "name": "反握哑铃弯举",
+   "nameEn": "Dumbbell Standing Reverse Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-standing-reverse-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-hammer-curl",
+   "name": "坐姿锤式弯举",
+   "nameEn": "Dumbbell Seated Hammer Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-seated-hammer-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "close-grip-push-up",
+   "name": "窄距俯卧撑",
+   "nameEn": "Close Grip Push Up",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/close-grip-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "incline-close-grip-push-up",
+   "name": "上斜窄距俯卧撑",
+   "nameEn": "Incline Close Grip Push Up",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/incline-close-grip-push-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "triceps-press",
+   "name": "支撑臂屈伸",
+   "nameEn": "Triceps Press",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/triceps-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-curl",
+   "name": "绳索弯举",
+   "nameEn": "Cable Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/cable-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-hammer-curl-with-rope",
+   "name": "绳索锤式弯举",
+   "nameEn": "Cable Hammer Curl With Rope",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/cable-hammer-curl-with-rope.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-overhead-triceps-extension-rope-attachment",
+   "name": "绳索颈后臂屈伸",
+   "nameEn": "Cable Overhead Triceps Extension Rope Attachment",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/cable-overhead-triceps-extension-rope-attachment.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-one-arm-tricep-pushdown",
+   "name": "单臂绳索下压",
+   "nameEn": "Cable One Arm Tricep Pushdown",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/cable-one-arm-tricep-pushdown.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-reverse-curl",
+   "name": "绳索反握弯举",
+   "nameEn": "Cable Reverse Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/cable-reverse-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-drag-curl",
+   "name": "绳索拖拽弯举",
+   "nameEn": "Cable Drag Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/cable-drag-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-wrist-curl",
+   "name": "绳索腕弯举",
+   "nameEn": "Cable Wrist Curl",
+   "primary": "FOREARMS",
+   "secondary": [
+    "BICEPS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "forearms/cable-wrist-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-kickback",
+   "name": "绳索俯身臂屈伸",
+   "nameEn": "Cable Kickback",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/cable-kickback.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-preacher-curl",
+   "name": "绳索托臂弯举",
+   "nameEn": "Cable Preacher Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/cable-preacher-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-seated-curl",
+   "name": "坐姿绳索弯举",
+   "nameEn": "Cable Seated Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/cable-seated-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-triceps-extension",
+   "name": "器械臂屈伸",
+   "nameEn": "Lever Triceps Extension",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/lever-triceps-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-preacher-curl",
+   "name": "器械托臂弯举",
+   "nameEn": "Lever Preacher Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/lever-preacher-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-bicep-curl",
+   "name": "器械弯举",
+   "nameEn": "Lever Bicep Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/lever-bicep-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-close-grip-bench-press",
+   "name": "史密斯窄握卧推",
+   "nameEn": "Smith Close Grip Bench Press",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/smith-close-grip-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "assisted-hanging-knee-raise",
+   "name": "辅助悬垂举膝",
+   "nameEn": "Assisted Hanging Knee Raise",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/assisted-hanging-knee-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "decline-sit-up",
+   "name": "下斜卷腹",
+   "nameEn": "Decline Sit Up",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/decline-sit-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "air-bike",
+   "name": "空中蹬车",
+   "nameEn": "Air Bike",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/air-bike.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "jackknife-sit-up",
+   "name": "折刀卷腹",
+   "nameEn": "Jackknife Sit Up",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/jackknife-sit-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "v-sit-on-floor",
+   "name": "V字支撑",
+   "nameEn": "V Sit On Floor",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "SECONDS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/v-sit-on-floor.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "l-sit-on-floor",
+   "name": "L字支撑",
+   "nameEn": "L Sit On Floor",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "ADVANCED",
+   "measure": "SECONDS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/l-sit-on-floor.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lying-leg-raise-flat-bench",
+   "name": "平凳仰卧举腿",
+   "nameEn": "Lying Leg Raise Flat Bench",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/lying-leg-raise-flat-bench.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "seated-leg-raise",
+   "name": "坐姿举腿",
+   "nameEn": "Seated Leg Raise",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/seated-leg-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "elbow-to-knee",
+   "name": "肘碰膝卷腹",
+   "nameEn": "Elbow To Knee",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/elbow-to-knee.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "janda-sit-up",
+   "name": "扬达卷腹",
+   "nameEn": "Janda Sit Up",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/janda-sit-up.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "hanging-pike",
+   "name": "悬垂折叠",
+   "nameEn": "Hanging Pike",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/hanging-pike.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-twist",
+   "name": "站姿绳索转体",
+   "nameEn": "Cable Twist",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/cable-twist.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-side-bend",
+   "name": "绳索体侧屈",
+   "nameEn": "Cable Side Bend",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/cable-side-bend.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-standing-lift",
+   "name": "绳索伐木",
+   "nameEn": "Cable Standing Lift",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/cable-standing-lift.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-seated-twist",
+   "name": "坐姿绳索转体",
+   "nameEn": "Cable Seated Twist",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/cable-seated-twist.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-side-bend",
+   "name": "哑铃体侧屈",
+   "nameEn": "Dumbbell Side Bend",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/dumbbell-side-bend.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-seated-twist",
+   "name": "坐姿杠铃转体",
+   "nameEn": "Barbell Seated Twist",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/barbell-seated-twist.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-hip-raise",
+   "name": "史密斯挺髋",
+   "nameEn": "Smith Hip Raise",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/smith-hip-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-kneeling-twist",
+   "name": "跪姿转体机",
+   "nameEn": "Lever Kneeling Twist",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/lever-kneeling-twist.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-bench-press",
+   "name": "绳索卧推",
+   "nameEn": "Cable Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-incline-bench-press",
+   "name": "上斜绳索推胸",
+   "nameEn": "Cable Incline Bench Press",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/cable-incline-bench-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-incline-one-arm-fly",
+   "name": "单臂上斜哑铃飞鸟",
+   "nameEn": "Dumbbell Incline One Arm Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-incline-one-arm-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-decline-one-arm-fly",
+   "name": "单臂下斜哑铃飞鸟",
+   "nameEn": "Dumbbell Decline One Arm Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/dumbbell-decline-one-arm-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-fly",
+   "name": "器械坐姿夹胸",
+   "nameEn": "Lever Seated Fly",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/lever-seated-fly.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "wide-grip-chest-dip-on-high-parallel-bars",
+   "name": "宽握双杠胸撑",
+   "nameEn": "Wide Grip Chest Dip On High Parallel Bars",
+   "primary": "CHEST",
+   "secondary": [
+    "TRICEPS",
+    "SHOULDERS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "pectorals/wide-grip-chest-dip-on-high-parallel-bars.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-bent-arm-pullover",
+   "name": "屈臂杠铃上拉",
+   "nameEn": "Barbell Bent Arm Pullover",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/barbell-bent-arm-pullover.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-lateral-pulldown-with-v-bar",
+   "name": "V把绳索下拉",
+   "nameEn": "Cable Lateral Pulldown With V Bar",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/cable-lateral-pulldown-with-v-bar.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-one-arm-bent-over-row",
+   "name": "单臂俯身绳索划船",
+   "nameEn": "Cable One Arm Bent Over Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/cable-one-arm-bent-over-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-incline-bench-row",
+   "name": "上斜凳绳索划船",
+   "nameEn": "Cable Incline Bench Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/cable-incline-bench-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-incline-shrug",
+   "name": "上斜哑铃耸肩",
+   "nameEn": "Dumbbell Incline Shrug",
+   "primary": "TRAPEZIUS",
+   "secondary": [
+    "UPPER_BACK"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "traps/dumbbell-incline-shrug.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-narrow-grip-seated-row",
+   "name": "窄握器械划船",
+   "nameEn": "Lever Narrow Grip Seated Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/lever-narrow-grip-seated-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-reverse-grip-lateral-pulldown",
+   "name": "反握器械下拉",
+   "nameEn": "Lever Reverse Grip Lateral Pulldown",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "lats/lever-reverse-grip-lateral-pulldown.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-bent-over-row",
+   "name": "史密斯俯身划船",
+   "nameEn": "Smith Bent Over Row",
+   "primary": "UPPER_BACK",
+   "secondary": [
+    "BICEPS",
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HORIZONTAL_PULL",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "upper-back/smith-bent-over-row.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-shrug",
+   "name": "史密斯耸肩",
+   "nameEn": "Smith Shrug",
+   "primary": "TRAPEZIUS",
+   "secondary": [
+    "UPPER_BACK"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "traps/smith-shrug.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-overhead-squat",
+   "name": "杠铃过顶深蹲",
+   "nameEn": "Barbell Overhead Squat",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "quads/barbell-overhead-squat.gif",
+   "risk": "HIGH_RISK"
+  },
+  {
+   "id": "barbell-narrow-stance-squat",
+   "name": "窄站距杠铃深蹲",
+   "nameEn": "Barbell Narrow Stance Squat",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/barbell-narrow-stance-squat.gif",
+   "risk": "HIGH_RISK"
+  },
+  {
+   "id": "barbell-wide-squat",
+   "name": "宽站距杠铃深蹲",
+   "nameEn": "Barbell Wide Squat",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "双脚踩实，脚尖与膝盖同方向",
+    "背部保持平直，核心收紧再下蹲",
+    "下蹲深度以能保持控制为准，不追求重量"
+   ],
+   "mistakes": [
+    "膝盖内扣",
+    "弓腰或过度前倾",
+    "起身时膝盖完全锁死"
+   ],
+   "gifAsset": null,
+   "gifPath": "quads/barbell-wide-squat.gif",
+   "risk": "HIGH_RISK"
+  },
+  {
+   "id": "dumbbell-stiff-leg-deadlift",
+   "name": "直腿哑铃硬拉",
+   "nameEn": "Dumbbell Stiff Leg Deadlift",
+   "primary": "HAMSTRINGS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/dumbbell-stiff-leg-deadlift.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "sled-45-degrees-one-leg-press",
+   "name": "单腿45度倒蹬",
+   "nameEn": "Sled 45 Degrees One Leg Press",
+   "primary": "QUADRICEPS",
+   "secondary": [
+    "GLUTES"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/sled-45-degrees-one-leg-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "sled-calf-press-on-leg-press",
+   "name": "倒蹬机提踵",
+   "nameEn": "Sled Calf Press On Leg Press",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "SQUAT",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/sled-calf-press-on-leg-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-calf-press",
+   "name": "器械提踵推",
+   "nameEn": "Lever Calf Press",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/lever-calf-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-deadlift",
+   "name": "绳索硬拉",
+   "nameEn": "Cable Deadlift",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/cable-deadlift.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "reverse-hyper-on-flat-bench",
+   "name": "平凳反向挺身",
+   "nameEn": "Reverse Hyper On Flat Bench",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "glutes/reverse-hyper-on-flat-bench.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "side-bridge-hip-abduction",
+   "name": "侧桥髋外展",
+   "nameEn": "Side Bridge Hip Abduction",
+   "primary": "GLUTES",
+   "secondary": [
+    "HAMSTRINGS"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abductors/side-bridge-hip-abduction.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "bodyweight-standing-calf-raise",
+   "name": "徒手站姿提踵",
+   "nameEn": "Bodyweight Standing Calf Raise",
+   "primary": "CALVES",
+   "secondary": [],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "calves/bodyweight-standing-calf-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-alternate-press",
+   "name": "坐姿交替哑铃推举",
+   "nameEn": "Dumbbell Seated Alternate Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-seated-alternate-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-one-arm-lateral-raise",
+   "name": "单臂绳索侧平举",
+   "nameEn": "Cable One Arm Lateral Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/cable-one-arm-lateral-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-seated-front-raise",
+   "name": "坐姿哑铃前平举",
+   "nameEn": "Dumbbell Seated Front Raise",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-seated-front-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-standing-overhead-press",
+   "name": "站姿哑铃推举",
+   "nameEn": "Dumbbell Standing Overhead Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-standing-overhead-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-one-arm-shoulder-press",
+   "name": "单臂哑铃推举",
+   "nameEn": "Dumbbell One Arm Shoulder Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/dumbbell-one-arm-shoulder-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-one-arm-shoulder-press",
+   "name": "单臂器械推肩",
+   "nameEn": "Lever One Arm Shoulder Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/lever-one-arm-shoulder-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "smith-seated-shoulder-press",
+   "name": "史密斯坐姿推肩",
+   "nameEn": "Smith Seated Shoulder Press",
+   "primary": "SHOULDERS",
+   "secondary": [
+    "TRAPEZIUS"
+   ],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "delts/smith-seated-shoulder-press.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "barbell-standing-overhead-triceps-extension",
+   "name": "站姿杠铃颈后臂屈伸",
+   "nameEn": "Barbell Standing Overhead Triceps Extension",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/barbell-standing-overhead-triceps-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "ez-barbell-reverse-grip-curl",
+   "name": "反握曲杆弯举",
+   "nameEn": "Ez Barbell Reverse Grip Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "BARBELL",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "INTERMEDIATE",
+   "measure": "REPS",
+   "tips": [
+    "握稳杠铃，手腕保持中立",
+    "动作全程控制速度",
+    "重量循序渐进，不与他人比较"
+   ],
+   "mistakes": [
+    "借助惯性甩动",
+    "憋气完成整组",
+    "手腕过度后折"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/ez-barbell-reverse-grip-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-alternate-biceps-curl",
+   "name": "交替哑铃弯举",
+   "nameEn": "Dumbbell Alternate Biceps Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-alternate-biceps-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-prone-incline-curl",
+   "name": "俯卧上斜哑铃弯举",
+   "nameEn": "Dumbbell Prone Incline Curl",
+   "primary": "BICEPS",
+   "secondary": [
+    "FOREARMS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "biceps/dumbbell-prone-incline-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-lying-triceps-extension",
+   "name": "仰卧哑铃臂屈伸",
+   "nameEn": "Dumbbell Lying Triceps Extension",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/dumbbell-lying-triceps-extension.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "dumbbell-over-bench-wrist-curl",
+   "name": "凳上哑铃腕弯举",
+   "nameEn": "Dumbbell Over Bench Wrist Curl",
+   "primary": "FOREARMS",
+   "secondary": [
+    "BICEPS"
+   ],
+   "equipment": "DUMBBELL",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "两侧同时发力，保持对称",
+    "肘部位置稳定，不随动作漂移",
+    "选用能标准完成的重量"
+   ],
+   "mistakes": [
+    "一侧借另一侧代偿",
+    "速度过快失控",
+    "耸肩借力"
+   ],
+   "gifAsset": null,
+   "gifPath": "forearms/dumbbell-over-bench-wrist-curl.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "cable-triceps-pushdown-v-bar",
+   "name": "V把绳索下压",
+   "nameEn": "Cable Triceps Pushdown V Bar",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "CABLE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "ISOLATION",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调好滑轮高度和配重",
+    "拉到位后停半秒感受肌肉收缩",
+    "回放阶段控制速度，保持张力"
+   ],
+   "mistakes": [
+    "身体大幅摆动借力",
+    "让配重砸回",
+    "握把滑脱（先检查卡扣）"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/cable-triceps-pushdown-v-bar.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lever-seated-dip",
+   "name": "器械坐姿臂屈伸",
+   "nameEn": "Lever Seated Dip",
+   "primary": "TRICEPS",
+   "secondary": [],
+   "equipment": "MACHINE",
+   "locations": [
+    "GYM"
+   ],
+   "pattern": "VERTICAL_PUSH",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先调座椅和挡位到适合自己的位置",
+    "动作幅度完整，顶峰收紧半秒",
+    "配重从轻开始适应轨迹"
+   ],
+   "mistakes": [
+    "座椅没调好就开始",
+    "用惯性猛推猛拉",
+    "半程动作自欺"
+   ],
+   "gifAsset": null,
+   "gifPath": "triceps/lever-seated-dip.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "hanging-oblique-knee-raise",
+   "name": "悬垂斜举膝",
+   "nameEn": "Hanging Oblique Knee Raise",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/hanging-oblique-knee-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "lying-leg-hip-raise",
+   "name": "仰卧举腿提髋",
+   "nameEn": "Lying Leg Hip Raise",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "HINGE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/lying-leg-hip-raise.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "sit-up-with-arms-on-chest",
+   "name": "抱胸卷腹",
+   "nameEn": "Sit Up With Arms On Chest",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/sit-up-with-arms-on-chest.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "alternate-heel-touchers",
+   "name": "仰卧交替触踝",
+   "nameEn": "Alternate Heel Touchers",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/alternate-heel-touchers.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "front-plank-with-twist",
+   "name": "转体平板支撑",
+   "nameEn": "Front Plank With Twist",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "SECONDS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/front-plank-with-twist.gif",
+   "risk": "NORMAL"
+  },
+  {
+   "id": "incline-twisting-sit-up",
+   "name": "上斜转体卷腹",
+   "nameEn": "Incline Twisting Sit Up",
+   "primary": "ABS",
+   "secondary": [
+    "OBLIQUES"
+   ],
+   "equipment": "BODYWEIGHT",
+   "locations": [
+    "HOME",
+    "GYM"
+   ],
+   "pattern": "CORE",
+   "level": "BEGINNER",
+   "measure": "REPS",
+   "tips": [
+    "先掌握姿势再加速或加量",
+    "全程控制，重心稳定",
+    "出现关节疼痛立即停止"
+   ],
+   "mistakes": [
+    "塌腰或耸肩",
+    "幅度过小糊弄次数",
+    "贪快失去控制"
+   ],
+   "gifAsset": null,
+   "gifPath": "abs/incline-twisting-sit-up.gif",
+   "risk": "NORMAL"
   }
  ]
 }

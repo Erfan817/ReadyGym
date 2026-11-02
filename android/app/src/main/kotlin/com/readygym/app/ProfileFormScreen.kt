@@ -85,7 +85,7 @@ fun ProfileFormScreen(initial: UserProfile?, onSave: (UserProfile) -> Unit, onCa
             Panel {
                 SectionHeader("训练频率")
                 Text("每周几天", fontSize = 13.sp, color = ReadyGymColors.MutedText)
-                ChoiceRow((1..6).toList(), { "$it 天" }, { it == days }, { d ->
+                ChoiceRow((1..7).toList(), { "$it 天" }, { it == days }, { d ->
                     days = d
                     // A new count invalidates the old selection; start from an even spread instead.
                     if (pickWeekdays && weekdays.size != d) weekdays = defaultTrainingDays(d).sorted()
@@ -107,7 +107,7 @@ fun ProfileFormScreen(initial: UserProfile?, onSave: (UserProfile) -> Unit, onCa
                     }
                 }
                 Text("每次多久", fontSize = 13.sp, color = ReadyGymColors.MutedText)
-                ChoiceRow(listOf(20, 30, 45, 60, 90), { "$it 分钟" }, { it == minutes }, { minutes = it })
+                ChoiceRow(listOf(15, 20, 30, 45, 60, 90, 120), { "$it 分钟" }, { it == minutes }, { minutes = it })
             }
             Panel {
                 SectionHeader("伤病或想避开的动作（选填）")

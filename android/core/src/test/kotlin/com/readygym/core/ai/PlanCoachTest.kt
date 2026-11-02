@@ -54,16 +54,69 @@ class PlanCoachTest {
         assertTrue("2 个训练日" in prompt)
     }
 
+    /** "每天 8 个动作" must be reachable by raising session length, not capped at 6–7 forever. */
+    @Test fun itemCountHintScalesWithSessionLengthUpToTheEightCap() {
+        fun hint(minutes: Int): String {
+            val p = UserProfile(24, 175.0, 70.0, Gender.MALE, Goal.MUSCLE, Location.HOME,
+                setOf(Equipment.DUMBBELL), 2, minutes, Experience.BEGINNER)
+            val prompt = PlanContract(library, p).generateMessages().last().content
+            return Regex("每天 (\\S+) 个动作").find(prompt)!!.groupValues[1]
+        }
+        assertEquals("3–4", hint(25))
+        assertEquals("4–5", hint(40))
+        assertEquals("6–7", hint(60))
+        assertEquals("7–8", hint(75))
+        assertEquals("8", hint(90))
+    }
+
+    @Test fun beginnerPlanNeverContainsHighRiskMovesEvenIfTheModelInsists() {
+        val beginner = profile.copy(location = Location.GYM,
+            equipment = setOf(Equipment.BODYWEIGHT, Equipment.DUMBBELL, Equipment.BARBELL, Equipment.MACHINE),
+            daysPerWeek = 2, trainingDays = setOf(1, 4))
+        val prompt = PlanContract(library, beginner).generateMessages().last().content
+        assertFalse("硬拉绝不能出现在新手的可选清单里", "barbell-deadlift|" in prompt)
+        assertFalse("barbell-squat|" in prompt)
+        assertFalse("barbell-bench-press|" in prompt)
+        assertTrue("高风险动作对新手不可见", "高风险" !in prompt)
+        assertTrue("常规进阶动作仍然可见", "push-up|" in prompt)
+        assertTrue("lat-pulldown|" in prompt)
+
+        val deadliftReply = """
+            {"summary":"x","message":"x","days":[
+              {"title":"腿日","items":[{"id":"goblet-squat","sets":3,"reps":[8,12],"kg":10},
+                {"id":"barbell-deadlift","sets":3,"reps":[5,8],"kg":60}]},
+              {"title":"上肢","items":[{"id":"lat-pulldown","sets":3,"reps":[10,12],"kg":30}]}
+            ]}
+        """.trimIndent()
+        val parsed = PlanContract(library, beginner).parse(deadliftReply)
+        assertTrue(parsed is PlanReply.Invalid)
+        val problems = (parsed as PlanReply.Invalid).problems.joinToString("\n")
+        assertTrue(problems, "杠铃硬拉 不在当前可安排的动作里" in problems)
+        assertTrue(problems, "经验等级" in problems)
+    }
+
+    @Test fun experiencedUserStillSeesBarbellCompounds() {
+        val experienced = profile.copy(location = Location.GYM,
+            equipment = setOf(Equipment.BODYWEIGHT, Equipment.BARBELL), daysPerWeek = 2, trainingDays = setOf(1, 4),
+            experience = Experience.EXPERIENCED)
+        val prompt = PlanContract(library, experienced).generateMessages().last().content
+        assertTrue("barbell-deadlift|" in prompt)
+        assertTrue("高风险" in prompt) // the catalog tells the model to treat it with respect
+    }
+
     @Test fun parsesValidReplyAndSanitizesFields() {
         val model = Scripted(goodReply)
         val p = PlanCoach(model, library).generate(profile)
         assertEquals(1, model.calls.size)
         assertEquals(2, p.plan.days.size)
         val legs = p.plan.days[0].items
-        assertEquals(PlanItem("goblet-squat", 3, 8, 12, loadKg = 10.0, restSeconds = 90), legs[0])
+        assertEquals("model-provided 90 seconds is normalized before preview",
+            PlanItem("goblet-squat", 3, 8, 12, loadKg = 10.0, restSeconds = 30), legs[0])
         assertNull("bodyweight load dropped", legs[1].loadKg)
         assertEquals(12, legs[1].repsMax)
+        assertEquals("omitted rest uses the 30-second default", 30, legs[1].restSeconds)
         assertEquals(30, legs[2].seconds)
+        assertEquals(30, legs[2].restSeconds)
         assertNull("timed move keeps no reps", legs[2].repsMin)
         assertEquals("背挺直", p.plan.days[1].items[1].note)
         assertEquals("先从保守重量开始。", p.message)
@@ -77,7 +130,7 @@ class PlanCoachTest {
         val retry = model.calls[1]
         assertEquals("assistant", retry[retry.size - 2].role)
         val feedback = retry.last().content
-        assertTrue(feedback, "倒蹬 不符合" in feedback)
+        assertTrue(feedback, "倒蹬 不在当前可安排的动作里" in feedback)
         assertTrue(feedback, "made-up 不在动作库" in feedback)
         assertTrue(feedback, "需要 2 个训练日" in feedback)
         assertEquals(2, p.plan.days.size)

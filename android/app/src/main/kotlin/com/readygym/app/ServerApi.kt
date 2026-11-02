@@ -56,6 +56,16 @@ class ServerApi(private val baseUrl: String, private val TOKEN: () -> String?) {
 
     fun leaderboard(): Leaderboard = parseBoard(call("GET", "/api/leaderboard/weekly", null))
 
+    /**
+     * Anonymous by design: feedback must work before login and carries no training data — only
+     * what helps the operator reproduce the problem (app version, model, OS) plus the text.
+     */
+    fun submitFeedback(content: String, contact: String, appVersion: String, deviceModel: String, osVersion: String) {
+        call("POST", "/api/feedback", JSONObject()
+            .put("content", content).put("contact", contact).put("appVersion", appVersion)
+            .put("deviceModel", deviceModel).put("osVersion", osVersion), auth = false)
+    }
+
     /** Chat completions go through the server's AI proxy; the provider key never reaches the phone. */
     fun chatModel(maxTokens: Int = 1500, readTimeoutMs: Int = 60_000): DeepSeekApi =
         DeepSeekApi(TOKEN().orEmpty(), baseUrl = "$baseUrl/api/ai", maxTokens = maxTokens, readTimeoutMs = readTimeoutMs)
@@ -92,7 +102,8 @@ class ServerApi(private val baseUrl: String, private val TOKEN: () -> String?) {
             stream?.use { it.copyTo(out) }
             val text = out.toString("UTF-8")
             if (status !in 200..299) throw serverError(status, text)
-            return JSONObject(text)
+            // 201/204 replies (feedback submit) legitimately carry no body.
+            return if (text.isBlank()) JSONObject() else JSONObject(text)
         } catch (e: CoachException) {
             throw e
         } catch (_: JSONException) {
@@ -108,7 +119,7 @@ class ServerApi(private val baseUrl: String, private val TOKEN: () -> String?) {
         fun serverError(status: Int, text: String): CoachException {
             val error = runCatching { JSONObject(text).optJSONObject("error") }.getOrNull()
             return CoachException(error?.optString("code")?.ifBlank { null } ?: "http_$status",
-                retryable = status == 429 || status >= 500, httpStatus = status,
+                retryable = status == 408 || status == 429 || status >= 500, httpStatus = status,
                 detail = error?.optString("message")?.ifBlank { null })
         }
     }

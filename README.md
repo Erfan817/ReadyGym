@@ -1,3 +1,53 @@
+# Ready Gym · v0.8.12
+
+面向健身新手的安卓 AI 健身教练：聊天建档 → 确认资料 → 生成训练计划 → 跟着练 → 反馈与调整。
+
+[下载安装（蒲公英）](https://www.pgyer.com/readygym) · [Android 构建说明](android/README.md) · [项目开发手册](AGENTS.md)
+
+## 这次更新
+
+**聊天选择调整方案前，就能看到新动作的 GIF 演示。** 每套方案标出动作名称、器械和对应训练日；多个新动作可左右滑动查看，加载失败可重试。看演示、切换方案只是预览，点击“确认采用这套调整”后才保存。
+
+![选择前查看新动作演示](screenshots/v0.8.12/online-demo.png)
+
+## 当前功能
+
+- AI 对话建档，读取已保存资料；按场地、器械和训练经验生成计划。新手与恢复训练者过滤高风险杠铃动作。
+- 聊天提出 1–3 套调整方案，逐项比较并预览整周；确认后同步当前训练待做动作，保留已完成记录。
+- 287 个动作，60 个 GIF 随 APK 提供，其余通过服务器加载；按 18 个肌群选动作加入计划。
+- 训练按本地自然日推进，固定训练星期显示休息日；不再提供组间休息计时。
+- 器械指南与拍照识别、按住说话转文字、训练记录与统计、本机体重趋势、用户反馈及检查更新。
+
+## 技术与运行
+
+- 正式客户端：`android/`，Kotlin + Jetpack Compose；计划规则与校验在纯 Kotlin `core` 模块，Room 保存档案、计划版本、训练组记录和体重数据。
+- 当前后端：`server/`，Spring Boot + Java 21，提供注册、排行榜、GIF、反馈、语音识别中转与 APK 分发。AI 聊天、计划生成和视觉识别由 App 直连配置的 OpenAI 兼容网关。
+- `agent-python/`、`business-java/` 和 `frontend/` 保留为早期实现与实验，当前安卓功能以 `android/`、`server/` 和 [AGENTS.md](AGENTS.md) 为准。
+- 本地密钥放在被忽略的 `android/local.properties`，服务器凭据通过环境变量配置；部署说明见 [docs/deploy-vps.md](docs/deploy-vps.md)。仓库不包含密钥、个人数据库、构建缓存或 APK。
+
+```bash
+cd android
+./gradlew :app:testDebugUnitTest :core:test
+./gradlew :app:assembleRelease
+cd ../server
+./gradlew test bootJar
+```
+
+Android 需要 SDK 35；后端需要 JDK 21。Windows 环境与完整命令见 [AGENTS.md](AGENTS.md#3-构建与测试windows--git-bash)。
+
+## 0.8.12 验证
+
+版本号 **0.8.12 / code 31**，全量测试 **367 项通过、1 项原有跳过**。正式包在 API 35 模拟器覆盖安装后逐表核对旧数据一致；实际聊天方案已验证在线与本地 GIF 动态播放、横向浏览、预览不写入，以及明确确认后保存和同步当前训练。未做真机验证。
+
+[验证记录](releases/ReadyGym-0.8.12-validation.json) · [更新说明](releases/ReadyGym-0.8.12-notes.txt) · [功能设计](docs/design/chat-plan-gif-v0.8.12.md)
+
+媒体保留 **© Gym visual** 署名，用户已声明取得 Ready Gym 使用授权，媒体不属于 MIT；见 [动作数据源评估](动作数据源评估.md) 与 [媒体署名](android/docs/media-attribution.md)。训练建议和动作说明未经专业训练或医疗认证。
+
+---
+
+<details>
+<summary>历史：v0.4.0 Foundation Demo（以下描述不代表当前版本）</summary>
+
 # Ready Gym · Agent Foundation Demo v0.4.0
 
 安卓健身 App，以教练对话为中枢。按 [`docs/agent-as-foundation.md`](docs/agent-as-foundation.md) 做出的窄范围可运行 Demo；不是完整商业产品或医疗/训练专业认证。
@@ -36,3 +86,5 @@
 固定数据源 `hasaneyldrm/exercises-dataset` 提交 `7455efae41b330c265e7cd4b78dfa848e7ce5ebd`：1,324条真实元数据，当前运行时只用准确映射的六动作。用户明确声明取得 Ready Gym 图片/GIF授权；保留 **© Gym visual**，不转为 MIT，不虚构审阅过授权书。详情见 [`data/README.md`](data/README.md)。
 
 `frontend/` 仅保留早期 React 实验，不是正式客户端。源码交付到现有**私有** `Erfan817/ready-gym`；不提交 SDK、依赖 jar、构建缓存、APK、私密配置和个人训练数据。
+
+</details>

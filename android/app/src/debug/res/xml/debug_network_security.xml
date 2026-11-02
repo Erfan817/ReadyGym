@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />
-    <!-- Debug loopback fixtures / adb reverse, and 10.0.2.2 (the dev machine from the emulator). Not LAN or public HTTP. -->
+    <!-- Debug loopback fixtures / adb reverse, 10.0.2.2 (the dev machine from the emulator),
+         and the production ReadyGym VPS (same exception the release build ships). -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">localhost</domain>
         <domain includeSubdomains="false">127.0.0.1</domain>
         <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">REDACTED_HOST</domain>
     </domain-config>
 </network-security-config>

@@ -15,12 +15,18 @@ android/build/
 android/app/build/
 android/local.properties
 android/app/src/main/assets/exercise-demos/*.gif
-android/app/src/main/assets/exercises/
 *.apk
 *.aab
 
 # Local verification artifacts
 build/
+
+# IDE state
+android/.idea/
+
+# Local tool chain scratch space (a mirrored Gradle user home, used when ~/.gradle is not
+# writable from the sandbox). Never project source.
+.tmp-tools/
 
 # Downloaded / third-party media and skills (not project source)
 gifdb/
@@ -37,3 +43,16 @@ readygym_icon_v2_motion.png
 readygym_icon_v2_motion.txt
 readygym_icon_v3_duo.png
 readygym_icon_v3_duo.txt
+
+# Local databases, agent state, and design experiments
+*.db
+*.db-*
+.zcode/
+outputs/
+marketing/
+readygym_sport_mascot_fc029.png
+readygym_sport_mascot_fc029_prompt.txt
+
+# Local release responses contain expiring signed download URLs
+releases/*-published.json
+# Release binaries remain on Pgyer rather than in Git history

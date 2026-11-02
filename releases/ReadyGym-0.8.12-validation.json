@@ -1,0 +1,101 @@
+{
+  "version": "0.8.12",
+  "versionCode": 31,
+  "date": "2026-11-02",
+  "tests": {
+    "app": {
+      "tests": 231,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "core": {
+      "tests": 126,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "server": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "passed": 367,
+  "skipped": 1,
+  "productionReleaseBuild": true,
+  "emulator": {
+    "device": "readygym_api35 / API35",
+    "upgrade": {
+      "allTablesUnchanged": true,
+      "tables": {
+        "android_metadata": "b75020507f255a4045d7df8db986dd0206736f9357d605c63a69c44381f02787",
+        "feedback": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "plan_version": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7",
+        "profile": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48",
+        "room_master_table": "605020734389ee21ac7c451f88170134b9ab21b9edee4007665bb8e4d1fc837a",
+        "set_log": "8afa7e3f9d92a72f5e24e81a099f7b15bc00dca35c006f684823fc41ee66b3b0",
+        "sqlite_sequence": "2385a1dfa44dc2e327cc6b28c4b21b532d529458b08e024cc28711286134981d",
+        "weight_entry": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "weight_target": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "workout_session": "66570f5b84bcb70f14d82d03386cccbb8d9a7b3e93f965a992a15ac124906815"
+      }
+    },
+    "preview": {
+      "allTablesUnchanged": true,
+      "tables": {
+        "android_metadata": "b75020507f255a4045d7df8db986dd0206736f9357d605c63a69c44381f02787",
+        "feedback": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "plan_version": "82b6e974514f9a23b23ec453dbd01270b4aaae1f39b9334368665ed9520ee3b8",
+        "profile": "a32a6f089f93bf20deb412cbf0eee4fe253c4e590425c2563f838b5588996e01",
+        "room_master_table": "605020734389ee21ac7c451f88170134b9ab21b9edee4007665bb8e4d1fc837a",
+        "set_log": "8afa7e3f9d92a72f5e24e81a099f7b15bc00dca35c006f684823fc41ee66b3b0",
+        "sqlite_sequence": "2385a1dfa44dc2e327cc6b28c4b21b532d529458b08e024cc28711286134981d",
+        "weight_entry": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "weight_target": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "workout_session": "66570f5b84bcb70f14d82d03386cccbb8d9a7b3e93f965a992a15ac124906815"
+      }
+    },
+    "confirmation": {
+      "oneVersionAddedOnExplicitConfirmation": true,
+      "oldPlansAndCompletedHistoryUnchanged": true,
+      "pendingOpenSessionUpdated": true,
+      "selectedExercises": [
+        "cable-standing-fly",
+        "machine-chest-press"
+      ]
+    },
+    "onlineGif": {
+      "description": "站姿绳索夹胸动作演示",
+      "bounds": [
+        95,
+        1196,
+        725,
+        1669
+      ],
+      "animated": true
+    },
+    "bundledGif": {
+      "description": "器械推胸动作演示",
+      "bounds": [
+        355,
+        1196,
+        985,
+        1669
+      ],
+      "animated": true
+    },
+    "horizontalBrowsingVerified": true,
+    "cleanup": {
+      "originalEmulatorDatabaseRestored": true,
+      "emulatorProxyRestoredToDefault": true
+    }
+  },
+  "physicalDeviceTested": false,
+  "screenshots": "screenshots/v0.8.12",
+  "limitations": [
+    "A first emulator AI request failed temporarily; manual retry returned validated options. Host gateway and GIF probes returned HTTP 200. Emulator-only proxy was temporarily set to the existing host proxy and restored after verification. No production connection settings were changed."
+  ],
+  "apkSha256": "fd0e5b1b65f8a788b73de2afd525a30ef241dbb313dc3589dd5212131b8d593f"
+}

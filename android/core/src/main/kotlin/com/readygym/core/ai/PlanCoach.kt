@@ -24,7 +24,7 @@ class PlanCoach(private val model: ChatModel, private val library: ExerciseLibra
         val contract = PlanContract(library, profile)
         val reply = ask(contract, contract.generateMessages())
         return PlanProposal(
-            WorkoutPlan(0, 0, "初始计划", reply.summary, profile.daysPerWeek, reply.days),
+            WorkoutPlan(0, 0, "初始计划", reply.summary, profile.daysPerWeek, reply.days).withDefaultRest(),
             reply.message, reply.reasons,
         )
     }
@@ -39,7 +39,7 @@ class PlanCoach(private val model: ChatModel, private val library: ExerciseLibra
         val contract = PlanContract(library, profile)
         val reply = ask(contract, contract.adjustMessages(current, session, feedback, recent))
         return PlanProposal(
-            current.copy(reason = "练后调整：${session.dayTitle}", summary = reply.summary.ifBlank { current.summary }, days = reply.days),
+            current.copy(reason = "练后调整：${session.dayTitle}", summary = reply.summary.ifBlank { current.summary }, days = reply.days).withDefaultRest(),
             reply.message, reply.reasons,
         )
     }

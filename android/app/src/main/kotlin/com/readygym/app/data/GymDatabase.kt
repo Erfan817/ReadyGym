@@ -2,6 +2,8 @@ package com.readygym.app.data
 
 import android.content.Context
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "profile")
@@ -43,6 +45,23 @@ data class SetLogEntity(
 )
 data class FeedbackEntity(@PrimaryKey val sessionId: Long, val json: String)
 
+/** One explicit measurement per local calendar day; weight is stored in tenths of a kilogram. */
+@Entity(tableName = "weight_entry")
+data class WeightEntryEntity(@PrimaryKey val epochDay: Long, val deciKilograms: Int)
+
+@Entity(tableName = "weight_target")
+data class WeightTargetEntity(@PrimaryKey val id: Int = 1, val deciKilograms: Int)
+
+@Dao
+interface WeightDao {
+    @Query("SELECT * FROM weight_entry ORDER BY epochDay ASC") fun entries(): Flow<List<WeightEntryEntity>>
+    @Upsert suspend fun saveEntry(entry: WeightEntryEntity)
+    @Query("DELETE FROM weight_entry WHERE epochDay = :epochDay") suspend fun deleteEntry(epochDay: Long)
+    @Query("SELECT * FROM weight_target WHERE id = 1") fun target(): Flow<WeightTargetEntity?>
+    @Upsert suspend fun saveTarget(target: WeightTargetEntity)
+    @Query("DELETE FROM weight_target WHERE id = 1") suspend fun clearTarget()
+}
+
 data class SessionWithSets(
     @Embedded val session: SessionEntity,
     @Relation(parentColumn = "id", entityColumn = "sessionId") val sets: List<SetLogEntity>,
@@ -51,10 +70,12 @@ data class SessionWithSets(
 @Dao
 interface GymDao {
     @Query("SELECT * FROM profile WHERE id = 1") fun profile(): Flow<ProfileEntity?>
+    @Query("SELECT * FROM profile WHERE id = 1") suspend fun profileNow(): ProfileEntity?
     @Upsert suspend fun saveProfile(p: ProfileEntity)
 
     @Query("SELECT * FROM plan_version ORDER BY version DESC LIMIT 1") fun activePlan(): Flow<PlanVersionEntity?>
     @Query("SELECT * FROM plan_version ORDER BY version DESC LIMIT 1") suspend fun activePlanNow(): PlanVersionEntity?
+    @Query("SELECT * FROM plan_version WHERE version = :version") suspend fun planVersionNow(version: Int): PlanVersionEntity?
     @Query("SELECT * FROM plan_version ORDER BY version DESC") fun planVersions(): Flow<List<PlanVersionEntity>>
     @Insert suspend fun insertPlan(p: PlanVersionEntity)
 
@@ -66,6 +87,12 @@ interface GymDao {
 
     @Transaction @Query("SELECT * FROM workout_session WHERE endedAt IS NULL ORDER BY startedAt DESC LIMIT 1")
     fun openSession(): Flow<SessionWithSets?>
+    @Transaction @Query("SELECT * FROM workout_session WHERE endedAt IS NULL ORDER BY startedAt DESC LIMIT 1")
+    suspend fun openSessionNow(): SessionWithSets?
+    @Transaction @Query("""SELECT * FROM workout_session WHERE endedAt >= :start AND endedAt < :end
+        AND EXISTS (SELECT 1 FROM set_log WHERE sessionId = workout_session.id AND done = 1)
+        ORDER BY endedAt DESC LIMIT 1""")
+    suspend fun completedBetween(start: Long, end: Long): SessionWithSets?
     @Transaction @Query("SELECT * FROM workout_session WHERE id = :id") suspend fun session(id: Long): SessionWithSets?
     @Transaction @Query("SELECT * FROM workout_session WHERE endedAt IS NOT NULL ORDER BY startedAt DESC")
     fun finishedSessions(): Flow<List<SessionWithSets>>
@@ -86,16 +113,27 @@ interface GymDao {
 }
 
 @Database(
-    entities = [ProfileEntity::class, PlanVersionEntity::class, SessionEntity::class, SetLogEntity::class, FeedbackEntity::class],
-    version = 1,
+    entities = [ProfileEntity::class, PlanVersionEntity::class, SessionEntity::class, SetLogEntity::class,
+        FeedbackEntity::class, WeightEntryEntity::class, WeightTargetEntity::class],
+    version = 2,
 )
 abstract class GymDatabase : RoomDatabase() {
     abstract fun dao(): GymDao
+    abstract fun weightDao(): WeightDao
 
     companion object {
+        /** Add weight tracking without rewriting any archived plan, workout, profile or feedback. */
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS `weight_entry` (`epochDay` INTEGER NOT NULL, `deciKilograms` INTEGER NOT NULL, PRIMARY KEY(`epochDay`))")
+                db.execSQL("CREATE TABLE IF NOT EXISTS `weight_target` (`id` INTEGER NOT NULL, `deciKilograms` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+            }
+        }
+
         @Volatile private var instance: GymDatabase? = null
         fun get(context: Context): GymDatabase = instance ?: synchronized(this) {
             instance ?: Room.databaseBuilder(context.applicationContext, GymDatabase::class.java, "readygym.db")
+                .addMigrations(MIGRATION_1_2)
                 .build().also { instance = it }
         }
 

@@ -34,7 +34,7 @@ class PlanTest {
         )))
         val problems = validator.problems(bad).joinToString("\n")
         assertTrue(problems, "made-up 不在动作库" in problems)
-        assertTrue(problems, "倒蹬 不符合" in problems)
+        assertTrue(problems, "倒蹬 不在当前可安排的动作里" in problems)
         assertTrue(problems, "组数 12" in problems)
         assertTrue(problems, "平板支撑 秒数无效" in problems)
         assertTrue(problems, "俯卧撑 是徒手动作" in problems)

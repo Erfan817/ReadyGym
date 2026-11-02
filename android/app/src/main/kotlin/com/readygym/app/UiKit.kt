@@ -35,8 +35,13 @@ internal fun Eyebrow(text: String, modifier: Modifier = Modifier) {
         fontSize = 12.sp, letterSpacing = 1.5.sp)
 }
 
-/** A rounded white panel. The entry screen uses these instead of Material Card so the
- *  corner radius and border stay identical across every section. */
+/**
+ * A rounded white panel. The entry screen uses these instead of Material Card so the corner
+ * radius and padding stay identical across every section.
+ *
+ * Radius is [GymShapes.Lg] (18dp) for every panel: the measurement pass found the stats screen
+ * mixing 18dp and 22dp on the same page, which reads as two card systems rather than one.
+ */
 @Composable
 internal fun Panel(
     modifier: Modifier = Modifier,
@@ -46,7 +51,7 @@ internal fun Panel(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(GymShapes.Xl)
+            .clip(GymShapes.Lg)
             .background(container)
             .padding(GymSpacing.Lg),
         verticalArrangement = Arrangement.spacedBy(GymSpacing.Sm),

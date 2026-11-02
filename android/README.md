@@ -1,3 +1,41 @@
+# Ready Gym Android · v0.8.12
+
+当前版本：**0.8.12 / code 31**；Android 8.0+，Kotlin + Jetpack Compose，SDK 35。完整功能与验证见 [项目 README](../README.md) 和 [开发手册](../AGENTS.md)。
+
+## 配置与构建
+
+安装 Android SDK 35 和 JDK 21（Android 编译目标为 Java 17）。在 `android/local.properties` 中设置本机 `sdk.dir` 和下列可选配置；真实密钥不提交：
+
+```properties
+sdk.dir=<本机 Android SDK 目录>
+readyGymAiBaseUrl=https://www.packyapi.ai/v1
+readyGymAiModel=deepseek-flash
+readyGymAiApiKey=<AI 网关密钥>
+readyGymPgyerApiKey=<蒲公英 API 密钥>
+readyGymPgyerAppKey=<蒲公英 App Key>
+```
+
+AI 请求由 App 直连网关；打包时上述配置注入 BuildConfig。更换网关后需重新构建；分发密钥在客户端可被提取，不应使用拥有管理权限的账户密钥。服务地址通过 `gradle.properties` 的 `readyGymServiceBaseUrl` 配置。
+
+在 `android/` 目录运行：
+
+```bash
+./gradlew :app:testDebugUnitTest :core:test
+./gradlew :app:assembleDebug
+./gradlew :app:assembleRelease
+```
+
+正式包启用 R8 与资源压缩，当前沿用 debug 签名以兼容已有个人分发版本。60 个动作 GIF 随 APK 提供，其余通过服务器加载；保留 Gym visual 署名与授权边界。
+
+## 验证范围
+
+0.8.12 全量 app、core、server 共 367 项通过、1 项原有跳过。模拟器验证正式包升级保留数据、新动作演示动态播放、预览不保存和确认后同步训练；未做真机验证。[完整记录](../releases/ReadyGym-0.8.12-validation.json)。
+
+---
+
+<details>
+<summary>历史：v0.4.0 及更早版本（旧架构与旧验收）</summary>
+
 # Ready Gym Android · v0.4.0 Foundation Demo
 
 versionCode5，Android8.0+。新增对话内规则计划草稿/生效版/修订差异和明确确认，确认由Java业务服务写入PostgreSQL；真实DeepSeek工具闭环已有限验收。六动作原始GIF与浅色主题保持。运行时“Demo连接设置”输入专用访问码，仅Activity内存保存，模型Key/访问码均不编入APK；进程结束需重新输入。默认非secret地址 `https://REDACTED_HOST:REDACTED_PORT/ready-gym-demo`，只配置不等于连接。
@@ -115,3 +153,5 @@ adb kill-server
 ```
 
 最终修复日志与实物报告在 `build/verification/review-fixes/`（含分项RED/GREEN、全量日志、`final-artifact.json`）；此前日志/渲染仍在 `build/verification/`、`build/planning-ui-tdd/`、`core/build/planning-tdd/`，均忽略提交。规则API及来源见 [`core/README.md`](core/README.md)；真实AI尚未接入，凭据仅服务端并需确认供应商/费用/数据授权。
+
+</details>

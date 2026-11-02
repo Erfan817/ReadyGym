@@ -1,8 +1,10 @@
 package com.readygym.app
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,12 +20,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,15 +36,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.key
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.TextStyle
@@ -70,34 +75,59 @@ fun WorkoutScreen(vm: GymViewModel, onClose: () -> Unit, onFinished: (WorkoutSes
             return@Column
         }
         // Exercises in plan order; each keeps the indices of its sets in session.sets.
-        val groups = remember(session.id, session.sets.size) {
+        val groups = remember(session.id, session.planVersion, session.sets.map { it.exerciseId }) {
             session.sets.indices.groupBy { session.sets[it].exerciseId }.toList()
         }
-        var current by rememberSaveable(session.id) { mutableStateOf(firstUnfinished(session, groups)) }
+        var current by rememberSaveable(session.id, session.planVersion) { mutableStateOf(firstUnfinished(session, groups)) }
         current = current.coerceIn(groups.indices)
         var ending by rememberSaveable { mutableStateOf(false) }
         val (exerciseId, indices) = groups[current]
         val exercise = vm.library[exerciseId]
+        val motion = LocalMotionSettings.current
+        val changed = remember { Animatable(1f) }
+        val scroll = rememberScrollState()
+        LaunchedEffect(exerciseId, motion.reduceMotion) {
+            scroll.scrollTo(0)
+            if (motion.reduceMotion) changed.snapTo(1f) else {
+                changed.snapTo(0.75f)
+                changed.animateTo(1f, SunnyMotion.tweenShort())
+            }
+        }
+        var showDemo by rememberSaveable(session.id) { mutableStateOf(true) }
+        val completed = indices.count { session.sets[it].done }
 
         TopBar(session, current, groups.size, onClose = onClose, onEnd = { ending = true })
+        Column(Modifier.padding(horizontal = GymSpacing.Lg, vertical = GymSpacing.Sm),
+            verticalArrangement = Arrangement.spacedBy(GymSpacing.Xs)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(exercise?.name ?: exerciseId, fontSize = 22.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f))
+                Text("$completed / ${indices.size} 组", fontSize = 14.sp, fontWeight = FontWeight.Bold,
+                    color = ReadyGymColors.AccentText, modifier = Modifier.testTag("workout-exercise-progress"))
+            }
+            exercise?.let { e ->
+                Text((listOf(e.primary) + e.secondary).distinct().take(3).joinToString(" · ") { it.label },
+                    fontSize = 13.sp, color = ReadyGymColors.MutedText)
+            }
+            LinearProgressIndicator(progress = { completed.toFloat() / indices.size },
+                modifier = Modifier.fillMaxWidth().height(5.dp).clip(GymShapes.Xs),
+                color = ReadyGymColors.AccentText, trackColor = ReadyGymColors.Sunken)
+        }
         Column(
-            Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = GymSpacing.Lg),
+            Modifier.weight(1f).verticalScroll(scroll).padding(horizontal = GymSpacing.Lg)
+                .graphicsLayer { alpha = changed.value },
             verticalArrangement = Arrangement.spacedBy(GymSpacing.Md),
         ) {
-            ExerciseImage(exercise, animate = true, modifier = Modifier.fillMaxWidth().aspectRatio(1.4f))
-            Column(verticalArrangement = Arrangement.spacedBy(GymSpacing.Xs)) {
-                Text(exercise?.name ?: exerciseId, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                exercise?.let { e ->
-                    Text((listOf(e.primary) + e.secondary).distinct().take(3).joinToString(" · ") { it.label },
-                        fontSize = 13.sp, color = ReadyGymColors.MutedText)
-                }
+            TextButton(onClick = { showDemo = !showDemo }, modifier = Modifier.fillMaxWidth().testTag("workout-demo-toggle")) {
+                Text(if (showDemo) "收起动作示范 ⌃" else "查看动作示范 ⌄", color = ReadyGymColors.AccentText)
             }
-            RestBanner(vm)
-            SetTable(vm, session, exercise, indices)
+            if (showDemo) ExerciseImage(exercise, animate = true,
+                modifier = Modifier.fillMaxWidth().aspectRatio(1.4f).testTag("workout-demo"))
+            key(session.planVersion, exerciseId) { SetTable(vm, session, exercise, indices) }
             exercise?.let { Tips(it) }
             Spacer(Modifier.height(GymSpacing.Sm))
         }
-        Row(Modifier.padding(GymSpacing.Lg), horizontalArrangement = Arrangement.spacedBy(GymSpacing.Sm)) {
+        Row(Modifier.padding(horizontal = GymSpacing.Lg, vertical = GymSpacing.Sm), horizontalArrangement = Arrangement.spacedBy(GymSpacing.Sm)) {
             if (current > 0) SecondaryButton("上一个", { current-- }, Modifier.weight(1f))
             if (current < groups.lastIndex) PrimaryButton("下一个动作", { current++ }, Modifier.weight(2f).testTag("workout-next"))
             else PrimaryButton("完成训练", { ending = true }, Modifier.weight(2f).testTag("workout-finish"))
@@ -126,36 +156,6 @@ private fun TopBar(session: WorkoutSession, current: Int, total: Int, onClose: (
 }
 
 @Composable
-private fun RestBanner(vm: GymViewModel) {
-    val endsAt = vm.restEndsAt ?: return
-    val remaining by produceState((endsAt - System.currentTimeMillis()) / 1000, endsAt) {
-        while (true) { value = (endsAt - System.currentTimeMillis() + 999) / 1000; delay(250) }
-    }
-    LaunchedEffect(remaining <= 0) { if (remaining <= 0) vm.skipRest() }
-    Row(
-        Modifier.fillMaxWidth().clip(GymShapes.Md).background(ReadyGymColors.Action)
-            .padding(horizontal = GymSpacing.Lg, vertical = GymSpacing.Md)
-            .semantics { contentDescription = "组间休息，剩余 ${remaining.coerceAtLeast(0)} 秒" },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text("组间休息", fontSize = 12.sp, color = ReadyGymColors.OnAction.copy(alpha = 0.7f))
-            Text(clock(remaining.coerceAtLeast(0)), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = ReadyGymColors.OnAction)
-        }
-        Pill("+30 秒") { vm.addRest(30) }
-        Spacer(Modifier.width(GymSpacing.Sm))
-        Pill("跳过") { vm.skipRest() }
-    }
-}
-
-@Composable
-private fun Pill(text: String, onClick: () -> Unit) {
-    Text(text, color = ReadyGymColors.OnAction, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.clip(GymShapes.Sm).background(ReadyGymColors.OnAction.copy(alpha = 0.15f))
-            .clickable(role = Role.Button, onClick = onClick).padding(horizontal = 12.dp, vertical = 8.dp))
-}
-
-@Composable
 private fun SetTable(vm: GymViewModel, session: WorkoutSession, exercise: Exercise?, indices: List<Int>) {
     val timed = session.sets[indices.first()].seconds != null
     val loadable = exercise?.loadable ?: (session.sets[indices.first()].loadKg != null)
@@ -166,11 +166,12 @@ private fun SetTable(vm: GymViewModel, session: WorkoutSession, exercise: Exerci
             HeaderCell("上次", Modifier.weight(1.2f))
             if (loadable) HeaderCell("kg", Modifier.weight(1f))
             HeaderCell(if (timed) "秒" else "次数", Modifier.weight(1f))
-            Spacer(Modifier.width(44.dp))
+            Spacer(Modifier.width(48.dp))
         }
         indices.forEach { i ->
             val set = session.sets[i]
-            SetRow(session.id, i, set, last.getOrNull(set.setIndex), timed, loadable) { vm.updateSet(i, it) }
+            WorkoutSetRow(session.id, i, set, last.getOrNull(set.setIndex), timed, loadable,
+                active = i == indices.firstOrNull { !session.sets[it].done }) { vm.updateSet(i, it) }
         }
     }
 }
@@ -181,15 +182,25 @@ private fun HeaderCell(text: String, modifier: Modifier) {
 }
 
 @Composable
-private fun SetRow(sessionId: Long, index: Int, set: SetLog, previous: SetLog?, timed: Boolean, loadable: Boolean, onChange: (SetLog) -> Unit) {
+internal fun WorkoutSetRow(sessionId: Long, index: Int, set: SetLog, previous: SetLog?, timed: Boolean, loadable: Boolean,
+                           active: Boolean, onChange: (SetLog) -> Unit) {
     val done = set.done
+    val haptics = rememberHaptics()
+    val motion = LocalMotionSettings.current
+    val target = when { done -> ReadyGymColors.AccentWash; active -> ReadyGymColors.Background; else -> ReadyGymColors.Surface }
+    val animatedColor by animateColorAsState(target,
+        if (motion.reduceMotion) SunnyMotion.instant() else SunnyMotion.tweenShort(), label = "set-completion")
     Row(
-        Modifier.fillMaxWidth().clip(GymShapes.Sm).background(if (done) ReadyGymColors.AccentWash else ReadyGymColors.Surface)
+        Modifier.fillMaxWidth().clip(GymShapes.Sm).background(if (motion.reduceMotion) target else animatedColor)
+            .border(1.dp, if (active) ReadyGymColors.AccentText else androidx.compose.ui.graphics.Color.Transparent, GymShapes.Sm)
             .padding(vertical = 4.dp).testTag("set-row-$index"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text("${set.setIndex + 1}", Modifier.width(32.dp), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold,
-            color = if (done) ReadyGymColors.AccentText else ReadyGymColors.Text)
+        Column(Modifier.width(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("${set.setIndex + 1}", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold,
+                color = if (done || active) ReadyGymColors.AccentText else ReadyGymColors.Text)
+            if (active) Text("当前", fontSize = 9.sp, color = ReadyGymColors.AccentText)
+        }
         Text(previous?.let(::shortSet) ?: "—", Modifier.weight(1.2f), textAlign = TextAlign.Center,
             fontSize = 14.sp, color = ReadyGymColors.MutedText)
         if (loadable) NumberCell("第${set.setIndex + 1}组重量", "$sessionId-$index-kg", set.loadKg?.let(::formatKg).orEmpty(),
@@ -198,14 +209,17 @@ private fun SetRow(sessionId: Long, index: Int, set: SetLog, previous: SetLog?, 
             decimal = false, Modifier.weight(1f)) { text -> onChange(set.copy(seconds = text.toIntOrNull()?.coerceIn(0, 600))) }
         else NumberCell("第${set.setIndex + 1}组次数", "$sessionId-$index-r", set.reps?.toString().orEmpty(),
             decimal = false, Modifier.weight(1f)) { text -> onChange(set.copy(reps = text.toIntOrNull()?.coerceIn(0, 100))) }
-        Box(Modifier.width(44.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(48.dp).clip(GymShapes.Xs)
+            .toggleable(value = done, role = Role.Checkbox, onValueChange = {
+                if (it) haptics.confirm() else haptics.tick()
+                onChange(set.copy(done = it))
+            })
+            .semantics { contentDescription = "第${set.setIndex + 1}组完成"; stateDescription = if (done) "已完成，点击可撤销" else "未完成" }
+            .testTag("set-done-$index"), contentAlignment = Alignment.Center) {
             Box(
-                Modifier.size(32.dp).clip(GymShapes.Xs).background(if (done) ReadyGymColors.Accent else ReadyGymColors.Sunken)
-                    .clickable { onChange(set.copy(done = !done)) }
-                    .semantics { role = Role.Checkbox; contentDescription = "第${set.setIndex + 1}组完成"; stateDescription = if (done) "已完成" else "未完成" }
-                    .testTag("set-done-$index"),
+                Modifier.size(32.dp).clip(GymShapes.Xs).background(if (done) ReadyGymColors.AccentWash else ReadyGymColors.Sunken),
                 contentAlignment = Alignment.Center,
-            ) { Text("✓", color = if (done) ReadyGymColors.OnAction else ReadyGymColors.FaintText, fontWeight = FontWeight.ExtraBold) }
+            ) { Text("✓", color = if (done) ReadyGymColors.AccentText else ReadyGymColors.FaintText, fontWeight = FontWeight.ExtraBold) }
         }
     }
 }

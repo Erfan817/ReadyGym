@@ -1,6 +1,7 @@
 package com.readygym.app
 
 import com.readygym.core.*
+import com.readygym.core.ai.ConversationPlanDraft
 import java.io.IOException
 
 /** Chat transport contract shared by the coach screen and its clients. */
@@ -17,7 +18,9 @@ data class CoachReply(val session: CoachSession, val assistantText: String, val 
     val foundationEnabled: Boolean = false, val planProposal: FoundationPlan? = null, val activePlan: FoundationPlan? = null,
     val toolTrace: List<FoundationToolTrace> = emptyList(), val agentSource: String? = null, val agentNotice: String? = null,
     /** Gender the user has stated so far, before the full profile is ready; only drives the chat avatar. */
-    val statedGender: Gender? = null)
+    val statedGender: Gender? = null,
+    /** Validated local-plan alternatives; choosing one still needs an explicit save. */
+    val conversationPlan: ConversationPlanDraft? = null)
 
 /** Bounded safety policy, not a diagnosis or an inference from assistant prose. */
 enum class CoachSafetyRoute(val wireValue: String) {
@@ -34,7 +37,9 @@ enum class CoachSafetyRoute(val wireValue: String) {
         UNSUPPORTED_EXPERIENCE -> null
     }
 }
-data class CoachCandidate(val profile: TrainingProfile, val preferences: PlanningPreferences)
+data class CoachCandidate(val profile: TrainingProfile, val preferences: PlanningPreferences,
+    /** Null preserves existing weekdays; an explicit empty set means a flexible schedule. */
+    val trainingDays: Set<Int>? = null)
 interface CoachClient {
     val supportsFoundation: Boolean get() = false
     suspend fun readFoundation(session: CoachSession): CoachReply = throw CoachException("foundation_not_supported")

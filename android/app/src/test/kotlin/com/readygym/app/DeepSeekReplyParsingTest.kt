@@ -1,8 +1,13 @@
 package com.readygym.app
 
 import com.readygym.core.Equipment
+import com.readygym.core.Gender
 import com.readygym.core.Goal
+import com.readygym.core.Location
 import com.readygym.core.TrainingExperience
+import com.readygym.core.profile.Experience
+import com.readygym.core.profile.UserProfile
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -57,6 +62,10 @@ class DeepSeekReplyParsingTest {
         }
     }
 
+    private fun expectCandidate(json: JSONObject) {
+        assertNotNull("expected a confirmable candidate", parse(json).confirmedCandidate)
+    }
+
     // ---------- happy path ----------
 
     @Test fun aCompleteReplyBecomesAConfirmableCandidate() {
@@ -77,6 +86,38 @@ class DeepSeekReplyParsingTest {
         assertEquals("collecting", reply.status)
         assertNull(reply.confirmedCandidate)
         assertEquals("你多大了？", reply.assistantText)
+    }
+
+    @Test fun weekdaysFromChatSurviveConfirmationAndSerialization() {
+        val payload = ready(goodProfile)
+        payload.getJSONObject("profile").put("days_per_week", 5).put("training_days", org.json.JSONArray("[1,2,3,4,5]"))
+        val candidate = parse(payload).confirmedCandidate!!
+        assertEquals(setOf(1, 2, 3, 4, 5), candidate.trainingDays)
+        val saved = candidate.toUserProfile(null)!!
+        assertEquals(setOf(1, 2, 3, 4, 5), UserProfile.fromJson(saved.toJson()).trainingDays)
+    }
+
+    @Test fun malformedWeekdaysCannotSilentlyBecomeAFlexibleSchedule() {
+        for (array in listOf("[1,1,3]", "[0,3,5]", "[1,3,8]", "[1.5,3,5]", "[1,3]", "[\"1\",3,5]")) {
+            val payload = ready(goodProfile)
+            payload.getJSONObject("profile").put("training_days", org.json.JSONArray(array))
+            expectRejected(payload, "invalid weekdays $array")
+        }
+        val payload = ready(goodProfile)
+        payload.getJSONObject("profile").put("training_days", "周一周三周五")
+        expectRejected(payload, "weekdays must be an array")
+    }
+
+    @Test fun omittedWeekdaysPreserveExistingPicksAndExplicitEmptyClearsThem() {
+        val candidate = parse(ready(goodProfile)).confirmedCandidate!!
+        val existing = candidate.toUserProfile(null)!!.copy(trainingDays = setOf(1, 3, 5))
+        assertEquals(existing.trainingDays, candidate.toUserProfile(existing)!!.trainingDays)
+        val payload = ready(goodProfile)
+        payload.getJSONObject("profile").put("training_days", org.json.JSONArray())
+        assertTrue(parse(payload).confirmedCandidate!!.toUserProfile(existing)!!.trainingDays.isEmpty())
+        val seven = candidate.copy(preferences = candidate.preferences.copy(daysPerWeek = 7))
+        val everyDay = existing.copy(daysPerWeek = 7, trainingDays = (1..7).toSet())
+        assertEquals(everyDay.trainingDays, seven.toUserProfile(everyDay)!!.trainingDays)
     }
 
     // ---------- safety ----------
@@ -103,13 +144,13 @@ class DeepSeekReplyParsingTest {
     }
 
     @Test fun aReadyReplyCannotCarryASafetyRoute() {
-        // The client only reads the route for blocked replies, so a "ready" with a route must not
-        // produce a candidate that bypasses the route.
+        // Even a model that mislabeled the turn as ready must not bypass an explicit risk route.
         val json = JSONObject("""{"status":"ready","message":"好了","safety_route":"stop_and_seek_care","profile":$goodProfile}""")
         val reply = parse(json)
-        // status ready -> candidate path; the route is ignored here, so the planner's own safety
-        // evaluation (which sees screenCompleted=true, no symptoms) is what decides.
-        assertNotNull(reply.confirmedCandidate)
+        assertEquals("blocked", reply.status)
+        assertEquals(CoachSafetyRoute.STOP_AND_SEEK_CARE, reply.safetyRoute)
+        assertNull(reply.confirmedCandidate)
+        assertNull(reply.conversationPlan)
     }
 
     // ---------- range and enum validation ----------
@@ -122,8 +163,29 @@ class DeepSeekReplyParsingTest {
     }
 
     @Test fun unsupportedFrequencyAndDurationAreRejected() {
-        expectRejected(ready(goodProfile.replace("\"days_per_week\":3", "\"days_per_week\":7")), "7 days")
-        expectRejected(ready(goodProfile.replace("\"minutes_per_session\":60", "\"minutes_per_session\":90")), "90 minutes")
+        // 1-7 days and 10-180 minutes are the supported range now; only nonsense is rejected.
+        expectRejected(ready(goodProfile.replace("\"days_per_week\":3", "\"days_per_week\":8")), "8 days")
+        expectRejected(ready(goodProfile.replace("\"days_per_week\":3", "\"days_per_week\":0")), "0 days")
+        expectRejected(ready(goodProfile.replace("\"minutes_per_session\":60", "\"minutes_per_session\":5")), "5 minutes")
+        expectRejected(ready(goodProfile.replace("\"minutes_per_session\":60", "\"minutes_per_session\":200")), "200 minutes")
+    }
+
+    @Test fun everydayAndCustomDurationsAreAccepted() {
+        expectCandidate(ready(goodProfile.replace("\"days_per_week\":3", "\"days_per_week\":6")))
+        expectCandidate(ready(goodProfile.replace("\"days_per_week\":3", "\"days_per_week\":7")))
+        expectCandidate(ready(goodProfile.replace("\"minutes_per_session\":60", "\"minutes_per_session\":50")))
+        expectCandidate(ready(goodProfile.replace("\"minutes_per_session\":60", "\"minutes_per_session\":90")))
+    }
+
+    // ---------- avatar gender fallback ----------
+
+    @Test fun explicitGenderPhrasesDriveTheAvatarWhenTheModelOmitsTheField() {
+        assertEquals(com.readygym.core.Gender.MALE, client.genderStatedIn("我是男的，25岁"))
+        assertEquals(com.readygym.core.Gender.MALE, client.genderStatedIn("I am a male"))
+        assertEquals(com.readygym.core.Gender.FEMALE, client.genderStatedIn("我是女生"))
+        assertEquals(com.readygym.core.Gender.FEMALE, client.genderStatedIn("女生，想练背"))
+        assertNull(client.genderStatedIn("一周练三天，每次一小时"))
+        assertNull(client.genderStatedIn("帮我推荐动作"))
     }
 
     @Test fun unknownGoalLocationOrExperienceIsRejected() {
@@ -176,5 +238,18 @@ class DeepSeekReplyParsingTest {
             parse(JSONObject().put("status", "collecting").put("message", "好的").put("gender", "female")).statedGender)
         org.junit.Assert.assertNull(parse(JSONObject().put("status", "collecting").put("message", "好的")).statedGender)
         org.junit.Assert.assertNull(parse(JSONObject().put("status", "collecting").put("message", "好的").put("gender", "girl")).statedGender)
+    }
+
+    /** 老用户开场直接迎回并自带档案上下文，不再重复建档清单。 */
+    @Test fun returningUserGetsAProfileSeededGreetingNotTheInterview() = runBlocking {
+        val profile = UserProfile(30, 175.0, 70.0, Gender.MALE, Goal.MUSCLE, Location.GYM,
+            setOf(Equipment.DUMBBELL, Equipment.BARBELL), 3, 45, Experience.BEGINNER)
+        val returning = DeepSeekCoachClient(DeepSeekApi("sk-test"), existingProfile = profile)
+        val reply = returning.start()
+        assertTrue("迎回问候应说明档案已记住", reply.assistantText.contains("档案"))
+        assertTrue("迎回问候不应再列建档清单", !reply.assistantText.contains("1. 年龄"))
+        // 新用户（无档案）保持原有的建档开场。
+        val fresh = DeepSeekCoachClient(DeepSeekApi("sk-test"))
+        assertTrue(fresh.start().assistantText.contains("1. 年龄"))
     }
 }

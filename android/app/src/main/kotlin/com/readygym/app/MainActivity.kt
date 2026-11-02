@@ -14,6 +14,9 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
         )
+        // The reminder alarm does not survive reboot or force-stop, so every launch re-arms it.
+        ReminderScheduler.ensureChannel(this)
+        ReminderScheduler.reschedule(this)
         setContent { ReadyGymTheme { ReadyGymApp() } }
     }
 }

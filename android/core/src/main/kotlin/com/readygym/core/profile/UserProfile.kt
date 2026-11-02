@@ -31,8 +31,8 @@ data class UserProfile(
         require(age in 14..90) { "age $age" }
         require(heightCm in 100.0..250.0) { "height $heightCm" }
         require(weightKg in 30.0..250.0) { "weight $weightKg" }
-        require(daysPerWeek in 1..6) { "days $daysPerWeek" }
-        require(minutesPerSession in 15..120) { "minutes $minutesPerSession" }
+        require(daysPerWeek in 1..7) { "days $daysPerWeek" }
+        require(minutesPerSession in 10..180) { "minutes $minutesPerSession" }
         require(equipment.isNotEmpty()) { "equipment" }
         require(trainingDays.all { it in 1..7 }) { "weekday" }
         require(trainingDays.isEmpty() || trainingDays.size == daysPerWeek) { "trainingDays must match daysPerWeek" }
@@ -62,7 +62,7 @@ fun weekdayLabel(day: Int): String = "周" + "一二三四五六日"[day - 1]
 /** A sensible spread of [count] weekdays, e.g. 3 → Mon/Wed/Fri, used before the user picks. */
 fun defaultTrainingDays(count: Int): Set<Int> = when (count) {
     1 -> setOf(3); 2 -> setOf(2, 5); 3 -> setOf(1, 3, 5); 4 -> setOf(1, 2, 4, 5)
-    5 -> setOf(1, 2, 3, 4, 5); else -> setOf(1, 2, 3, 4, 5, 6)
+    5 -> setOf(1, 2, 3, 4, 5); 6 -> setOf(1, 2, 3, 4, 5, 6); else -> (1..7).toSet()
 }
 
 private fun formatNumber(v: Double) = if (v % 1.0 == 0.0) v.toInt().toString() else v.toString()

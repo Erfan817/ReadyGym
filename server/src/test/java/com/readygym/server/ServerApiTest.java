@@ -3,6 +3,7 @@ package com.readygym.server;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.readygym.server.ai.ModelGateway;
+import com.readygym.server.asr.XfAsrClient;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,6 +43,7 @@ class ServerApiTest {
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper json;
     @MockitoBean ModelGateway gateway;
+    @MockitoBean XfAsrClient asr;
 
     private String register(String nickname) throws Exception {
         String body = mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
@@ -138,5 +144,105 @@ class ServerApiTest {
             .andExpect(jsonPath("$.totalUsers").value(2))
             .andExpect(jsonPath("$.newUsersToday").value(2))
             .andExpect(jsonPath("$.workoutsTotal").value(1));
+    }
+
+    /** The daily series feeds the admin console chart: oldest first, today last, grouped by day. */
+    @Test
+    void dailySeriesNeedsTheAdminTokenAndBucketsByLocalDay() throws Exception {
+        mvc.perform(get("/api/admin/stats/daily")).andExpect(status().isForbidden());
+        mvc.perform(get("/api/admin/stats/daily?days=400").header("X-Admin-Token", "admin-secret"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(90));   // the span is capped
+        String TOKEN = register("丙");
+        register("丁");
+        upload(TOKEN, 1, Instant.now().minus(1, ChronoUnit.HOURS), 3);
+        String today = LocalDate.now(ZoneId.of("Asia/Shanghai")).toString();
+        mvc.perform(get("/api/admin/stats/daily?days=7").header("X-Admin-Token", "admin-secret"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(7))
+            .andExpect(jsonPath("$[6].date").value(today))
+            .andExpect(jsonPath("$[6].newUsers").value(2))
+            .andExpect(jsonPath("$[6].workouts").value(1))
+            .andExpect(jsonPath("$[6].aiCalls").value(0))
+            .andExpect(jsonPath("$[5].newUsers").value(0));
+    }
+
+    /** The operator console is a static page; its data stays behind the admin TOKEN. */
+    @Test
+    void adminConsolePageIsServedAsAStaticAsset() throws Exception {
+        var response = mvc.perform(get("/admin.html")).andExpect(status().isOk()).andReturn().getResponse();
+        // MockMvc decodes the body as ISO-8859-1 by default; the page itself is UTF-8.
+        assertThat(new String(response.getContentAsByteArray(), java.nio.charset.StandardCharsets.UTF_8))
+            .contains("ReadyGym 运营面板");
+    }
+
+    /** The equipment guide's demonstration GIFs: public, correct type, cacheable, no traversal. */
+    @Test
+    void equipmentGifsAreServedPubliclyWithCaching() throws Exception {
+        mvc.perform(get("/gifs/lats/cable-lat-pulldown-full-range-of-motion.gif"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.IMAGE_GIF))
+            .andExpect(header().string("Cache-Control", org.hamcrest.Matchers.containsString("max-age=2592000")));
+        mvc.perform(get("/gifs/does/not/exist.gif")).andExpect(status().isNotFound());
+        mvc.perform(get("/gifs/../application.yml")).andExpect(status().is4xxClientError());
+    }
+
+    /**
+     * Voice relay: anonymous, and the seconds cap must match the app's ~59 s recording window —
+     * an 8 s cap here once rejected every normal sentence with a 400 the phone showed as
+     * "语音服务暂时不可用".
+     */
+    @Test
+    void voiceRelayAcceptsAHoldUpToTheAppsRecordingCap() throws Exception {
+        when(asr.recognize(org.mockito.ArgumentMatchers.any())).thenReturn(new XfAsrClient.Result("深蹲怎么做"));
+        String audio = java.util.Base64.getEncoder().encodeToString(new byte[64]);
+        mvc.perform(post("/api/asr").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"audioB64\":\"" + audio + "\",\"seconds\":59}"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.text").value("深蹲怎么做"));
+        mvc.perform(post("/api/asr").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"audioB64\":\"" + audio + "\",\"seconds\":61}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    /** The streaming relay: session id is the capability, chunks give partials, finish gives text. */
+    @Test
+    void streamingRelayAcceptsChunksAndReturnsPartialsThenText() throws Exception {
+        when(asr.startStream()).thenReturn("stream-1");
+        when(asr.appendStream(eq("stream-1"), any())).thenReturn("深蹲");
+        when(asr.finishStream("stream-1")).thenReturn("深蹲怎么做");
+        when(asr.appendStream(eq("gone"), any())).thenThrow(new com.readygym.server.common.ApiException(
+            org.springframework.http.HttpStatus.NOT_FOUND, "asr_session", "会话已失效，请重新按住说话"));
+
+        String id = json.readTree(mvc.perform(post("/api/asr/start"))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).get("id").asText();
+        String audio = java.util.Base64.getEncoder().encodeToString(new byte[64]);
+        mvc.perform(post("/api/asr/stream").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\":\"" + id + "\",\"audioB64\":\"" + audio + "\"}"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.partial").value("深蹲"));
+        mvc.perform(post("/api/asr/finish").contentType(MediaType.APPLICATION_JSON).content("{\"id\":\"" + id + "\"}"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.text").value("深蹲怎么做"));
+
+        mvc.perform(post("/api/asr/stream").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\":\"gone\",\"audioB64\":\"" + audio + "\"}"))
+            .andExpect(status().isNotFound()).andExpect(jsonPath("$.error.code").value("asr_session"));
+        mvc.perform(post("/api/asr/abort").contentType(MediaType.APPLICATION_JSON).content("{\"id\":\"stream-1\"}"))
+            .andExpect(status().isOk());
+    }
+
+    /** Feedback is anonymous (no TOKEN), validated, and readable only with the admin TOKEN. */
+    @Test
+    void feedbackCanBeSubmittedAnonymouslyAndReadByTheOperator() throws Exception {
+        mvc.perform(post("/api/feedback").contentType(MediaType.APPLICATION_JSON).content("{}"))
+            .andExpect(status().isBadRequest());
+        mvc.perform(post("/api/feedback").contentType(MediaType.APPLICATION_JSON).content("""
+            {"content":"器械指南的GIF加载很慢，希望能预下载","contact":"wx: gym-fan",
+             "appVersion":"0.4.1","deviceModel":"Pixel 8","osVersion":"Android 15","deviceId":"d-1"}
+            """))
+            .andExpect(status().isCreated());
+        mvc.perform(get("/api/admin/feedback")).andExpect(status().isForbidden());
+        mvc.perform(get("/api/admin/feedback").header("X-Admin-Token", "admin-secret"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].content").value("器械指南的GIF加载很慢，希望能预下载"))
+            .andExpect(jsonPath("$[0].deviceModel").value("Pixel 8"));
     }
 }

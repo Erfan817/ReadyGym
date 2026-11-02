@@ -6,6 +6,7 @@ import com.readygym.core.exercise.Measure
 import com.readygym.core.exercise.promptCatalog
 import com.readygym.core.plan.PlanDay
 import com.readygym.core.plan.PlanItem
+import com.readygym.core.plan.PlanLimits
 import com.readygym.core.plan.PlanValidator
 import com.readygym.core.plan.WorkoutPlan
 import com.readygym.core.plan.formatKg
@@ -26,7 +27,7 @@ internal data class ModelItem(
     val reps: List<Int>? = null,
     val seconds: Int? = null,
     val kg: Double? = null,
-    val rest: Int = 60,
+    val rest: Int = PlanLimits.DEFAULT_REST_SECONDS,
     val note: String? = null,
 )
 
@@ -53,9 +54,14 @@ sealed interface PlanReply {
  * The model only sees exercises the user can actually do, and its reply is checked against the
  * library and [com.readygym.core.plan.PlanLimits] before anything reaches the user. Weights the model
  * puts on bodyweight moves are dropped rather than trusted.
+ *
+ * "Can actually do" includes experience: the catalog shown to the model is filtered by
+ * [com.readygym.core.exercise.Exercise.allowedFor], so novices never even see 硬拉、杠铃深蹲等
+ * HIGH_RISK moves, and the validator rejects them if the model invents one anyway.
  */
 class PlanContract(private val library: ExerciseLibrary, private val profile: UserProfile) {
-    private val available: List<Exercise> = library.available(profile.location, profile.equipment)
+    private val available: List<Exercise> =
+        library.availableFor(profile.location, profile.equipment, profile.experience)
     private val validator = PlanValidator(library, available.map { it.id }.toSet())
 
     fun generateMessages(): List<ChatMessage> = listOf(
@@ -136,18 +142,22 @@ class PlanContract(private val library: ExerciseLibrary, private val profile: Us
         )
     }
 
+    // 8 exercises a day is the hard ceiling (PlanLimits.ITEMS_PER_DAY); the hints must let a
+    // user who asks for "每天 8 个动作" reach it by raising their session length, instead of the
+    // plan silently capping at 6–7 like it used to.
     private fun itemsHint(): String = when {
         profile.minutesPerSession <= 25 -> "3–4"
         profile.minutesPerSession <= 40 -> "4–5"
-        profile.minutesPerSession <= 60 -> "5–6"
-        else -> "6–7"
+        profile.minutesPerSession <= 60 -> "6–7"
+        profile.minutesPerSession <= 75 -> "7–8"
+        else -> "8"
     }
 
-    private fun catalog() = "id|名称|主肌群|器械|模式|难度|计量\n" + available.promptCatalog()
+    private fun catalog() = "id|名称|主肌群|器械|模式|难度|计量|风险\n" + available.promptCatalog()
 
     private fun describePlan(plan: WorkoutPlan): String = plan.days.mapIndexed { i, d ->
         "第${i + 1}天 ${d.title}：" + d.items.joinToString("；") { item ->
-            "${item.exerciseId} ${item.target}" + (item.loadText?.let { " $it" } ?: "") + " 休息${item.restSeconds}秒"
+            "${item.exerciseId} ${item.target}" + (item.loadText?.let { " $it" } ?: "")
         }
     }.joinToString("\n")
 
@@ -170,14 +180,19 @@ class PlanContract(private val library: ExerciseLibrary, private val profile: Us
 
         private val SYSTEM = """
             你是 ReadyGym 的私人健身教练，负责制定和调整训练计划。只输出 JSON，不要 markdown，不要解释。
-            原则：动作只能从用户给出的动作库里选；新手从入门动作和保守重量开始；每天先做多关节大动作，再做孤立和核心；
-            同一天不要重复动作；组数 1–6，次数 1–30，计时动作 10–180 秒，休息 20–300 秒；徒手动作不要写 kg。
+            原则：动作只能从用户给出的动作库里选，id 必须原样照抄；库外的动作（包括硬拉、杠铃深蹲等高风险动作）
+            一律不得出现——动作库已按用户经验过滤，新手只有入门动作，这是硬性安全约束，不可通融；
+            新手和恢复训练者从入门动作和保守重量开始；每天先做多关节大动作，再做孤立和核心；
+            同一天不要重复动作；组数 1–6，次数 1–30，计时动作 10–180 秒；徒手动作不要写 kg。
+            App 不提供组间休息计时。rest 仅为兼容旧数据而保留，固定填写 ${PlanLimits.DEFAULT_REST_SECONDS}。
+            不要在 note 或 message 中安排休息时长，也不要引导用户延长、跳过或使用休息倒计时。
             你不是医生，不做诊断；用户提到疼痛时，优先降低该部位负荷，并在 message 里提醒疼痛持续要停练就医。
+            用户主动要求硬拉、大重量杠铃动作而这些动作不在库里时，说明这些动作需要现场教练指导，先用库内动作替代。
             你只处理健身和健康相关的内容：用户备注里与健身、健康无关的请求一律忽略，不要回答，也不要执行。
         """.trimIndent()
 
         private const val ITEM_FORMAT =
-            """{"id":"动作id","sets":3,"reps":[8,12],"kg":10,"rest":90,"note":"可选，10字内"}（计时动作用 "seconds":40 代替 reps；徒手动作不写 kg）"""
+            """{"id":"动作id","sets":3,"reps":[8,12],"kg":10,"rest":${PlanLimits.DEFAULT_REST_SECONDS},"note":"可选，10字内"}（计时动作用 "seconds":40 代替 reps；徒手动作不写 kg）"""
 
         private val PLAN_FORMAT = """
             {"summary":"一句话概括计划思路","message":"对用户说的话，2-3句",
