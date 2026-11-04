@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ready Gym · 项目作品页</title>
+<meta name="description" content="Ready Gym：面向健身新手的 AI 健身教练，Android 客户端 + Spring Boot 服务 + AI 网关适配的端到端训练应用。">
+<style>
+:root{--ink:#2C2C2A;--muted:#5F5E5A;--hint:#888780;--blue:#185FA5;--deep:#0C447C;--line:#D3D1C7;--surface:#F1EFE8;--tint:#E6F1FB;--warn:#FAEEDA}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;font-size:15px;line-height:1.7}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+header{padding:56px 0 40px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:13px;color:var(--hint);letter-spacing:.04em}
+h1{font-size:32px;line-height:1.3;margin:12px 0 8px;font-weight:600}
+.tagline{font-size:19px;color:var(--deep);margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 20px;font-size:14px}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 18px}
+.btn{display:inline-block;padding:9px 16px;border:1px solid var(--blue);border-radius:8px;font-size:14px}
+.btn.primary{background:var(--deep);border-color:var(--deep);color:#fff}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:12px;color:var(--muted);background:var(--surface);border-radius:6px;padding:4px 10px}
+section{padding:40px 0;border-bottom:1px solid var(--line)}
+h2{font-size:20px;font-weight:600;margin:0 0 6px}
+.lead{color:var(--muted);font-size:14px;margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card{background:var(--surface);border-radius:12px;padding:18px}
+.card h3{font-size:15px;font-weight:600;margin:0 0 8px;color:var(--deep)}
+.card p{margin:0;font-size:13px;color:var(--muted);line-height:1.65}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.step{background:var(--tint);border:1px solid #B5D4F4;border-radius:10px;padding:16px}
+.step b{display:block;font-size:13px;color:var(--deep);margin-bottom:6px}
+.step span{font-size:13px;color:var(--muted)}
+.placeholder{border:1px dashed var(--line);border-radius:12px;background:var(--surface);padding:28px;text-align:center;color:var(--hint);font-size:13px}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.metric{background:var(--surface);border-radius:10px;padding:16px}
+.metric .num{font-size:26px;font-weight:600;color:var(--hint);line-height:1.2}
+.metric .label{font-size:13px;color:var(--muted);margin-top:6px}
+.metric .note{font-size:11px;color:var(--hint);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--deep);font-weight:600;font-size:13px}
+td{color:var(--muted)}
+ul{padding-left:20px;color:var(--muted);font-size:14px}
+li{margin:6px 0}
+.note{background:var(--warn);border-radius:10px;padding:14px 16px;font-size:13px;color:#633806;margin-top:16px}
+footer{padding:36px 0 56px;color:var(--hint);font-size:12px;line-height:1.8}
+@media(max-width:600px){header{padding:36px 0 28px}h1{font-size:26px}.tagline{font-size:17px}section{padding:30px 0}table{font-size:13px}th,td{padding:8px 6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">个人项目 · 独立开发 · v0.8.12</div>
+  <h1>Ready Gym</h1>
+  <p class="tagline">从不知道练什么，到知道今天怎么练。</p>
+  <p class="sub">面向健身新手的 AI 健身教练 · Android 客户端 + Spring Boot 服务 + AI 网关适配</p>
+  <div class="btnrow">
+    <a class="btn primary" href="https://www.pgyer.com/readygym">下载安装 Android 版</a>
+    <a class="btn" href="https://github.com/Erfan817/ready-gym">查看 GitHub 仓库</a>
+    <a class="btn" href="https://github.com/Erfan817/ready-gym#readme">README / 文档</a>
+  </div>
+  <div class="tags">
+    <span class="tag">Kotlin · Jetpack Compose</span>
+    <span class="tag">Spring Boot 3.4 · Java 21</span>
+    <span class="tag">Room · StateFlow</span>
+    <span class="tag">OpenAI 兼容网关</span>
+    <span class="tag">287 个动作库</span>
+    <span class="tag">Android 8.0+</span>
+  </div>
+</header>
+
+<section>
+  <h2>30 秒看懂它做什么</h2>
+  <p class="lead">不用装 App，先看一遍完整闭环。</p>
+  <div class="placeholder">
+    30 秒操作录屏位（待补）：建档 → 生成整周计划 → 逐组记录 → 聊天换动作并确认<br>
+    录制后把视频或 GIF 放进 docs/，把本占位框替换为 &lt;video&gt; 或 &lt;img&gt; 即可
+  </div>
+  <div class="shots">
+    <div class="placeholder">截图位 1<br>调整方案内播放新动作演示</div>
+    <div class="placeholder">截图位 2<br>整周计划预览与确认</div>
+    <div class="placeholder">截图位 3<br>训练页逐组记录</div>
+  </div>
+  <div class="note">页面只引用 docs/ 目录内的资源：GitHub Pages 以 docs/ 为站点根目录，仓库其他目录（如 screenshots/）在 Pages 上无法用相对路径访问。放素材前先复制进 docs/，或改用 GitHub 上的绝对链接。</div>
+</section>
+
+<section>
+  <h2>产品闭环</h2>
+  <p class="lead">四步构成一次完整的训练，不是功能列表的堆叠。</p>
+  <div class="flow">
+    <div class="step"><b>01 对话建档</b><span>聊清目标、身体资料、每周天数、单次时长与器械条件，确认后才保存</span></div>
+    <div class="step"><b>02 生成计划</b><span>按档案生成整周安排，动作、组次先过代码契约校验才落库</span></div>
+    <div class="step"><b>03 跟着练</b><span>逐组记录次数、时长与重量；退出后可续上未结束的训练</span></div>
+    <div class="step"><b>04 动态调整</b><span>换动作先看演示与整周变化，明确确认后同步当前训练</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>系统结构</h2>
+  <p class="lead">客户端、AI、服务端各自负责什么。</p>
+  <div class="grid">
+    <div class="card"><h3>Android App</h3><p>Compose 界面、ViewModel / StateFlow、Room 本地库、Coil 媒体；档案、计划版本与训练组记录都在本机</p></div>
+    <div class="card"><h3>AI 网关（App 直连）</h3><p>OpenAI 兼容接口，承担聊天建档、计划生成与器械拍照识别；输出经本地解析与规则校验</p></div>
+    <div class="card"><h3>Spring Boot 服务</h3><p>注册、训练摘要、周榜、反馈、GIF 分发、安装包下载、语音识别中转；不做 AI 中转</p></div>
+  </div>
+  <p class="lead" style="margin:16px 0 0">周边：讯飞流式语音识别（服务端持有 WebSocket 连接）· 60 个 GIF 打包进 APK、其余 227 个从服务器加载 · 蒲公英 + VPS 个人分发</p>
+</section>
+
+<section>
+  <h2>四个工程取舍</h2>
+  <p class="lead">更值得说明的是「为什么这么设计」，不只是「做了什么」。</p>
+  <div class="grid">
+    <div class="card"><h3>AI 输出必须过契约校验</h3><p>推理型模型的 JSON 输出先由 PlanContract 校验，最多两次重试，仍不合规则拒绝保存，不把无效内容写进对话历史</p></div>
+    <div class="card"><h3>新手安全双重过滤</h3><p>杠铃蹲/推/拉等高风险动作对新手与恢复训练者同时被动作筛选和计划提示词排除，用户要求也不放行</p></div>
+    <div class="card"><h3>计划版本事务化</h3><p>聊天确认换动作后，未做的动作、组次、重量立即同步，已完成的实际组记录保留；已结束的训练不会重新打开</p></div>
+    <div class="card"><h3>推理模型的 TOKEN 预算</h3><p>计划生成与聊天分开给预算，视觉识别另留更高额度，因为推理型模型的思考过程同样消耗 TOKEN</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>运行数据</h2>
+  <p class="lead">以下数字位在实测前保持空白，不做预估、不预填。</p>
+  <div class="metrics">
+    <div class="metric"><div class="num">—</div><div class="label">种子用户数</div><div class="note">待实测 · 埋点</div></div>
+    <div class="metric"><div class="num">—</div><div class="label">4 周留存</div><div class="note">待实测 · 埋点</div></div>
+    <div class="metric"><div class="num">—</div><div class="label">计划生成合规率</div><div class="note">待实测 · 30 条评测集</div></div>
+    <div class="metric"><div class="num">—</div><div class="label">流式 ASR 松手→出字</div><div class="note">待实测 · 端到端计时</div></div>
+  </div>
+  <div class="note">评测用例矩阵与报告模板见仓库 docs/ai-plan-eval.md；每个填进来的数字都需要能说明样本、口径与测量方式。</div>
+</section>
+
+<section>
+  <h2>工程与验证</h2>
+  <table>
+    <tr><th>项</th><th>现状</th></tr>
+    <tr><td>测试基线</td><td>0.8.12 正式包 367 项通过、1 项原有测试跳过（app 230 / core 126 / server 11）；网络测试使用注入连接，不真实联网</td></tr>
+    <tr><td>持续集成</td><td>规划中：push 触发 app + core + server 单测与前端类型检查，接入后补 CI 与覆盖率徽章</td></tr>
+    <tr><td>本地运行</td><td>JDK 21 + Android SDK 35；仓库 Gradle Wrapper；配置见 README「本地开发」</td></tr>
+    <tr><td>已知限制</td><td>仅 Android APK；档案与训练记录存本机、无跨设备同步；素材为非商用授权；0.8.12 已完成模拟器验证，尚未做真机验收</td></tr>
+  </table>
+  <p style="margin-top:18px;font-size:14px">
+    <a href="https://github.com/Erfan817/ready-gym/blob/main/docs/tech-retrospective.md">技术复盘：手写 WebSocket 与流式语音识别</a> ·
+    <a href="https://github.com/Erfan817/ready-gym/blob/main/docs/ai-plan-eval.md">AI 计划评测矩阵</a> ·
+    <a href="https://github.com/Erfan817/ready-gym/blob/main/AGENTS.md">开发手册</a>
+  </p>
+</section>
+
+<footer>
+  动作图片与 GIF 保留 © Gym visual 署名，媒体不属于代码与数据结构的 MIT 许可；项目主人已声明取得 Ready Gym 使用授权，<strong>授权范围不含商用</strong>，本页面仅作技术演示，不用于任何商业用途。<br>
+  训练建议与动作说明未经专业训练或医疗认证，不构成医疗建议；身体疼痛或存在医学限制时应停止训练并寻求专业帮助。<br>
+  健康数据仅用于本地训练记录，采集遵循最小必要原则；日志不记录原始健康描述。
+</footer>
+
+</div>
+</body>
+</html>

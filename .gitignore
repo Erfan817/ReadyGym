@@ -56,3 +56,8 @@ readygym_sport_mascot_fc029_prompt.txt
 # Local release responses contain expiring signed download URLs
 releases/*-published.json
 # Release binaries remain on Pgyer rather than in Git history
+
+# Interview prep and internal diagnostics — private, never publish to the public repo
+.workbuddy/
+docs/interview-prep.md
+docs/readygym-project-map.svg
