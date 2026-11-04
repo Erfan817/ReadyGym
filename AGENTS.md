@@ -101,7 +101,7 @@ cd ../server && ./gradlew test bootJar                                          
 - **头像**：首页/聊天统一 `coachGender(聊天 statedGender) ?: profile.gender`，默认男。两页必须一致。
 - **检查更新**：蒲公英 `buildHaveNewVersion` 字段不可靠，App 端自己比对 `远端 versionCode > 本地`（`PgyerUpdate.parseCheckReply`）。老用户 App 每天静默查一次。
 - **反馈**：匿名 `POST /api/feedback`；查看 `GET /api/admin/feedback`（头 `X-Admin-Token`，在服务器 systemd unit）。
-- **明文 HTTP 白名单**只有 `REDACTED_HOST`（`app/src/main/res/xml/network_security.xml` + debug 变体同名文件，换服务器两处都改）。
+- **明文 HTTP 白名单**只放开当前后端主机（`app/src/main/res/xml/network_security.xml` + debug 变体同名文件，换服务器时两处同步修改）。
 
 ## 5. 配置与凭据（都不进 git）
 
@@ -110,11 +110,11 @@ cd ../server && ./gradlew test bootJar                                          
 | `android/local.properties` | `readyGymAiBaseUrl/AiModel/AiApiKey`（AI 网关）、`readyGymPgyerApiKey/PgyerAppKey`（蒲公英）——打包注入 BuildConfig |
 | `android/gradle.properties` | `readyGymServiceBaseUrl`（进 git；本地调试用 `-PreadyGymServiceBaseUrl=http://10.0.2.2:8080`） |
 | VPS systemd unit | `READYGYM_ADMIN_TOKEN`、`READYGYM_XFYUN_APP_ID/API_KEY/API_SECRET` |
-| `.tmp-tools/deploy_chunked.py` | VPS root 密码（过期时向用户索取） |
+| `.tmp-tools/deploy_chunked.py` | 部署凭据（不进仓库，过期时向用户索取） |
 
 | 凭据 | 找谁/在哪 |
 |---|---|
-| VPS root 密码 | 用户（云控制台）；曾暴露过，提醒定期更换 |
+| VPS 部署凭据 | 云控制台；定期更换 |
 | AI 网关 key、蒲公英 key | `android/local.properties` |
 | 蒲公英账号 | 用户 |
 
@@ -136,9 +136,9 @@ cd ../server && ./gradlew test bootJar                                          
    返回 `code:0` 即成功。验证：`apiv2/app/check` 传 `appKey + buildVersionCode=<上一版>`，确认返回的 `buildVersionNo` 是新 code 且 `downloadURL` 非空（`buildHaveNewVersion` 不可靠，别看它）。
    可选：同包用 `deploy_chunked.py` 传 VPS `/opt/readygym/downloads/` 作备用直链。
 
-## 7. 服务器（VPS REDACTED_HOST）
+## 7. 服务器（VPS）
 
-- **SSH 端口 REDACTED_SSH_PORT**（NAT，22 不通）；公网入口只有 `REDACTED_PORT → 8080`；80/443 被备案拦截，只用高位端口。
+- SSH 走控制台映射的高位端口（22 不通）；公网入口为一条 NAT 转发到内部 8080；80/443 被备案拦截。具体地址与端口见云控制台，不写入仓库。
 - systemd 服务 `readygym`：jar 在 `/opt/readygym/readygym-server.jar`，JDK 21，H2 数据在 `/opt/readygym/data/`。重启 `systemctl restart readygym`，日志 `journalctl -u readygym -f`。**注意：Spring 默认不打请求访问日志，"日志里没有"不代表请求没到。**
 - 该机**纯国内出口**（Cloudflare/GitHub 不通）→ AI 绝不走它中转；apt 源已换阿里云镜像。
 - 部署：`server` 目录 `./gradlew test bootJar` → `python /d/readygym/.tmp-tools/deploy_chunked.py`（分片+md5+自动重启+健康检查）。SFTP 直传经常断线，别用。

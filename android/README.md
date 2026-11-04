@@ -38,7 +38,7 @@ AI 请求由 App 直连网关；打包时上述配置注入 BuildConfig。更换
 
 # Ready Gym Android · v0.4.0 Foundation Demo
 
-versionCode5，Android8.0+。新增对话内规则计划草稿/生效版/修订差异和明确确认，确认由Java业务服务写入PostgreSQL；真实DeepSeek工具闭环已有限验收。六动作原始GIF与浅色主题保持。运行时“Demo连接设置”输入专用访问码，仅Activity内存保存，模型Key/访问码均不编入APK；进程结束需重新输入。默认非secret地址 `https://REDACTED_HOST:REDACTED_PORT/ready-gym-demo`，只配置不等于连接。
+versionCode5，Android8.0+。新增对话内规则计划草稿/生效版/修订差异和明确确认，确认由Java业务服务写入PostgreSQL；真实DeepSeek工具闭环已有限验收。六动作原始GIF与浅色主题保持。运行时“Demo连接设置”输入专用访问码，仅Activity内存保存，模型Key/访问码均不编入APK；进程结束需重新输入。默认 Demo 服务地址见本地私密配置（不写入公开仓库），只配置不等于连接。
 
 完整操作见 [`../docs/foundation-demo-runbook.md`](../docs/foundation-demo-runbook.md)。每个工具提案尚未确认不会覆盖生效版；unknown确认保留原资料版本/完整clientcandidate/draft，只读GET复用相同核验，未发送输入保留且发送禁用。计时核心动作保留seconds而非伪造次数；跨端实际Java/PG回复已纳入HTTP回归。下面v0.3.0描述与哈希属于历史，不能当新安装包验收。
 

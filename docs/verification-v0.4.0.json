@@ -164,7 +164,7 @@
     "demo_records_deleted_verified": true
   },
   "deployed_https_acceptance": {
-    "url": "https://REDACTED_HOST:REDACTED_PORT/ready-gym-demo",
+    "url": "<demo-host>/ready-gym-demo",
     "trusted_https": true,
     "anonymous_model_creation_denied": 401,
     "no_consent_denied": 403,
