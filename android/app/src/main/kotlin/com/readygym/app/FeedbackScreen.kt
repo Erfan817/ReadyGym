@@ -61,7 +61,7 @@ import com.readygym.core.workout.WorkoutSession
  * Nothing changes in the plan until the user taps accept on the diff.
  */
 @Composable
-fun ReviewScreen(vm: GymViewModel, onDone: () -> Unit) {
+fun ReviewScreen(vm: GymViewModel, onDone: () -> Unit, completionOnly: Boolean = false, onRecovery: () -> Unit = {}) {
     val session = vm.reviewing
     val adjustment = vm.adjustment
     var celebratedSession by rememberSaveable { mutableStateOf<Long?>(null) }
@@ -76,23 +76,44 @@ fun ReviewScreen(vm: GymViewModel, onDone: () -> Unit) {
     ) {
         when {
             session == null -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
+            completionOnly -> {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(GymSpacing.Xl),
+                    verticalArrangement = Arrangement.spacedBy(GymSpacing.Lg)) {
+                    ScreenTitle("训练已记录", session.dayTitle)
+                    WorkoutCompletionSummary(session, celebratedSession != session.id) { celebratedSession = session.id }
+                    val history by vm.history.collectAsState()
+                    val days = vm.profile.collectAsState().value.valueOrNull()?.daysPerWeek ?: 3
+                    BadgeRules.awards(history, days).firstOrNull { it.sessionId == session.id }?.let { award ->
+                        Panel(container = ReadyGymColors.AccentWash, modifier = Modifier.testTag("review-award")) {
+                            Text(if (award.unlocked.isEmpty()) "打卡成功！" else "获得新勋章！", fontWeight = FontWeight.Bold)
+                            AwardRow(award)
+                        }
+                    }
+                    Text("先休息一下。每完成 3 次训练，我们会从次日开始在首页问问恢复情况，可以跳过。",
+                        color = ReadyGymColors.MutedText, lineHeight = 22.sp)
+                }
+                Column(Modifier.padding(GymSpacing.Xl), verticalArrangement = Arrangement.spacedBy(GymSpacing.Sm)) {
+                    PrimaryButton("完成", { vm.closeReview(); onDone() }, Modifier.testTag("completion-done"))
+                    SecondaryButton("现在有不适，主动反馈", onRecovery, Modifier.testTag("completion-recovery"))
+                }
+            }
             adjustment != null -> AdjustmentView(vm, adjustment, onDone)
             vm.adjusting -> Adjusting()
-            else -> FeedbackForm(vm, session, onDone, celebrate = celebratedSession != session.id,
-                onCelebrated = { celebratedSession = session.id })
+            else -> FeedbackForm(vm, session, onDone)
         }
     }
 }
 
 @Composable
-private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, onDone: () -> Unit,
-                                     celebrate: Boolean, onCelebrated: () -> Unit) {
+private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, onDone: () -> Unit) {
     var effort by rememberSaveable(session.id) { mutableStateOf<Effort?>(null) }
     var discomfort by rememberSaveable(session.id) { mutableStateOf<Set<BodyArea>>(emptySet()) }
     var noDiscomfort by rememberSaveable(session.id) { mutableStateOf(false) }
     var perExercise by rememberSaveable(session.id) { mutableStateOf<Map<String, Difficulty>>(emptyMap()) }
     var note by rememberSaveable(session.id) { mutableStateOf("") }
-    val exercises = session.sets.map { it.exerciseId }.distinct()
+    val history by vm.history.collectAsState()
+    val recent = (listOf(session) + history.filter { it.id != session.id }).take(3)
+    val exercises = recent.flatMap { it.completedSets }.map { it.exerciseId }.distinct()
     val ready = effort != null && (noDiscomfort || discomfort.isNotEmpty())
     fun feedback() = PostWorkoutFeedback(session.id, requireNotNull(effort), discomfort, perExercise, note.trim())
 
@@ -100,24 +121,15 @@ private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, 
         Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(GymSpacing.Xl),
         verticalArrangement = Arrangement.spacedBy(GymSpacing.Md),
     ) {
-        ScreenTitle("训练已记录", session.dayTitle)
-        WorkoutCompletionSummary(session, celebrate, onCelebrated)
-        val history by vm.history.collectAsState()
-        val days = vm.profile.collectAsState().value.valueOrNull()?.daysPerWeek ?: 3
-        BadgeRules.awards(history, days).firstOrNull { it.sessionId == session.id }?.let { award ->
-            Panel(container = ReadyGymColors.AccentWash, modifier = Modifier.testTag("review-award")) {
-                Text(if (award.unlocked.isEmpty()) "打卡成功！" else "获得新勋章！", fontSize = 17.sp, fontWeight = FontWeight.Bold)
-                AwardRow(award)
-            }
+        ScreenTitle("恢复回访", "聊聊最近几次训练，以及现在的身体感觉")
+        Text("肌肉酸痛可能过一两天才出现；没有酸痛也不代表训练无效。按现在的情况填写就好。",
+            fontSize = 13.sp, lineHeight = 20.sp, color = ReadyGymColors.MutedText)
+        Panel {
+            SectionHeader("这几次训练整体感觉怎么样？", Modifier.padding(top = 0.dp))
+            ChoiceRow(Effort.entries, { it.label }, { it == effort }, { effort = it })
         }
         Panel {
-            SectionHeader("整体感觉怎么样？", Modifier.padding(top = 0.dp))
-            ChoiceRow(listOf(Effort.TOO_EASY, Effort.JUST_RIGHT), { it.label }, { it == effort }, { effort = it })
-            Text("觉得偏难、没完成？不用选——写在下面的备注里，直接跟教练交流。", fontSize = 12.sp,
-                lineHeight = 18.sp, color = ReadyGymColors.MutedText)
-        }
-        Panel {
-            SectionHeader("有没有哪里不舒服？", Modifier.padding(top = 0.dp))
+            SectionHeader("现在有没有哪里不舒服？", Modifier.padding(top = 0.dp))
             Chip("没有", noDiscomfort, { noDiscomfort = true; discomfort = emptySet() }, modifier = Modifier.testTag("feedback-no-discomfort"))
             ChoiceRow(BodyArea.entries, { it.label }, { it in discomfort }, multi = true, onPick = {
                 discomfort = if (it in discomfort) discomfort - it else discomfort + it
@@ -137,7 +149,7 @@ private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, 
         Panel {
             SectionHeader("想对教练说的（选填）", Modifier.padding(top = 0.dp))
             OutlinedTextField(note, { note = it.take(300) }, Modifier.fillMaxWidth().testTag("feedback-note"),
-                placeholder = { Text("例如：深蹲最后一组膝盖有点晃", color = ReadyGymColors.FaintText) }, minLines = 2, shape = GymShapes.Md)
+                placeholder = { Text("例如：前天练腿，今天大腿酸；或肩膀有刺痛", color = ReadyGymColors.FaintText) }, minLines = 2, shape = GymShapes.Md)
         }
     }
     Column(Modifier.padding(horizontal = GymSpacing.Xl, vertical = GymSpacing.Md), verticalArrangement = Arrangement.spacedBy(GymSpacing.Sm)) {
@@ -145,6 +157,7 @@ private fun ColumnScope.FeedbackForm(vm: GymViewModel, session: WorkoutSession, 
         if (!ready) Text("选好整体感觉和是否不适后即可提交。", fontSize = 12.sp, color = ReadyGymColors.MutedText)
         PrimaryButton("让教练调整计划", { vm.requestAdjustment(feedback()) }, Modifier.testTag("feedback-adjust"), enabled = ready)
         SecondaryButton("只保存反馈，不改计划", { vm.saveFeedbackOnly(feedback(), onDone) }, Modifier.testTag("feedback-save"), enabled = ready)
+        SecondaryButton("这次先跳过", { vm.skipRecoveryCheckIn(); vm.closeReview(); onDone() }, Modifier.testTag("feedback-skip"))
     }
 }
 
@@ -176,7 +189,7 @@ internal fun WorkoutCompletionSummary(session: WorkoutSession, celebrate: Boolea
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(if (finishedSets.size == session.sets.size && finishedSets.isNotEmpty()) "这次的训练，完成啦" else "每一组努力都已记下",
                     fontSize = 18.sp, fontWeight = FontWeight.Bold, color = ReadyGymColors.Text)
-                Text("先缓一缓，再告诉教练这次的感受。", fontSize = 13.sp,
+                Text("记录已保存，先休息一下。", fontSize = 13.sp,
                     lineHeight = 20.sp, color = ReadyGymColors.MutedText)
             }
         }
@@ -204,7 +217,7 @@ private fun Adjusting() {
         horizontalAlignment = Alignment.CenterHorizontally) {
         CircularProgressIndicator(color = ReadyGymColors.AccentText)
         Spacer(Modifier.size(GymSpacing.Lg))
-        Text("教练正在根据这次训练调整计划…", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        Text("教练正在根据训练和恢复情况调整计划…", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         Text("通常需要 20–60 秒", fontSize = 13.sp, color = ReadyGymColors.MutedText)
     }
 }

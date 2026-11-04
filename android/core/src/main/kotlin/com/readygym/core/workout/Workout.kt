@@ -31,17 +31,18 @@ data class WorkoutSession(
 
     companion object {
         /**
-         * Pre-fills every set from the plan. [last] should only hold sets logged under the same plan
-         * version: there the user's actual load wins; after a plan change the new prescription wins.
+         * Pre-fills each matching set from completed actual records. The caller excludes history
+         * superseded by an explicitly changed prescription. Match by setIndex, never list position.
          */
         fun start(planVersion: Int, dayIndex: Int, day: PlanDay, nowMillis: Long, last: Map<String, List<SetLog>> = emptyMap()) =
             WorkoutSession(planVersion = planVersion, dayIndex = dayIndex, dayTitle = day.title, startedAtMillis = nowMillis,
                 sets = day.items.flatMap { item ->
                     (0 until item.sets).map { i ->
-                        val prev = last[item.exerciseId]?.getOrNull(i)
+                        val prev = last[item.exerciseId]?.firstOrNull { it.done && it.setIndex == i &&
+                            (it.seconds != null) == (item.seconds != null) }
                         SetLog(item.exerciseId, i,
-                            reps = if (item.seconds == null) item.repsMax ?: item.repsMin else null,
-                            seconds = item.seconds,
+                            reps = if (item.seconds == null) prev?.reps ?: item.repsMax ?: item.repsMin else null,
+                            seconds = if (item.seconds != null) prev?.seconds ?: item.seconds else null,
                             loadKg = prev?.loadKg ?: item.loadKg)
                     }
                 })
@@ -59,6 +60,8 @@ data class PostWorkoutFeedback(
     val discomfort: Set<BodyArea> = emptySet(),
     val perExercise: Map<String, Difficulty> = emptyMap(),
     val note: String = "",
+    /** Null in legacy feedback; a later recovery check-in must not be described as immediate. */
+    val reportedAtMillis: Long? = null,
 ) {
     val hasDiscomfort: Boolean get() = discomfort.isNotEmpty()
 }

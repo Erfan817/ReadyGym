@@ -61,3 +61,8 @@ releases/*-published.json
 .workbuddy/
 docs/interview-prep.md
 docs/readygym-project-map.svg
+
+# Personal payment QR, chat references and UI hierarchy dumps — never publish
+data/source-media/donate/
+data/source-media/chat-adjustment-v0.8.10/
+screenshots/**/*.xml

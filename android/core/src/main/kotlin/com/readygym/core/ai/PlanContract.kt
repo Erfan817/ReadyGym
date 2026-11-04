@@ -84,13 +84,14 @@ class PlanContract(private val library: ExerciseLibrary, private val profile: Us
     ): List<ChatMessage> = listOf(
         ChatMessage("system", SYSTEM),
         ChatMessage("user", buildString {
-            appendLine("我刚练完，请根据训练记录和反馈调整整个计划（所有训练日），没有必要的改动就保持原样。")
+            appendLine("这是最近几次训练后的恢复回访，请根据实际记录和当前反馈调整整个计划（所有训练日），没有必要的改动就保持原样。")
+            appendLine("反馈描述的是现在的恢复感受，可能是训练一两天后才出现的不适，不能当作刚练完的状态，也不能只归因于最近一个动作。不确定疼痛来源时保守安排，并建议先暂停相关动作。")
             appendLine("我的情况：${profile.describe()}")
             appendLine("当前计划 v${current.version}：")
             appendLine(describePlan(current))
-            appendLine("本次训练（${session.dayTitle}）：")
+            appendLine("最近一次训练（${session.dayTitle}），结束时间戳：${session.endedAtMillis}；回访时间戳：${feedback.reportedAtMillis ?: "未记录"}：")
             appendLine(describeSession(session))
-            appendLine("练后反馈：整体${feedback.effort.label}" +
+            appendLine("恢复回访：这几次训练整体${feedback.effort.label}" +
                 (if (feedback.hasDiscomfort) "；不适部位：${feedback.discomfort.joinToString("、") { it.label }}" else "；没有不适") +
                 feedback.perExercise.entries.joinToString("") { (id, d) -> "；${library[id]?.name ?: id}${d.label}" } +
                 (if (feedback.note.isNotBlank()) "；备注：${feedback.note.take(300)}" else ""))

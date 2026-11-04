@@ -62,6 +62,7 @@ fun CoachHomeScreen(
     coachGender: Gender? = null,
     onStartTraining: () -> Unit = {},
     onOpenRecords: () -> Unit = {},
+    onRecovery: (Long) -> Unit = {},
 ) {
     val profile by vm.profile.collectAsState()
     val plan by vm.activePlan.collectAsState()
@@ -109,6 +110,19 @@ fun CoachHomeScreen(
             StateRow(label = "未结束的训练", value = open.valueOrNull()!!.dayTitle,
                 detail = "记录还在，需要时可以继续或结束。", icon = GymIcons.Dumbbell,
                 onClick = onStartTraining, testTag = "home-pending-workout")
+        }
+
+        val latest = history.filter { it.completedSets.isNotEmpty() }
+            .maxWithOrNull(compareBy<WorkoutSession> { it.endedAtMillis }.thenBy { it.id })
+        if (!loading && latest != null) {
+            if (vm.recoveryDue != null) Panel(Modifier.testTag("home-recovery-due"), container = ReadyGymColors.AccentWash) {
+                Text("练过 3 次了，最近恢复得怎么样？", fontWeight = FontWeight.Bold)
+                Text("说说这几天的感受，也可以这次先跳过。", fontSize = 13.sp, color = ReadyGymColors.MutedText)
+                PrimaryButton("聊聊恢复情况", { onRecovery(latest.id) }, Modifier.testTag("home-recovery-open"))
+                SecondaryButton("这次先跳过", vm::skipRecoveryCheckIn, Modifier.testTag("home-recovery-skip"))
+            }
+            StateRow("恢复反馈", "身体不适或觉得训练太难？", "随时告诉教练，不用等下次回访", GymIcons.Person,
+                onClick = { onRecovery(latest.id) }, testTag = "home-recovery-manual")
         }
 
         if (!loading && primary.destination != HomeDestination.COACH) {

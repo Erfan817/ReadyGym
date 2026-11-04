@@ -12,6 +12,7 @@ import com.readygym.core.workout.SetLog
 import com.readygym.core.workout.WorkoutSession
 import com.readygym.core.workout.withUpdatedPlan
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import java.time.Instant
@@ -139,7 +140,28 @@ class GymRepository(private val db: GymDatabase, private val clock: () -> Long =
 
     suspend fun startSession(plan: WorkoutPlan, dayIndex: Int): WorkoutSession = db.withTransaction {
         val day = plan.days[dayIndex]
-        val last = lastSets(day.items.map { it.exerciseId }, plan.version)
+        val last = day.items.mapNotNull { item ->
+            val records = dao.lastSetsFor(item.exerciseId)
+            val session = records.firstOrNull()?.let { dao.session(it.sessionId) } ?: return@mapNotNull null
+            val previous = dao.planVersionNow(session.session.planVersion)?.toPlan()
+                ?.days?.getOrNull(session.session.dayIndex)?.items?.find { it.exerciseId == item.exerciseId }
+                ?: return@mapNotNull null
+            if ((previous.seconds != null) != (item.seconds != null)) return@mapNotNull null
+            if (session.session.planVersion != plan.version) {
+                val removedInBetween = dao.planVersions().first().filter {
+                    it.version > session.session.planVersion && it.version < plan.version
+                }.any { version -> version.toPlan().days.none { d -> d.items.any { it.exerciseId == item.exerciseId } } }
+                if (removedInBetween) return@mapNotNull null
+            }
+            // Only explicitly changed fields use the new prescription. For example a new rep
+            // target must not also erase an unchanged weight that the user actually lifted.
+            item.exerciseId to records.map { record -> record.toModel().copy(
+                loadKg = if (previous.loadKg != item.loadKg) item.loadKg else record.loadKg,
+                reps = if (previous.repsMin != item.repsMin || previous.repsMax != item.repsMax)
+                    item.repsMax ?: item.repsMin else record.reps,
+                seconds = if (previous.seconds != item.seconds) item.seconds else record.seconds,
+            ) }
+        }.toMap()
         val draft = WorkoutSession.start(plan.version, dayIndex, day, clock(), last)
         val id = dao.insertSession(SessionEntity(0, draft.planVersion, dayIndex, draft.dayTitle, draft.startedAtMillis, null))
         dao.insertSets(draft.sets.map { it.toEntity(id) })

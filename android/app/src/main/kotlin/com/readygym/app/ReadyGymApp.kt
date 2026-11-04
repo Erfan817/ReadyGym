@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /** Full-screen tasks that sit above the tabs; each owns its own way out. */
-private enum class Overlay { NONE, PROFILE_FORM, WORKOUT, REVIEW, RENAME, COACH, EQUIPMENT, FEEDBACK, DONATE, MUSCLE_PICKER, COMMUNITY, RECORDS }
+private enum class Overlay { NONE, PROFILE_FORM, WORKOUT, SUMMARY, REVIEW, RENAME, COACH, EQUIPMENT, FEEDBACK, DONATE, MUSCLE_PICKER, COMMUNITY, RECORDS }
 
 /**
  * App shell: nickname sign-up → tabs (首页 / 计划 / 开始 / 统计 / 我的) plus full-screen tasks.
@@ -162,10 +162,11 @@ fun ReadyGymApp(client: CoachClient? = null) {
                 onCancel = { overlay = Overlay.NONE })
         }
         overlay == Overlay.WORKOUT -> WorkoutScreen(gym, onClose = { overlay = Overlay.NONE },
-            onFinished = { reviewSessionId = it.id; overlay = Overlay.REVIEW })
-        overlay == Overlay.REVIEW -> {
+            onFinished = { reviewSessionId = it.id; overlay = Overlay.SUMMARY })
+        overlay == Overlay.REVIEW || overlay == Overlay.SUMMARY -> {
             LaunchedEffect(reviewSessionId) { gym.openReview(reviewSessionId) }
-            ReviewScreen(gym, onDone = { overlay = Overlay.NONE; tab = AppTab.STATS })
+            ReviewScreen(gym, onDone = { overlay = Overlay.NONE; tab = AppTab.HOME },
+                completionOnly = overlay == Overlay.SUMMARY, onRecovery = { overlay = Overlay.REVIEW })
         }
         overlay == Overlay.COACH -> {
             val c = requireNotNull(coach)
@@ -227,6 +228,7 @@ fun ReadyGymApp(client: CoachClient? = null) {
                     coachGender = coach?.statedGender,
                     onStartTraining = { openWorkout() },
                     onOpenRecords = { overlay = Overlay.RECORDS },
+                    onRecovery = { id -> reviewSessionId = id; overlay = Overlay.REVIEW },
                 )
             },
             plan = {

@@ -1,0 +1,103 @@
+{
+  "version": "0.8.13",
+  "versionCode": 32,
+  "tests": {
+    "app": {
+      "tests": 237,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "core": {
+      "tests": 131,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "server": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "passed": 378,
+  "skipped": 1,
+  "testLog": ".tmp-tools/v0813-tests-final.log",
+  "serverTestLog": ".tmp-tools/v0813-server-tests.log",
+  "releaseBuildLog": ".tmp-tools/v0813-release.log",
+  "buildOutput": ".tmp-tools/release-0.8.13-build/app/outputs/apk/release/app-release.apk",
+  "upgradeFrom": "0.8.12",
+  "emulator": {
+    "upgradeAllTablesUnchanged": {
+      "android_metadata": "b75020507f255a4045d7df8db986dd0206736f9357d605c63a69c44381f02787",
+      "feedback": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "plan_version": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7",
+      "profile": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48",
+      "room_master_table": "605020734389ee21ac7c451f88170134b9ab21b9edee4007665bb8e4d1fc837a",
+      "set_log": "8afa7e3f9d92a72f5e24e81a099f7b15bc00dca35c006f684823fc41ee66b3b0",
+      "sqlite_sequence": "2385a1dfa44dc2e327cc6b28c4b21b532d529458b08e024cc28711286134981d",
+      "weight_entry": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "weight_target": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "workout_session": "66570f5b84bcb70f14d82d03386cccbb8d9a7b3e93f965a992a15ac124906815"
+    },
+    "seedSessionIds": [
+      36,
+      37,
+      38
+    ],
+    "skipPersistsAfterRestart": true,
+    "actualsCarriedToNewSession": [
+      [
+        "goblet-squat",
+        0,
+        12,
+        null,
+        10.0,
+        0
+      ],
+      [
+        "goblet-squat",
+        1,
+        7,
+        null,
+        18.5,
+        0
+      ],
+      [
+        "plank",
+        0,
+        null,
+        44,
+        null,
+        0
+      ],
+      [
+        "plank",
+        1,
+        null,
+        30,
+        null,
+        0
+      ]
+    ],
+    "activeSessionActualsSurviveRestart": true,
+    "timedActualShownInUi": 44,
+    "completionShowsSummaryWithoutFeedback": true,
+    "feedbackSavedWithSeparateTimestampAndNoPlanChange": true,
+    "originalEmulatorDatabaseRestored": true
+  },
+  "apk": "D:\\readygym\\releases\\ReadyGym-0.8.13-lite.apk",
+  "sha256": "300dfb58ae394e1ec53a3447f019760cec731a83a88757993d2a7932e5bc5c33",
+  "published": true,
+  "downloadVerified": true,
+  "screenshots": "screenshots/v0.8.13/",
+  "realDeviceTested": false,
+  "liveAiRecoveryAdjustmentTested": false,
+  "notes": [
+    "Existing native Movie test remains skipped.",
+    "Final full test suite passed after retrying an intermittent native Robolectric GIF decoder crash.",
+    "Release used a fresh project-local output directory after stale compressed asset cache failed.",
+    "Fixture workouts were blocked from the production service; original emulator database restored."
+  ]
+}

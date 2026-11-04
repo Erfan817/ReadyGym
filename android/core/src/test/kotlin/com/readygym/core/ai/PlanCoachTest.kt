@@ -153,7 +153,7 @@ class PlanCoachTest {
             SetLog("goblet-squat", 1, 10, loadKg = 12.0, done = true),
             SetLog("plank", 0, seconds = 30, done = false),
         ))
-        val fb = PostWorkoutFeedback(7, Effort.TOO_EASY, setOf(BodyArea.KNEE), mapOf("goblet-squat" to Difficulty.EASY), "膝盖有点酸")
+        val fb = PostWorkoutFeedback(7, Effort.TOO_EASY, setOf(BodyArea.KNEE), mapOf("goblet-squat" to Difficulty.EASY), "膝盖有点酸", reportedAtMillis = 172800001)
         val reply = goodReply.replace("{\"summary\"", "{\"reasons\":{\"goblet-squat\":\"偏易，加 2kg\",\"ghost\":\"x\"},\"summary\"")
         val model = Scripted(reply)
         val p = PlanCoach(model, library).adjust(profile, current, session, fb)
@@ -164,6 +164,9 @@ class PlanCoachTest {
         assertTrue(prompt, "不适部位：膝盖" in prompt)
         assertTrue(prompt, "哑铃高脚杯深蹲偏易" in prompt)
         assertTrue(prompt, "膝盖有点酸" in prompt)
+        assertTrue(prompt, "恢复回访" in prompt)
+        assertTrue(prompt, "回访时间戳：172800001" in prompt)
+        assertFalse(prompt, "我刚练完" in prompt)
         assertEquals(3, p.plan.version)
         assertEquals("练后调整：下肢", p.plan.reason)
         assertEquals(mapOf("goblet-squat" to "偏易，加 2kg"), p.reasons)

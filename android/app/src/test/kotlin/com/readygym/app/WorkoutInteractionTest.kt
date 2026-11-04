@@ -186,6 +186,47 @@ class WorkoutInteractionTest {
         compose.runOnIdle { assertEquals(1, shown) }
     }
 
+    @Test fun finishingShowsSummaryWithoutFeedbackAndAllowsVoluntaryRecovery() {
+        val vm = withLegacyPlan(finished = true)
+        awaitStoredState { vm.history.value.isNotEmpty() }
+        compose.runOnIdle { vm.openReview(vm.history.value.first().id) }
+        awaitStoredState { vm.reviewing != null }
+        var summary by mutableStateOf(true)
+        compose.setContent { ReadyGymTheme {
+            ReviewScreen(vm, onDone = {}, completionOnly = summary, onRecovery = { summary = false })
+        } }
+        compose.onNodeWithTag("review-summary").assertIsDisplayed()
+        compose.onNodeWithTag("feedback-adjust").assertDoesNotExist()
+        compose.onNodeWithTag("completion-done").assertIsDisplayed()
+        compose.onNodeWithTag("completion-recovery").performClick()
+        compose.onNodeWithText("恢复回访").assertIsDisplayed()
+        compose.onNodeWithTag("feedback-skip").assertIsDisplayed()
+        compose.onNodeWithTag("review-summary").assertDoesNotExist()
+    }
+
+    @Test fun homeCheckInAppearsAfterThreeWorkoutsOnTheNextDayAndSkipKeepsRecords() {
+        val vm = withLegacyPlan(finished = true)
+        awaitStoredState { vm.history.value.size == 1 && vm.activePlan.value.valueOrNull() != null }
+        val repo = GymRepository(db!!)
+        val plan = vm.activePlan.value.valueOrNull()!!
+        runBlocking {
+            repeat(2) {
+                val s = repo.startSession(plan, 0)
+                repo.updateSets(s.id, s.sets.map { it.copy(done = true) })
+                repo.finishSession(s.id)
+            }
+        }
+        awaitStoredState { vm.history.value.size == 3 }
+        compose.setContent { ReadyGymTheme { CoachHomeScreen(vm, "测试", true, false, {}, {}) } }
+        compose.onNodeWithTag("home-recovery-due").assertDoesNotExist()
+        compose.runOnIdle { vm.refreshDate(vm.today.plusDays(1)) }
+        compose.onNodeWithTag("home-recovery-due").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("home-recovery-skip").performScrollTo().performClick()
+        compose.onNodeWithTag("home-recovery-due").assertDoesNotExist()
+        compose.onNodeWithTag("home-recovery-manual").performScrollTo().assertIsDisplayed()
+        assertEquals(3, vm.history.value.size)
+    }
+
     @Test fun visibleWorkoutChangesExerciseEvenWhenSessionIdAndSetCountStayTheSame() {
         val database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), GymDatabase::class.java).build()
         db = database

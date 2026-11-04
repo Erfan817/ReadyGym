@@ -72,7 +72,7 @@ class PlanTest {
 
     @Test fun sessionPrefillsSetsAndCarriesLastLoad() {
         val day = PlanDay("d", items = listOf(goblet, plank))
-        val last = mapOf("goblet-squat" to listOf(com.readygym.core.workout.SetLog("goblet-squat", 0, 10, loadKg = 16.0)))
+        val last = mapOf("goblet-squat" to listOf(com.readygym.core.workout.SetLog("goblet-squat", 0, 10, loadKg = 16.0, done = true)))
         val s = WorkoutSession.start(1, 0, day, 1000, last)
         assertEquals(6, s.sets.size)
         assertEquals(16.0, s.sets[0].loadKg)

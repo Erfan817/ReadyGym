@@ -78,6 +78,55 @@ class GymRepositoryTest {
         assertNull(repo.session(s.id))
     }
 
+    @Test fun carriesSparseActualsAcrossRestartAndUnrelatedPlanChangesButHonorsNewTargets() = runTest {
+        val p = repo.savePlan(plan)
+        val old = repo.startSession(p, 0)
+        repo.updateSets(old.id, old.sets.map { s -> when {
+            s.exerciseId == "goblet-squat" && s.setIndex == 1 -> s.copy(reps = 7, loadKg = 18.5, done = true)
+            s.exerciseId == "plank" && s.setIndex == 0 -> s.copy(seconds = 44, done = true)
+            else -> s
+        } })
+        repo.finishSession(old.id)
+        now += 86_400_000
+        val v2 = repo.savePlan(p.copy(summary = "只改说明"))
+        val restored = GymRepository(db) { now }
+        val next = restored.startSession(v2, 0)
+        assertEquals(10, next.sets[0].reps)
+        assertEquals(7, next.sets[1].reps)
+        assertEquals(18.5, next.sets[1].loadKg)
+        assertEquals(44, next.sets[2].seconds)
+        assertEquals(30, next.sets[3].seconds)
+        assertTrue(next.sets.none { it.done })
+        restored.discardSession(next.id)
+        val v3 = repo.savePlan(v2.copy(days = v2.days.mapIndexed { i, day ->
+            if (i == 0) day.copy(items = day.items.map { if (it.exerciseId == "goblet-squat") it.copy(repsMin = 6, repsMax = 8) else it }) else day
+        }))
+        val changed = restored.startSession(v3, 0)
+        assertEquals(8, changed.sets[1].reps)
+        assertEquals(18.5, changed.sets[1].loadKg)
+        assertEquals(44, changed.sets[2].seconds)
+        restored.discardSession(changed.id)
+        val v4 = repo.savePlan(v2.copy(days = v2.days.mapIndexed { i, day ->
+            if (i == 0) day.copy(items = day.items.map { if (it.exerciseId == "goblet-squat") it.copy(loadKg = 16.0) else it }) else day
+        }))
+        val newLoad = restored.startSession(v4, 0)
+        assertEquals(16.0, newLoad.sets[1].loadKg)
+        assertEquals(7, newLoad.sets[1].reps)
+        assertEquals(old.sets.size, repo.session(old.id)!!.sets.size)
+    }
+
+    @Test fun reintroducedExerciseUsesPlanTargetsInsteadOfRemovedHistory() = runTest {
+        val p = repo.savePlan(plan)
+        val old = repo.startSession(p, 0)
+        repo.updateSets(old.id, old.sets.map { it.copy(reps = 7, loadKg = 20.0, done = true) })
+        repo.finishSession(old.id)
+        repo.savePlan(p.copy(days = p.days.map { d -> d.copy(items = d.items.filterNot { it.exerciseId == "goblet-squat" }) }))
+        val reintroduced = repo.savePlan(p)
+        val next = repo.startSession(reintroduced, 0)
+        assertEquals(12.0, next.sets.first().loadKg)
+        assertEquals(10, next.sets.first().reps)
+    }
+
     @Test fun feedbackRoundTrips() = runTest {
         val s = repo.startSession(repo.savePlan(plan), 0)
         repo.finishSession(s.id)

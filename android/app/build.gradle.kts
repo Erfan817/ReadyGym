@@ -13,8 +13,8 @@ android {
         applicationId = "com.readygym.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 31
-        versionName = "0.8.12"
+        versionCode = 32
+        versionName = "0.8.13"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }

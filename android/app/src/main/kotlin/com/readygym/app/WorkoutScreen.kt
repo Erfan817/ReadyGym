@@ -170,7 +170,7 @@ private fun SetTable(vm: GymViewModel, session: WorkoutSession, exercise: Exerci
         }
         indices.forEach { i ->
             val set = session.sets[i]
-            WorkoutSetRow(session.id, i, set, last.getOrNull(set.setIndex), timed, loadable,
+            WorkoutSetRow(session.id, i, set, last.find { it.setIndex == set.setIndex }, timed, loadable,
                 active = i == indices.firstOrNull { !session.sets[it].done }) { vm.updateSet(i, it) }
         }
     }
@@ -262,7 +262,7 @@ private fun EndDialog(session: WorkoutSession, onFinish: () -> Unit, onDiscard: 
         title = { Text(if (done == session.sets.size) "完成训练" else "提前结束？") },
         text = {
             Text(if (done == 0) "还没有打勾的组。可以放弃本次训练，不会留下记录。"
-            else "已完成 $done/${session.sets.size} 组。结束后记录这次训练，并请你反馈感受。")
+            else "已完成 $done/${session.sets.size} 组。结束后保存记录，恢复情况会每练 3 次再回访。")
         },
         confirmButton = {
             if (done > 0) TextButton(onClick = onFinish, modifier = Modifier.testTag("end-finish")) { Text("完成并记录") }

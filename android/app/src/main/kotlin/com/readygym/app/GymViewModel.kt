@@ -24,6 +24,7 @@ import com.readygym.core.workout.PostWorkoutFeedback
 import com.readygym.core.workout.SetLog
 import com.readygym.core.workout.WorkoutSession
 import com.readygym.core.workout.latestWorkoutOnDate
+import com.readygym.core.workout.recoveryCheckInDue
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -66,6 +67,7 @@ class GymViewModel(
     private val server: ServerApi? = null,
     private val io: CoroutineDispatcher = Dispatchers.IO,
     private val clock: () -> Long = System::currentTimeMillis,
+    private val recoveryStore: RecoveryCheckInStore? = null,
 ) : ViewModel() {
 
     val profile: StateFlow<Loaded<UserProfile?>> = repo.profile.loaded()
@@ -73,6 +75,7 @@ class GymViewModel(
     val openSession: StateFlow<Loaded<WorkoutSession?>> = repo.openSession.loaded()
     val history: StateFlow<List<WorkoutSession>> =
         repo.history.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    private val savedFeedback: StateFlow<Loaded<Map<Long, PostWorkoutFeedback>>> = repo.allFeedback.loaded()
 
     var proposal by mutableStateOf<PlanProposal?>(null)
         private set
@@ -109,6 +112,23 @@ class GymViewModel(
 
     val completedToday: WorkoutSession?
         get() = latestWorkoutOnDate(history.value, today, dateZone)
+
+    private var recoveryHandledThroughId by mutableStateOf(recoveryStore?.handledThroughId() ?: 0L)
+    val recoveryDue: WorkoutSession?
+        get() {
+            val feedback = savedFeedback.value.valueOrNull() ?: return null
+            val checkpoint = maxOf(recoveryHandledThroughId, feedback.keys.maxOrNull() ?: 0L)
+            return recoveryCheckInDue(history.value, checkpoint, today, dateZone)
+        }
+
+    fun skipRecoveryCheckIn() {
+        markRecoveryHandled(history.value.maxOfOrNull { it.id } ?: 0L)
+    }
+
+    private fun markRecoveryHandled(sessionId: Long) {
+        recoveryHandledThroughId = maxOf(recoveryHandledThroughId, sessionId)
+        recoveryStore?.markHandled(recoveryHandledThroughId)
+    }
 
     fun refreshDate(date: LocalDate = localDate()) {
         dateZone = ZoneId.systemDefault()
@@ -356,7 +376,11 @@ class GymViewModel(
     }
 
     fun saveFeedbackOnly(f: PostWorkoutFeedback, onDone: () -> Unit) {
-        viewModelScope.launch { repo.saveFeedback(f); closeReview(); onDone() }
+        viewModelScope.launch {
+            repo.saveFeedback(f.copy(reportedAtMillis = clock()))
+            markRecoveryHandled(f.sessionId)
+            closeReview(); onDone()
+        }
     }
 
     /** Saves the feedback, then asks the coach to adjust the whole plan from it. */
@@ -370,9 +394,11 @@ class GymViewModel(
         adjusting = true; adjustError = null
         viewModelScope.launch {
             try {
-                repo.saveFeedback(f)
+                val reported = f.copy(reportedAtMillis = clock())
+                repo.saveFeedback(reported)
+                markRecoveryHandled(f.sessionId)
                 val recent = repo.recentSessions(5)
-                val proposal = withContext(io) { PlanCoach(modelFor(key), library).adjust(p, plan, s, f, recent) }
+                val proposal = withContext(io) { PlanCoach(modelFor(key), library).adjust(p, plan, s, reported, recent) }
                 adjustment = PlanAdjustment(plan, proposal, PlanDiff.between(plan, proposal.plan), f.hasDiscomfort)
             } catch (e: PlanRejectedException) {
                 adjustError = "AI 两次给出的调整都不符合要求，请重试。（${e.problems.first()}）"
@@ -438,7 +464,7 @@ class GymViewModel(
                 return GymViewModel(GymRepository(GymDatabase.get(app)), library, apiKey = { account.load()?.TOKEN },
                     modelFor = { DeepSeekApi.bundled(maxTokens = 4000, readTimeoutMs = 120_000)
                         ?: server.chatModel(maxTokens = 4000, readTimeoutMs = 120_000) },
-                    server = server) as T
+                    server = server, recoveryStore = RecoveryCheckInStore(app)) as T
             }
         }
     }

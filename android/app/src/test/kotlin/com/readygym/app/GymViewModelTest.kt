@@ -165,6 +165,19 @@ class GymViewModelTest {
         assertEquals(1, vm.history.value.size)
     }
 
+    @Test fun delayedFeedbackStoresTheReportingTimeAndDoesNotModifyThePlan() {
+        planAndFinishOneWorkout()
+        val session = vm.reviewing!!
+        now += 2 * 86_400_000L
+        var done = false
+        vm.saveFeedbackOnly(PostWorkoutFeedback(session.id, Effort.TIRING, note = "两天后腿酸")) { done = true }
+        await("delayed feedback saved") { done }
+        val feedback = kotlinx.coroutines.runBlocking { GymRepository(db).feedback(session.id)!! }
+        assertEquals(now, feedback.reportedAtMillis)
+        assertEquals(session.endedAtMillis, vm.history.value.single().endedAtMillis)
+        assertEquals(1, vm.activePlan.value.valueOrNull()?.version)
+    }
+
     @Test fun missingKeyExplainsInsteadOfCallingTheModel() {
         planAndFinishOneWorkout()
         val calls = prompts.size
