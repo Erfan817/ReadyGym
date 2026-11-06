@@ -8,6 +8,7 @@ import com.readygym.server.account.AuthInterceptor;
 import com.readygym.server.account.Device;
 import com.readygym.server.common.ApiException;
 import com.readygym.server.common.ReadyGymProperties;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.Set;
 
 /**
  * An OpenAI-compatible chat endpoint in front of DeepSeek, so the app keeps its request format and
- * only swaps the base URL and the bearer TOKEN. The server decides the model, the TOKEN budget and
+ * only swaps the base URL and the bearer token. The server decides the model, the token budget and
  * the topic guard; the client cannot override any of them.
  */
 @RestController
@@ -50,9 +51,12 @@ public class AiProxyController {
     @PostMapping(value = "/chat/completions", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> complete(@RequestAttribute(AuthInterceptor.DEVICE) Device device, @RequestBody JsonNode body) {
         ObjectNode upstream = upstreamRequest(body);
-        charge(device);
+        checkQuota(device);
         ModelGateway.UpstreamResponse response = gateway.complete(upstream.toString());
-        if (response.status() / 100 == 2) return ResponseEntity.ok(response.body());
+        if (response.status() / 100 == 2) {
+            charge(device);   // Only a successful upstream reply costs one of the daily calls.
+            return ResponseEntity.ok(response.body());
+        }
         // Provider-side auth or billing problems are the operator's, not the user's: never report
         // them as a bad user credential.
         throw switch (response.status()) {
@@ -85,8 +89,8 @@ public class AiProxyController {
         ObjectNode out = json.createObjectNode();
         out.put("model", props.deepseek().model());
         out.set("messages", cleaned);
-        int requested = body.path("max_TOKENs").asInt(props.ai().maxTokens());
-        out.put("max_TOKENs", Math.max(64, Math.min(requested, props.ai().maxTokens())));
+        int requested = body.path("max_tokens").asInt(props.ai().maxTokens());
+        out.put("max_tokens", Math.max(64, Math.min(requested, props.ai().maxTokens())));
         out.put("temperature", Math.max(0.0, Math.min(body.path("temperature").asDouble(0.3), 1.0)));
         out.put("stream", false);
         if ("json_object".equals(body.path("response_format").path("type").asText())) {
@@ -95,14 +99,38 @@ public class AiProxyController {
         return out;
     }
 
-    /** One call per request; the unique (device, day) row keeps the count per day. */
+    /** Read-only pre-check, kept ahead of the upstream call so an exhausted quota costs nothing. */
+    private void checkQuota(Device device) {
+        LocalDate today = LocalDate.now(props.zoneId());
+        int limit = props.ai().dailyLimitPerDevice();
+        if (usage.findByDeviceIdAndDay(device.getId(), today)
+                .filter(row -> row.getCalls() >= limit).isPresent()) {
+            throw dailyLimit();
+        }
+    }
+
+    /**
+     * One call per request, charged only after a 2xx. The conditional UPDATE is the atomic quota
+     * gate; a first-ever row is created under the (device, day) unique key, and a concurrent
+     * insert of that row is absorbed and followed by exactly one retry.
+     */
     void charge(Device device) {
         LocalDate today = LocalDate.now(props.zoneId());
-        AiUsage row = usage.findByDeviceIdAndDay(device.getId(), today).orElseGet(() -> new AiUsage(device.getId(), today));
-        if (row.getCalls() >= props.ai().dailyLimitPerDevice()) {
-            throw new ApiException(HttpStatus.TOO_MANY_REQUESTS, "daily_limit", "今天的 AI 次数用完了，明天再来吧");
+        int limit = props.ai().dailyLimitPerDevice();
+        if (usage.tryCharge(device.getId(), today, limit) > 0) return;
+        if (usage.findByDeviceIdAndDay(device.getId(), today)
+                .filter(row -> row.getCalls() >= limit).isPresent()) {
+            throw dailyLimit();
         }
-        row.increment();
-        usage.save(row);
+        try {
+            usage.save(new AiUsage(device.getId(), today));
+        } catch (DataIntegrityViolationException ignored) {
+            // Another request inserted today's row first; fall through and retry the charge once.
+        }
+        if (usage.tryCharge(device.getId(), today, limit) == 0) throw dailyLimit();
+    }
+
+    private static ApiException dailyLimit() {
+        return new ApiException(HttpStatus.TOO_MANY_REQUESTS, "daily_limit", "今天的 AI 次数用完了，明天再来吧");
     }
 }

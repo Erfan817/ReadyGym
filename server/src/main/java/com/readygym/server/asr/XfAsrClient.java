@@ -9,11 +9,13 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.net.ssl.SSLParameters;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -263,6 +265,9 @@ public class XfAsrClient {
 
     /** Minimal blocking RFC6455 client: one clip per connection, masked client frames, TLS. */
     static final class WsClient implements AutoCloseable {
+        /** One result frame is a small JSON object; cap it so a bogus 64-bit length cannot OOM us. */
+        private static final int MAX_FRAME_BYTES = 8 * 1024 * 1024;
+
         private final javax.net.ssl.SSLSocket socket;
         private final java.io.InputStream in;
         private final java.io.OutputStream out;
@@ -273,6 +278,11 @@ public class XfAsrClient {
             // A stalled XunFei connection must not hang the reader forever; callers bound their
             // own waits below this.
             socket.setSoTimeout(130_000);
+            // Without endpoint identification the handshake checks the certificate chain but not
+            // that it belongs to this host, so any trusted certificate could impersonate XunFei.
+            SSLParameters tls = socket.getSSLParameters();
+            tls.setEndpointIdentificationAlgorithm("HTTPS");
+            socket.setSSLParameters(tls);
             socket.startHandshake();
             out = socket.getOutputStream();
             in = socket.getInputStream();
@@ -283,18 +293,55 @@ public class XfAsrClient {
                 + "Sec-WebSocket-Version: 13\r\n\r\n";
             out.write(req.getBytes(StandardCharsets.US_ASCII));
             out.flush();
+
+            String head = readHead();
+            String[] lines = head.split("\r\n");
+            if (lines.length == 0 || !lines[0].contains(" 101 ")) {
+                throw new IOException("handshake failed: " + head.replace('\n', ' '));
+            }
+            // RFC 6455: the server must echo the handshake key hashed with the fixed GUID.
+            String expectedAccept = Base64.getEncoder().encodeToString(
+                MessageDigest.getInstance("SHA-1").digest(
+                    (key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").getBytes(StandardCharsets.US_ASCII)));
+            boolean upgrade = false, accept = false;
+            for (int i = 1; i < lines.length; i++) {
+                String line = lines[i];
+                int colon = line.indexOf(':');
+                if (colon < 0) continue;
+                String name = line.substring(0, colon).trim();
+                String value = line.substring(colon + 1).trim();
+                if (name.equalsIgnoreCase("Upgrade") && value.equalsIgnoreCase("websocket")) upgrade = true;
+                if (name.equalsIgnoreCase("Sec-WebSocket-Accept") && value.equals(expectedAccept)) accept = true;
+            }
+            if (!upgrade || !accept) throw new IOException("invalid websocket handshake");
+        }
+
+        private String readHead() throws IOException {
             StringBuilder head = new StringBuilder();
             int c;
             while ((c = in.read()) != -1) {
                 head.append((char) c);
-                if (head.toString().endsWith("\r\n\r\n")) break;
+                if (head.length() > 16 * 1024) throw new IOException("handshake response too large");
+                if (head.indexOf("\r\n\r\n") >= 0) break;
             }
-            if (!head.toString().contains("101")) throw new IOException("handshake failed: " + head.toString().replace('\n', ' '));
+            return head.toString();
         }
 
         void send(String text) throws IOException {
-            byte[] payload = text.getBytes(StandardCharsets.UTF_8);
-            out.write(0x81); // FIN + text frame
+            writeFrame(0x81, text.getBytes(StandardCharsets.UTF_8)); // FIN + text
+        }
+
+        /** RFC 6455: answer a server ping with a pong carrying the same payload. */
+        private void pong(byte[] payload) throws IOException {
+            writeFrame(0x8A, payload); // FIN + pong
+        }
+
+        /**
+         * All client frames are masked. Synchronized because the streaming reader thread may write
+         * a pong while the request thread writes audio; interleaved bytes would corrupt the frames.
+         */
+        private synchronized void writeFrame(int firstByte, byte[] payload) throws IOException {
+            out.write(firstByte);
             if (payload.length < 126) out.write(0x80 | payload.length);
             else if (payload.length < 65_536) {
                 out.write(0x80 | 126);
@@ -307,8 +354,9 @@ public class XfAsrClient {
             byte[] mask = new byte[4];
             new java.security.SecureRandom().nextBytes(mask);
             out.write(mask);
-            for (int i = 0; i < payload.length; i++) payload[i] ^= mask[i % 4];
-            out.write(payload);
+            byte[] masked = payload.clone();
+            for (int i = 0; i < masked.length; i++) masked[i] ^= mask[i % 4];
+            out.write(masked);
             out.flush();
         }
 
@@ -320,11 +368,28 @@ public class XfAsrClient {
                 int b0 = in.read();
                 if (b0 == -1) return;
                 int b1 = in.read();
+                if (b1 == -1) return;                        // truncated frame header
                 boolean masked = (b1 & 0x80) != 0;
                 long len = b1 & 0x7F;
-                if (len == 126) len = ((in.read() & 0xFF) << 8) | (in.read() & 0xFF);
-                else if (len == 127) for (int i = 0; i < 8; i++) len = (len << 8) | (in.read() & 0xFF);
+                if (len == 126) {
+                    int hi = in.read(), lo = in.read();
+                    if (hi == -1 || lo == -1) return;
+                    len = ((hi & 0xFF) << 8) | (lo & 0xFF);
+                } else if (len == 127) {
+                    long extended = 0;
+                    for (int i = 0; i < 8; i++) {
+                        int b = in.read();
+                        if (b == -1) return;
+                        extended = (extended << 8) | (b & 0xFF);
+                    }
+                    // RFC 6455 reserves the top bit; a negative long or an oversized length would
+                    // overflow (int) len and make the read loop allocate/run away.
+                    if (extended < 0 || extended > MAX_FRAME_BYTES) return;
+                    len = extended;
+                }
+                if (len > MAX_FRAME_BYTES) return;          // also keeps (int) len non-negative
                 byte[] mask = masked ? in.readNBytes(4) : null;
+                if (masked && mask.length != 4) return;     // truncated masking key
                 buf.reset();
                 int remaining = (int) len;
                 byte[] chunk = new byte[Math.min(Math.max(remaining, 1), 8192)];
@@ -337,18 +402,21 @@ public class XfAsrClient {
                 byte[] payload = buf.toByteArray();
                 if (masked) for (int i = 0; i < payload.length; i++) payload[i] ^= mask[i % 4];
                 int opcode = b0 & 0x0F;
-                if (opcode == 8) return; // server close
+                if (opcode == 8) return;                    // server close
+                if (opcode == 9) { pong(payload); continue; }  // ping -> pong, keep reading
                 if (opcode == 1) onText.accept(new String(payload, StandardCharsets.UTF_8));
             }
         }
 
         @Override public void close() {
-            try {
-                out.write(0x88);
-                out.write(0x80);
-                out.write(new byte[4]);
-                out.flush();
-            } catch (Exception ignored) {}
+            synchronized (this) {   // same lock as writeFrame: never interleave a close with a send
+                try {
+                    out.write(0x88);
+                    out.write(0x80);
+                    out.write(new byte[4]);
+                    out.flush();
+                } catch (Exception ignored) {}
+            }
             try { socket.close(); } catch (Exception ignored) {}
         }
     }

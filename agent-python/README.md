@@ -1,6 +1,6 @@
 # Ready Gym Python · Foundation Demo v0.4.0
 
-**已新增真实 Agent 工具循环和 Java/PostgreSQL业务确认路径。** 验证运行使用官方 `deepseek-flash`，建档→工具草稿→明确确认v1→自然语言修订→确认v2→历史/风险阻断最近修复后验证共7次模型调用、已知12,750TOKENs（此前一轮11,153TOKENs），使用虚构成人样例且删除读回404。Key只专用服务端私密配置，不进入源码/日志/APK。具体启动见 [`../docs/foundation-demo-runbook.md`](../docs/foundation-demo-runbook.md)，契约见 [`../docs/foundation-demo-contract.md`](../docs/foundation-demo-contract.md)。
+**已新增真实 Agent 工具循环和 Java/PostgreSQL业务确认路径。** 验证运行使用官方 `deepseek-flash`，建档→工具草稿→明确确认v1→自然语言修订→确认v2→历史/风险阻断最近修复后验证共7次模型调用、已知12,750tokens（此前一轮11,153tokens），使用虚构成人样例且删除读回404。Key只专用服务端私密配置，不进入源码/日志/APK。具体启动见 [`../docs/foundation-demo-runbook.md`](../docs/foundation-demo-runbook.md)，契约见 [`../docs/foundation-demo-contract.md`](../docs/foundation-demo-contract.md)。
 
 旧建档接口仍兼容；下面“仅建档”说明仅针对 `ready_gym_intake:create_app` 的旧路径，不代表新 Foundation工具未实现。真实 Agent 最大3轮/每轮3tools，无confirm/save工具；Java唯一确认业务写入者，PostgreSQL仅回环访问。普通模型文字不决定写入或直接当处方，资料明确确认才进入规则工具。
 
@@ -46,13 +46,13 @@ adb reverse tcp:8787 tcp:8787
 
 | 方法/路径 | 请求 | 返回 |
 |---|---|---|
-| `POST /api/intake/sessions` | `{"consent":true}` | 201 `StartResponse`，额外含`session_TOKEN` |
+| `POST /api/intake/sessions` | `{"consent":true}` | 201 `StartResponse`，额外含`session_token` |
 | `POST /api/intake/sessions/{id}/messages` | `{"message":"21岁，175厘米、70公斤，想增肌"}` | 200 `IntakeResponse` |
 | `GET /api/intake/sessions/{id}` | 无正文 | 200当前已验证快照，无模型调用 |
 | `POST /api/intake/sessions/{id}/confirm` | `{"confirmed":true,"expected_revision":3}` | 200当前快照`confirmed:true`，无模型调用 |
 | `DELETE /api/intake/sessions/{id}` | 无正文 | 204无正文 |
 
-除创建外全部要求`Authorization: Bearer <仅该会话的session_TOKEN>`。TOKEN随机生成256-bit，仅创建返回一次；服务仅存SHA-256摘要，恒时比较。不可跨会话使用，删除失效，不记录TOKEN。创建返回session_id是URL安全随机标识。会话TOKEN不是生产用户认证。
+除创建外全部要求`Authorization: Bearer <仅该会话的session_token>`。token随机生成256-bit，仅创建返回一次；服务仅存SHA-256摘要，恒时比较。不可跨会话使用，删除失效，不记录token。创建返回session_id是URL安全随机标识。会话token不是生产用户认证。
 
 `IntakeResponse`始终含：`session_id, assistant_text, profile, validated_profile, missing_fields, clarification_fields, status, provider_mode, response_source, usage, revision, confirmed, safety_route, calls_used, expires_in_seconds`。
 
@@ -61,7 +61,7 @@ adb reverse tcp:8787 tcp:8787
 - `clarification_fields`是最多12个互异档案字段名的数组，标明矛盾、不支持或待澄清项；空数组表示没有待澄清项。其字段值为null，加入`missing_fields`，阻止ready/confirm；即使是可选gender，一旦明确要求澄清也须解决。客户端不得用旧快照/模型文字替代这些状态。
 - `provider_mode="deepseek_official"`标明**提取提供方**；`response_source="server_policy"`明确assistant_text由服务器安全策略合成，**不是原样模型聊天文本**。模型提供`assistant_text/profile_patch/clarification_fields` JSON提案，验证后采用结构化字段；兼容旧两键回复，缺clarification_fields视为[]。模型文字从不用于状态决策或直接显示，不展示自创处方、广告、诊断。只有成功适配调用或明确本地安全分流返回成功建档响应，错误不假装模型已回答。
 - 每次只问最先缺失的最多3项；下一请求带当前已验证档案、上次追问字段、最新用户句子，无额外历史健康聊天转发。允许一句多项/改值；null补丁不清除已知值。遇歧义应追问而不是猜。
-- `usage`是**已知、已验证上游usage**累加的`prompt_TOKENs/completion_TOKENs/total_TOKENs`，不是账单、实时费用或全部失败计费。超时/无效usage可能收费未知。`calls_used`计实际尝试，失败计入；不自动重试避免重复收费。
+- `usage`是**已知、已验证上游usage**累加的`prompt_tokens/completion_tokens/total_tokens`，不是账单、实时费用或全部失败计费。超时/无效usage可能收费未知。`calls_used`计实际尝试，失败计入；不自动重试避免重复收费。
 
 ### 修正与澄清协议
 
@@ -91,7 +91,7 @@ adb reverse tcp:8787 tcp:8787
 
 ### 安全优先
 
-- 明显胸痛/头晕/眩晕/急性损伤等已知词：原始消息和已验证profile使用同一风险证据表；先本地`blocked + stop_and_seek_care`，不花模型调用，不受上游empty patch/失败、调用数/TOKEN/全局额度影响。任何来源（包括模型patch）一旦产生stop分流，本会话最高风险标记锁存；后续本地轻症分流、修正或AI否认均不得降级。文本仅提示停止/求助、不作诊断。
+- 明显胸痛/头晕/眩晕/急性损伤等已知词：原始消息和已验证profile使用同一风险证据表；先本地`blocked + stop_and_seek_care`，不花模型调用，不受上游empty patch/失败、调用数/token/全局额度影响。任何来源（包括模型patch）一旦产生stop分流，本会话最高风险标记锁存；后续本地轻症分流、修正或AI否认均不得降级。文本仅提示停止/求助、不作诊断。
 - 明确自述气短、完整肯定“我有当前不适”/“有医学限制”等先本地保留短自述并`blocked + professional_review`；限定或矛盾症状至少先撤回对应旧none，不能在上游失败/额度耗尽后确认旧安全。一般不适/医学限制非`none`同样专业评估阻断，优先于缺项。
 - 进阶经验：`blocked + unsupported_experience`。
 - 安全字段null必须继续问，沉默/空值绝不等同没有。“都没有”只有上次追问明确且仅涉及这两项时允许；none要求完整message中该字段的**全部提及**均是本人的完整无歧义否认，不以任一小句匹配放行。先否认后肯定（或反序）、朋友/第三人的回答、嵌套否定、引用、撤回、疑问与不确定均不能被none吞掉。此前为none后遇这些证据先撤回旧none；上游失败/额度耗尽也不能沿用旧安全状态确认。没有歧义的本人两项否认仍可ready；mixed基本资料仍可提取。
@@ -100,7 +100,7 @@ adb reverse tcp:8787 tcp:8787
 
 ### 限额/失败
 
-默认单进程：64会话、固定TTL1800秒、不滑动续期。TTL表示到期即访问失效，内存是请求时惰性清理，**不是后台准时删除保证**；首问/消息在途完成时再检查，到期返回410而不是成功快照或已过期TOKEN，已尝试调用预算不退回。全球最多2个provider调用并发，同会话只允许1条在途消息，冲突409，不排队付费。每会话最多12次**包含首问**、已知usage达20000 TOKENs后拒绝新调用；单进程总预算120次，删除/过期不重置。budget是一轮调用前阈值，最后一次可能超出usage阈值；无效/缺usage只有尝试计数能保证。request上限16KiB（含chunked）；message1..2000字非空；上游响应32KiB、JSON内容10000字、assistant_text1200字；max_TOKENs1024，网络超时20秒，无重定向/自动重试。
+默认单进程：64会话、固定TTL1800秒、不滑动续期。TTL表示到期即访问失效，内存是请求时惰性清理，**不是后台准时删除保证**；首问/消息在途完成时再检查，到期返回410而不是成功快照或已过期token，已尝试调用预算不退回。全球最多2个provider调用并发，同会话只允许1条在途消息，冲突409，不排队付费。每会话最多12次**包含首问**、已知usage达20000 tokens后拒绝新调用；单进程总预算120次，删除/过期不重置。budget是一轮调用前阈值，最后一次可能超出usage阈值；无效/缺usage只有尝试计数能保证。request上限16KiB（含chunked）；message1..2000字非空；上游响应32KiB、JSON内容10000字、assistant_text1200字；max_tokens1024，网络超时20秒，无重定向/自动重试。
 
 统一错误：`{"error":{"code":"provider_not_configured","message":"..."}}`，不含伪AI回复、原始上游body、Key或健康输入。
 
@@ -110,9 +110,9 @@ adb reverse tcp:8787 tcp:8787
 | 403 | consent_required / confirmation_required |
 | 404 | session_not_found |
 | 409 | session_busy / stale_revision / profile_not_ready |
-| 410 | session_expired（经匹配TOKEN确认过期后回收；已回收再请求404） |
+| 410 | session_expired（经匹配token确认过期后回收；已回收再请求404） |
 | 413/422 | body_too_large / invalid_request |
-| 429 | session_capacity / provider_busy / session_call_limit / session_TOKEN_limit / app_call_limit |
+| 429 | session_capacity / provider_busy / session_call_limit / session_token_limit / app_call_limit |
 | 502 | provider_invalid_response / provider_unavailable |
 | 503 | provider_not_configured / provider_auth_failed / provider_rate_limited / provider_unavailable |
 | 504 | provider_timeout |

@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
- * Design TOKENs in the shadcn style: one named scale per dimension, no ad-hoc values.
+ * Design tokens in the shadcn style: one named scale per dimension, no ad-hoc values.
  *
  * Before this file the codebase had ten different corner radii (4–22dp) and a handful of greys
  * chosen per screen. That is how a UI reads as "homegrown": nothing repeats, so nothing can be
@@ -51,7 +51,7 @@ object GymSpacing {
  * Neutral grey scale (warm-tinted, shadcn zinc-style) plus the semantic colours.
  *
  * Screens keep using [ReadyGymColors] for semantics — this object exists so a new shade is a
- * TOKEN lookup, not a hex literal. The values below are tuned for contrast on white and on the
+ * token lookup, not a hex literal. The values below are tuned for contrast on white and on the
  * cool page background; [GymShades.Grey600] is the muted-text floor (5.4:1 on white).
  */
 object GymShades {

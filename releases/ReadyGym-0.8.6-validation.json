@@ -1,0 +1,20 @@
+{
+  "version": "0.8.6",
+  "versionCode": 25,
+  "tests": {
+    "app": {"total": 141, "failed": 0, "skipped": 1},
+    "core": {"total": 93, "failed": 0, "skipped": 0},
+    "server": {"total": 11, "failed": 0, "skipped": 0},
+    "passed": 244,
+    "skipped": 1
+  },
+  "releaseUiVerified": [
+    "retained session", "mark and undo", "30-second rest", "extend and skip",
+    "stable dock bounds", "home", "stats", "records and back", "reduced motion"
+  ],
+  "emulatorProgressRestored": "1/12 sets",
+  "screenshots": "screenshots/v0.8.6/",
+  "device": "Android API 35 emulator",
+  "hardwarePerformanceMeasured": false,
+  "publishedDownloadMatchesRelease": true
+}

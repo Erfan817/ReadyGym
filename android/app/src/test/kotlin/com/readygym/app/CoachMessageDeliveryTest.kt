@@ -52,7 +52,7 @@ class CoachMessageDeliveryTest {
     private var voice: VoiceInputController? = null
 
     private class Client : CoachClient {
-        val session = CoachSession("send-test", "TOKEN")
+        val session = CoachSession("send-test", "token")
         val replies = ArrayDeque<CompletableDeferred<CoachReply>>()
         val sent = mutableListOf<String>()
         var initialDraft: ConversationPlanDraft? = null

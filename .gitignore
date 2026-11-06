@@ -66,3 +66,20 @@ docs/readygym-project-map.svg
 data/source-media/donate/
 data/source-media/chat-adjustment-v0.8.10/
 screenshots/**/*.xml
+
+# Historical verification screenshots may contain nicknames, weight and chat text.
+# Keep only the three images the README actually embeds.
+screenshots/*.png
+screenshots/**/*.png
+!screenshots/v0.8.12/online-demo.png
+!screenshots/v0.8.12/bundled-demo.png
+!screenshots/v0.8.12/selected-week.png
+
+# Nested legacy archive was previously excluded only by this machine's .git/info/exclude.
+/opensource/
+
+# Signing material never belongs in git.
+*.jks
+*.keystore
+*.p12
+server/.env

@@ -24,7 +24,7 @@ dependencies {
 tasks.test { useJUnitPlatform() }
 
 // bootRun 里应用进程继承的是 Gradle 守护进程的环境变量：命令行里刚 set 的变量经守护进程转手会丢。
-// -P 属性随构建命令传递、不受守护进程影响，所以本地启动用 -PreadyGymAdminToken 注入 TOKEN
+// -P 属性随构建命令传递、不受守护进程影响，所以本地启动用 -PreadyGymAdminToken 注入 token
 // （启动运营面板.bat 走这条路）；环境变量作为后备。
 val bootAdminToken = providers.gradleProperty("readyGymAdminToken")
     .orElse(providers.environmentVariable("READYGYM_ADMIN_TOKEN"))

@@ -120,6 +120,24 @@ class DeepSeekReplyParsingTest {
         assertEquals(everyDay.trainingDays, seven.toUserProfile(everyDay)!!.trainingDays)
     }
 
+    @Test fun outOfRangeProfileSurfacesAnErrorInsteadOfSilentlyFailing() {
+        // DeepSeekCoachClient accepts a wider age/weight range than UserProfile; a ready card in
+        // that gap used to become null and the confirm tap did nothing at all.
+        for ((field, value) in listOf("age" to 100, "weight_kg" to 280)) {
+            val payload = ready(goodProfile)
+            payload.getJSONObject("profile").put(field, value)
+            val candidate = parse(payload).confirmedCandidate!!
+            try {
+                candidate.toUserProfile(null)
+                fail("$field outside UserProfile bounds must not be accepted silently")
+            } catch (e: CoachException) {
+                assertEquals("invalid_profile", e.code)
+                assertTrue(e.detail?.contains("重新确认") == true)
+            }
+        }
+        assertNotNull(parse(ready(goodProfile)).confirmedCandidate!!.toUserProfile(null))
+    }
+
     // ---------- safety ----------
 
     @Test fun blockedReplyMapsToTheKnownSafetyRoutes() {

@@ -13,7 +13,7 @@ except ModuleNotFoundError:
 def completion(patch=None, text="请告诉我年龄和身高。"):
     return {"id": "contract-request-1", "choices": [{"finish_reason": "stop", "message": {
         "content": json.dumps({"assistant_text": text, "profile_patch": patch or {}}, ensure_ascii=False)
-    }}], "usage": {"prompt_TOKENs": 100, "completion_TOKENs": 50, "total_TOKENs": 150}}
+    }}], "usage": {"prompt_tokens": 100, "completion_tokens": 50, "total_tokens": 150}}
 
 
 class IntakeContract(unittest.IsolatedAsyncioTestCase):
@@ -44,7 +44,7 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 201, response.text)
         data = response.json()
         self.sid = data["session_id"]
-        self.headers = {"Authorization": "Bearer " + data["session_TOKEN"]}
+        self.headers = {"Authorization": "Bearer " + data["session_token"]}
         return data
 
     async def send(self, message):
@@ -73,7 +73,7 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(body["response_format"], {"type": "json_object"})
         self.assertFalse(body["stream"])
         self.assertIn("json", body["messages"][0]["content"].lower())
-        self.assertEqual(data["usage"]["total_TOKENs"], 300)
+        self.assertEqual(data["usage"]["total_tokens"], 300)
         self.assertEqual(json.loads(body["messages"][1]["content"])["last_question_fields"], ["age", "height_cm", "weight_kg"])
 
     async def test_consent_and_missing_key_fail_without_fake_ai_or_calls(self):
@@ -91,7 +91,7 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("assistant_text", result.json())
         self.assertEqual(app.state.sessions, {})
 
-    async def test_session_TOKEN_is_required_bound_to_one_session_and_delete_revokes(self):
+    async def test_session_token_is_required_bound_to_one_session_and_delete_revokes(self):
         await self.setup_app([completion(), completion()])
         first = await self.start()
         path = f"/api/intake/sessions/{self.sid}"
@@ -107,9 +107,9 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(deleted.status_code, 204)
         self.assertEqual((await self.send("21岁")).status_code, 404)
         self.assertEqual(len(self.calls), 2)
-        self.assertNotEqual(first["session_TOKEN"], second["session_TOKEN"])
-        self.assertGreaterEqual(len(first["session_TOKEN"]), 32)
-        self.assertNotIn(first["session_TOKEN"], repr(self.app.state.sessions))
+        self.assertNotEqual(first["session_token"], second["session_token"])
+        self.assertGreaterEqual(len(first["session_token"]), 32)
+        self.assertNotIn(first["session_token"], repr(self.app.state.sessions))
 
     async def test_invalid_provider_patches_are_atomic_and_cannot_supply_plan_fields(self):
         import ready_gym_intake as service
@@ -208,11 +208,11 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
             Settings(max_calls=13)
         with self.assertRaises(ValueError):
             Settings(session_ttl_seconds=0)
-        await self.setup_app([completion()], max_total_TOKENs=150)
+        await self.setup_app([completion()], max_total_tokens=150)
         await self.start()
         budget = await self.send("21岁")
         self.assertEqual(budget.status_code, 429)
-        self.assertEqual(budget.json()["error"]["code"], "session_TOKEN_limit")
+        self.assertEqual(budget.json()["error"]["code"], "session_token_limit")
         self.assertEqual(len(self.calls), 1)
 
     async def test_global_concurrency_and_one_turn_per_session_do_not_queue_charges(self):
@@ -237,7 +237,7 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
                 await asyncio.wait_for(entered.wait(), 1)
                 same = await self.send("22岁")
                 self.assertEqual(same.status_code, 409)
-                other = await self.client.post(f"/api/intake/sessions/{second['session_id']}/messages", json={"message": "21岁"}, headers={"Authorization": "Bearer " + second["session_TOKEN"]})
+                other = await self.client.post(f"/api/intake/sessions/{second['session_id']}/messages", json={"message": "21岁"}, headers={"Authorization": "Bearer " + second["session_token"]})
                 self.assertEqual(other.status_code, 429)
                 self.assertEqual((await self.client.delete(f"/api/intake/sessions/{self.sid}", headers=self.headers)).status_code, 409)
             finally:
@@ -259,7 +259,7 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
         truncated = completion({"age": 21})
         truncated["choices"][0]["finish_reason"] = "length"
         unknown_usage = completion({"age": 21})
-        unknown_usage["usage"]["total_TOKENs"] = True
+        unknown_usage["usage"]["total_tokens"] = True
         duplicates = completion()
         duplicates["choices"][0]["message"]["content"] = '{"assistant_text":"问年龄","profile_patch":{"age":21,"age":22}}'
         replies = [invalid, malformed, extra, long_text, truncated, unknown_usage, duplicates,
@@ -277,7 +277,7 @@ class IntakeContract(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(len(self.calls), index + 2)
                 self.assertNotIn("private upstream", result.text)
         log_text = "\n".join(captured.output)
-        for private in ("这段合成健康资料", "contract-test-only", started["session_TOKEN"], "private upstream"):
+        for private in ("这段合成健康资料", "contract-test-only", started["session_token"], "private upstream"):
             self.assertNotIn(private, log_text)
         self.assertEqual(self.app.state.sessions[self.sid].attempts, 11)
         async def timeout(request):

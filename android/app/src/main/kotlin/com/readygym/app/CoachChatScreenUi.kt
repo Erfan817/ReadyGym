@@ -31,10 +31,11 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -116,7 +117,7 @@ fun CoachChatScreen(coach: CoachConversation, serviceConfigured: Boolean, onConf
                     onConfigure: (() -> Unit)? = null, savedGender: Gender? = null,
                     consented: Boolean = false, onConsent: () -> Unit = {}, onClose: (() -> Unit)? = null,
                     planContent: @Composable () -> Unit = {}) {
-    val scroll = rememberScrollState()
+    val scroll = rememberLazyListState()
     val state by coach.uiState.collectAsState()
     val haptics = rememberHaptics()
     val motion = LocalMotionSettings.current
@@ -126,9 +127,21 @@ fun CoachChatScreen(coach: CoachConversation, serviceConfigured: Boolean, onConf
     var followingProgrammatically by remember { mutableStateOf(false) }
     var hasUnreadReply by remember { mutableStateOf(false) }
     LaunchedEffect(scroll) {
-        snapshotFlow { Triple(scroll.isScrollInProgress, scroll.value, scroll.maxValue) }.collect { (moving, value, maximum) ->
+        snapshotFlow {
+            val info = scroll.layoutInfo
+            val last = info.visibleItemsInfo.lastOrNull()
+            // LazyList equivalent of (ScrollState.maxValue - ScrollState.value): how far the
+            // last item's bottom still sits below the viewport. More items below means "not at
+            // the bottom" regardless of the visible window.
+            val distanceToBottom = when {
+                last == null -> 0
+                last.index != info.totalItemsCount - 1 -> Int.MAX_VALUE
+                else -> (last.offset + last.size - info.viewportEndOffset).coerceAtLeast(0)
+            }
+            scroll.isScrollInProgress to distanceToBottom
+        }.collect { (moving, distance) ->
             if (moving && !followingProgrammatically) {
-                followLatest = maximum - value <= followDistance
+                followLatest = distance <= followDistance
                 if (followLatest) hasUnreadReply = false
             }
         }
@@ -150,7 +163,8 @@ fun CoachChatScreen(coach: CoachConversation, serviceConfigured: Boolean, onConf
             try {
                 // Wait for the new bubble/card to be measured before finding the bottom.
                 withFrameNanos { }
-                if (motion.reduceMotion) scroll.scrollTo(scroll.maxValue) else scroll.animateScrollTo(scroll.maxValue)
+                val lastIndex = (scroll.layoutInfo.totalItemsCount - 1).coerceAtLeast(0)
+                if (motion.reduceMotion) scroll.scrollToItem(lastIndex) else scroll.animateScrollToItem(lastIndex)
                 followLatest = true
                 hasUnreadReply = false
             } finally { followingProgrammatically = false }
@@ -177,31 +191,41 @@ fun CoachChatScreen(coach: CoachConversation, serviceConfigured: Boolean, onConf
                     .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
             ) {
                 ChatHeader(serviceConfigured, coachAvatar, state, onClose)
-                Column(Modifier.weight(1f).testTag("coach-messages").verticalScroll(scroll).padding(horizontal = 20.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                LazyColumn(
+                    state = scroll,
+                    modifier = Modifier.weight(1f).testTag("coach-messages").padding(horizontal = 20.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
                 // A restart drops the server session but keeps the typed input on screen; nothing
-                // the user typed is re-sent on their behalf.
+                // the user typed is re-sent on their behalf. One item per former Column child keeps
+                // the 12dp spacing and the scroll-position semantics identical.
                 if (coach.session == null) {
-                    Spacer(Modifier.height(4.dp))
-                    Text("你的AI训练教练", fontSize = 28.sp, lineHeight = 36.sp, fontWeight = FontWeight.ExtraBold)
-                    Text("用自己的话聊聊就好。我会了解你的目标、训练条件和当前身体状态，再请你确认资料。",
-                        color = ReadyGymColors.MutedText, lineHeight = 24.sp)
-                    if (consented) {
-                        Text(if (!serviceConfigured) "暂时连不上服务器，不能连接 AI。" else if (coach.busy) "正在连接教练…" else "",
-                            color = if (serviceConfigured) ReadyGymColors.MutedText else MaterialTheme.colorScheme.error,
-                            fontSize = 13.sp, lineHeight = 20.sp)
-                    } else Panel {
-                        Text("开始前，请你知情", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text("同意后，你的对话、训练档案和当前计划会发送给 AI，用于建档、健身答疑和调整计划。教练只聊健身和健康话题。不要发送姓名、联系方式等无关资料。",
-                            fontSize = 14.sp, lineHeight = 22.sp)
-                        Hairline()
-                        Text(if (serviceConfigured) "点击后才会发出第一条请求。" else "暂时连不上服务器，不能连接 AI。",
-                            color = if (serviceConfigured) ReadyGymColors.MutedText else MaterialTheme.colorScheme.error,
-                            fontSize = 13.sp, lineHeight = 20.sp)
+                    item(key = "intro-top") { Spacer(Modifier.height(4.dp)) }
+                    item(key = "intro-title") {
+                        Text("你的AI训练教练", fontSize = 28.sp, lineHeight = 36.sp, fontWeight = FontWeight.ExtraBold)
                     }
-                    Spacer(Modifier.height(4.dp))
+                    item(key = "intro-subtitle") {
+                        Text("用自己的话聊聊就好。我会了解你的目标、训练条件和当前身体状态，再请你确认资料。",
+                            color = ReadyGymColors.MutedText, lineHeight = 24.sp)
+                    }
+                    item(key = "intro-consent") {
+                        if (consented) {
+                            Text(if (!serviceConfigured) "暂时连不上服务器，不能连接 AI。" else if (coach.busy) "正在连接教练…" else "",
+                                color = if (serviceConfigured) ReadyGymColors.MutedText else MaterialTheme.colorScheme.error,
+                                fontSize = 13.sp, lineHeight = 20.sp)
+                        } else Panel {
+                            Text("开始前，请你知情", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Text("同意后，你的对话、训练档案和当前计划会发送给 AI，用于建档、健身答疑和调整计划。教练只聊健身和健康话题。不要发送姓名、联系方式等无关资料。",
+                                fontSize = 14.sp, lineHeight = 22.sp)
+                            Hairline()
+                            Text(if (serviceConfigured) "点击后才会发出第一条请求。" else "暂时连不上服务器，不能连接 AI。",
+                                color = if (serviceConfigured) ReadyGymColors.MutedText else MaterialTheme.colorScheme.error,
+                                fontSize = 13.sp, lineHeight = 20.sp)
+                        }
+                    }
+                    item(key = "intro-bottom") { Spacer(Modifier.height(4.dp)) }
                 }
-                coach.messages.forEachIndexed { index, bubble ->
+                itemsIndexed(coach.messages, key = { index, bubble -> "$index-${bubble.messageId}" }) { index, bubble ->
                     val author = if (bubble.user) "你"
                         else "AI 教练"
                     Row(Modifier.fillMaxWidth().testTag("coach-message-$index"), verticalAlignment = Alignment.Top,
@@ -229,51 +253,66 @@ fun CoachChatScreen(coach: CoachConversation, serviceConfigured: Boolean, onConf
                 // "a summary exists": a card that is already on screen must not show a placeholder
                 // (the review gate forbids the second motion source, and a stale skeleton is one).
                 if (state == CoachUiState.THINKING || state == CoachUiState.TOOL_RUNNING) {
-                    TypingWave(state)
+                    item(key = "typing") { TypingWave(state) }
                     if (coach.reply?.planProposal == null && coach.reply?.confirmedCandidate == null && coach.messages.none { it.user }) {
-                        SkeletonCard(Modifier.testTag("coach-skeleton"))
+                        item(key = "skeleton") { SkeletonCard(Modifier.testTag("coach-skeleton")) }
                     }
                 }
                 val blocked = coach.reply?.status == "blocked"
                 if (blocked) {
-                    RiskBlock(coach.reply?.safetyRoute)
+                    item(key = "blocked") { RiskBlock(coach.reply?.safetyRoute) }
                 }
-                coach.localSafetyMessage?.let {
-                    RiskCardEntrance { modifier ->
-                        Panel(modifier.testTag("coach-risk-card"), container = ReadyGymColors.ErrorSurface) {
-                            Text(it, color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive })
+                val localSafetyMessage = coach.localSafetyMessage
+                if (localSafetyMessage != null) {
+                    item(key = "local-safety") {
+                        RiskCardEntrance { modifier ->
+                            Panel(modifier.testTag("coach-risk-card"), container = ReadyGymColors.ErrorSurface) {
+                                Text(localSafetyMessage, color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive })
+                            }
                         }
                     }
                 }
-                if (coach.correction) Text("直接告诉教练哪里不对，例如“我是在家训练”。修改后会重新整理摘要。", color = ReadyGymColors.MutedText)
+                if (coach.correction) item(key = "correction") {
+                    Text("直接告诉教练哪里不对，例如“我是在家训练”。修改后会重新整理摘要。", color = ReadyGymColors.MutedText)
+                }
                 // A confirmed card is history, not a pending ask: once the user has saved it the
                 // card must not sit in the transcript and re-appear when they come back.
                 val candidate = coach.reply?.confirmedCandidate?.takeUnless { coach.reply?.confirmed == true }
                 if (candidate != null) {
-                    ProposingEnter(target = candidate.identityKey()) { target ->
-                        ProfileSummaryCard(coach, candidate, state, Modifier) { onConfirm.value(it) }
+                    item(key = "profile-card") {
+                        ProposingEnter(target = candidate.identityKey()) { target ->
+                            ProfileSummaryCard(coach, candidate, state, Modifier) { onConfirm.value(it) }
+                        }
                     }
                 }
-                if (coach.supportsFoundation) FoundationCards(coach, state, this@SharedTransitionLayout)
-                planContent()
-                Spacer(Modifier.height(4.dp))
-                if (coach.session == null && !consented) {
-                    Button(
-                        onClick = { onConsent(); coach.start() },
-                        enabled = serviceConfigured && !coach.busy,
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp),
-                        shape = RoundedCornerShape(18.dp),
-                    ) { Text(if (coach.busy) "正在连接…" else "同意并开始", fontWeight = FontWeight.Bold, fontSize = 16.sp) }
+                if (coach.supportsFoundation) item(key = "foundation") {
+                    FoundationCards(coach, state, this@SharedTransitionLayout)
                 }
-                if (coach.session != null) TextButton(onClick = { coach.clear() }, enabled = !coach.busy, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) { Text("清空对话") }
-                                Text("对话只在本次打开期间保留；确认后的档案和计划保存在本机。AI 建议不能替代专业指导。", fontSize = 12.sp, lineHeight = 20.sp, color = ReadyGymColors.MutedText)
+                item(key = "plan-content") { planContent() }
+                item(key = "tail-space") { Spacer(Modifier.height(4.dp)) }
+                if (coach.session == null && !consented) {
+                    item(key = "consent-button") {
+                        Button(
+                            onClick = { onConsent(); coach.start() },
+                            enabled = serviceConfigured && !coach.busy,
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 58.dp),
+                            shape = RoundedCornerShape(18.dp),
+                        ) { Text(if (coach.busy) "正在连接…" else "同意并开始", fontWeight = FontWeight.Bold, fontSize = 16.sp) }
+                    }
+                }
+                if (coach.session != null) item(key = "clear-chat") {
+                    TextButton(onClick = { coach.clear() }, enabled = !coach.busy, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) { Text("清空对话") }
+                }
+                item(key = "disclaimer") {
+                    Text("对话只在本次打开期间保留；确认后的档案和计划保存在本机。AI 建议不能替代专业指导。", fontSize = 12.sp, lineHeight = 20.sp, color = ReadyGymColors.MutedText)
+                }
                 // Card entrance/dwell only needs trailing room when a card can be on screen; adding
                 // it unconditionally pushed the consent button below the fold on small viewports.
                 if (state == CoachUiState.PROPOSING || state == CoachUiState.AWAITING_CONFIRM) {
-                    Spacer(Modifier.height(ComposerEstimate))
+                    item(key = "composer-estimate") { Spacer(Modifier.height(ComposerEstimate)) }
                 } else {
-                    Spacer(Modifier.height(8.dp))
+                    item(key = "tail-small-space") { Spacer(Modifier.height(8.dp)) }
                 }
                 }
                 if (hasUnreadReply) TextButton(onClick = {
@@ -281,7 +320,8 @@ fun CoachChatScreen(coach: CoachConversation, serviceConfigured: Boolean, onConf
                     scope.launch {
                         followingProgrammatically = true
                         try {
-                            if (motion.reduceMotion) scroll.scrollTo(scroll.maxValue) else scroll.animateScrollTo(scroll.maxValue)
+                            val lastIndex = (scroll.layoutInfo.totalItemsCount - 1).coerceAtLeast(0)
+                            if (motion.reduceMotion) scroll.scrollToItem(lastIndex) else scroll.animateScrollToItem(lastIndex)
                         } finally { followingProgrammatically = false }
                     }
                 }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("coach-new-reply")) {
@@ -293,7 +333,8 @@ fun CoachChatScreen(coach: CoachConversation, serviceConfigured: Boolean, onConf
                     scope.launch {
                         followingProgrammatically = true
                         try {
-                            if (motion.reduceMotion) scroll.scrollTo(scroll.maxValue) else scroll.animateScrollTo(scroll.maxValue)
+                            val lastIndex = (scroll.layoutInfo.totalItemsCount - 1).coerceAtLeast(0)
+                            if (motion.reduceMotion) scroll.scrollToItem(lastIndex) else scroll.animateScrollToItem(lastIndex)
                         } finally { followingProgrammatically = false }
                     }
                 })
@@ -458,7 +499,7 @@ private fun Composer(coach: CoachConversation, state: CoachUiState, onSend: () -
             if (error.retryable) TextButton(onClick = { coach.retry() }, enabled = !coach.busy, modifier = Modifier.heightIn(min = 48.dp).testTag("coach-retry")) { Text("重试") }
             // Only a session problem offers a restart; a bad key has to be re-entered on the key
             // screen, and offering "重新开始会话" there would just fail again.
-            if (!accountExpired && (error.code in setOf("session_expired", "session_not_found", "session_unauthorized", "invalid_session_TOKEN", "http_401", "http_404", "http_410"))) {
+            if (!accountExpired && (error.code in setOf("session_expired", "session_not_found", "session_unauthorized", "invalid_session_token", "http_401", "http_404", "http_410"))) {
                 TextButton(onClick = { coach.restart() }, enabled = !coach.busy, modifier = Modifier.heightIn(min = 48.dp)) { Text("重新开始会话") }
             }
         }
@@ -572,7 +613,7 @@ private fun coachErrorText(code: String) = when (code) {
     "provider_response_incomplete", "provider_empty_response" -> "教练这次没能完整回复，消息已保留；点消息下方重试。"
     "invalid_input" -> "请填写1–1000字，输入未丢失。"
     "invalid_response", "response_too_large", "unexpected_redirect" -> "教练这次没能正确回复，消息已保留；可以重试。"
-    "session_expired", "session_not_found", "invalid_session_TOKEN", "http_404", "http_410" -> "会话已失效，请重新开始；本次输入仍保留。"
+    "session_expired", "session_not_found", "invalid_session_token", "http_404", "http_410" -> "会话已失效，请重新开始；本次输入仍保留。"
     "network_error", "http_408", "http_504" -> "暂时连不上，消息已保留；可以点重试。"
     else -> "暂时无法取得AI回复，消息已保留；可重试。"
 }

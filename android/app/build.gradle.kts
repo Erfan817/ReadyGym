@@ -18,6 +18,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
+    // Optional production signing: all four variables plus an existing keystore file are required,
+    // otherwise the build keeps the current debug signing so existing installs still upgrade.
+    // NOTE: switching the key in place stops existing users from upgrading by overwrite; use APK
+    // signing-key rotation (v3 lineage) or plan a reinstall before enabling this for a release.
+    val releaseKeystore = providers.environmentVariable("READYGYM_KEYSTORE_FILE").orNull
+        ?.takeIf { it.isNotBlank() }
+    if (releaseKeystore != null && rootProject.file(releaseKeystore).isFile) {
+        signingConfigs.create("release") {
+            storeFile = rootProject.file(releaseKeystore)
+            storePassword = providers.environmentVariable("READYGYM_KEYSTORE_PASSWORD").orNull.orEmpty()
+            keyAlias = providers.environmentVariable("READYGYM_KEY_ALIAS").orNull.orEmpty()
+            keyPassword = providers.environmentVariable("READYGYM_KEY_PASSWORD").orNull.orEmpty()
+        }
+    }
     buildTypes {
         val configured = providers.gradleProperty("readyGymServiceBaseUrl")
             .orElse(providers.environmentVariable("READY_GYM_SERVICE_BASE_URL")).orElse("").get()
@@ -54,11 +68,11 @@ android {
         getByName("release") {
             // Minified + resource-shrunk for distribution; signed with the debug key because this
             // app is handed out directly (no Play Store), and the debug keystore is reproducible
-            // on this machine. Swap in a real keystore before any public distribution.
+            // on this machine. Set READYGYM_KEYSTORE_* (see above) to use a real keystore.
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             buildConfigField("String", "SERVICE_BASE_URL", literal)
             buildConfigField("String", "AI_BASE_URL", aiBase)
             buildConfigField("String", "AI_MODEL", aiModel)

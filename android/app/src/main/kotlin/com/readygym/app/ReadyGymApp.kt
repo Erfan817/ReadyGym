@@ -38,7 +38,7 @@ private enum class Overlay { NONE, PROFILE_FORM, WORKOUT, SUMMARY, REVIEW, RENAM
  * not a destination — it opens the workout.
  *
  * [client] lets tests inject a chat transport (and skips sign-up); production talks to the
- * ReadyGym server with the stored account TOKEN. All navigation state is saveable, and data lives
+ * ReadyGym server with the stored account token. All navigation state is saveable, and data lives
  * in Room, so rotation and process death land the user back where they were.
  */
 @Composable
@@ -48,7 +48,7 @@ fun ReadyGymApp(client: CoachClient? = null) {
     var account by remember(activity) { mutableStateOf(accounts.load()) }
     val consents = remember(activity) { AiConsentStore(activity) }
     var aiConsented by remember(activity) { mutableStateOf(consents.accepted()) }
-    val server = remember(activity) { ServerApi(BuildConfig.SERVICE_BASE_URL) { accounts.load()?.TOKEN } }
+    val server = remember(activity) { ServerApi(BuildConfig.SERVICE_BASE_URL) { accounts.load()?.token } }
     val scope = rememberCoroutineScope()
     var busy by remember { mutableStateOf(false) }
     var accountError by remember { mutableStateOf<String?>(null) }
@@ -56,7 +56,8 @@ fun ReadyGymApp(client: CoachClient? = null) {
     var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
     var reviewSessionId by rememberSaveable { mutableLongStateOf(0L) }
     var profileUpdatedForPlan by rememberSaveable { mutableStateOf(false) }
-    val gym: GymViewModel = viewModel(factory = GymViewModel.factory(activity))
+    val gymFactory = remember(activity) { GymViewModel.factory(activity) }
+    val gym: GymViewModel = viewModel(factory = gymFactory)
     val openSession by gym.openSession.collectAsState()
     val localDate = rememberCurrentLocalDate()
     LaunchedEffect(localDate) { gym.refreshDate(localDate.today) }
@@ -66,7 +67,7 @@ fun ReadyGymApp(client: CoachClient? = null) {
     // Both the remember and the VM key below are keyed on the profile — saving a new one (in chat
     // or via the profile form) therefore starts the next conversation fresh with that profile.
     val savedProfile = gym.profile.value.valueOrNull()
-    val actualClient = remember(client, account?.TOKEN, savedProfile) {
+    val actualClient = remember(client, account?.token, savedProfile) {
         client ?: account?.let {
             DeepSeekCoachClient(DeepSeekApi.bundled(readTimeoutMs = 120_000) ?: server.chatModel(readTimeoutMs = 120_000),
                 savedProfile, gym.library, planProvider = { gym.activePlan.value.valueOrNull() })
@@ -77,7 +78,7 @@ fun ReadyGymApp(client: CoachClient? = null) {
             ViewModelProvider(activity, object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T = CoachConversation(c) as T
-            })[coachViewModelKey(client, c, account?.TOKEN, savedProfile), CoachConversation::class.java]
+            })[coachViewModelKey(client, c, account?.token, savedProfile), CoachConversation::class.java]
         }
     }
 
@@ -265,9 +266,11 @@ fun ReadyGymApp(client: CoachClient? = null) {
 
 /**
  * The chat collects the body and setting facts; the fields it doesn't ask about (limitations) are
- * kept from an existing profile. Null when the chat's values fall outside [UserProfile]'s bounds.
+ * kept from an existing profile. Values outside [UserProfile]'s bounds used to collapse to null,
+ * which made the confirm tap silently do nothing; they now surface through the chat's existing
+ * error channel so the user can ask the coach for a valid profile. Legal values are unchanged.
  */
-internal fun CoachCandidate.toUserProfile(existing: UserProfile?): UserProfile? = runCatching {
+internal fun CoachCandidate.toUserProfile(existing: UserProfile?): UserProfile? = try {
     UserProfile(
         age = profile.age, heightCm = profile.heightCm, weightKg = profile.weightKg,
         gender = profile.gender, goal = profile.goal, location = profile.location,
@@ -283,14 +286,19 @@ internal fun CoachCandidate.toUserProfile(existing: UserProfile?): UserProfile? 
             .filter { it.isNotBlank() }.joinToString("；").ifBlank { existing?.limitations.orEmpty() }.take(200),
         trainingDays = trainingDays ?: existing?.trainingDays?.takeIf { it.size == preferences.daysPerWeek }.orEmpty(),
     )
-}.getOrNull()
+} catch (e: IllegalArgumentException) {
+    throw CoachException(
+        "invalid_profile",
+        detail = "档案里的年龄或体重超出了能保存的范围（年龄 14–90 岁、体重 30–250 kg），请让教练按这个范围重新确认。",
+    )
+}
 
 /**
  * The ViewModel store key for the conversation. Internal so tests can reach the exact instance the
- * UI renders. Keyed by the account TOKEN so rotation keeps the conversation while a new account
+ * UI renders. Keyed by the account token so rotation keeps the conversation while a new account
  * starts a fresh one, and by the saved profile so a confirmed or edited profile starts the next
  * conversation fresh — seeded with it — instead of carrying a stale confirmed card around.
  */
-internal fun coachViewModelKey(injected: CoachClient?, actual: CoachClient, TOKEN: String?, profile: Any? = null): String =
-    if (injected == null) "coach-default-${TOKEN.hashCode()}-${profile.hashCode()}"
+internal fun coachViewModelKey(injected: CoachClient?, actual: CoachClient, token: String?, profile: Any? = null): String =
+    if (injected == null) "coach-default-${token.hashCode()}-${profile.hashCode()}"
     else "coach-test-${System.identityHashCode(actual)}"

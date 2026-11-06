@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * The app's 意见反馈 form posts here (anonymous: the barrier to report a problem must be as low
- * as possible), and the operator reads the list through the admin TOKEN.
+ * as possible), and the operator reads the list through the admin token.
  */
 @RestController
 public class FeedbackController {
@@ -47,11 +47,11 @@ public class FeedbackController {
     }
 
     @GetMapping("/api/admin/feedback")
-    public List<FeedbackEntry> list(@RequestHeader(value = "X-Admin-Token", required = false) String TOKEN) {
+    public List<FeedbackEntry> list(@RequestHeader(value = "X-Admin-Token", required = false) String token) {
         String expected = props.adminToken();
-        // No configured TOKEN means the admin API is off, not open.
-        if (expected == null || expected.isBlank() || TOKEN == null
-            || !MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8), TOKEN.getBytes(StandardCharsets.UTF_8))) {
+        // No configured token means the admin API is off, not open.
+        if (expected == null || expected.isBlank() || token == null
+            || !MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8), token.getBytes(StandardCharsets.UTF_8))) {
             throw new ApiException(HttpStatus.FORBIDDEN, "forbidden", "无权访问");
         }
         var fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(props.zoneId());

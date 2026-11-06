@@ -155,9 +155,9 @@
       }
     ],
     "usage": {
-      "prompt_TOKENs": 12296,
-      "completion_TOKENs": 454,
-      "total_TOKENs": 12750
+      "prompt_tokens": 12296,
+      "completion_tokens": 454,
+      "total_tokens": 12750
     },
     "calls_used": 7,
     "completed": true,
@@ -175,9 +175,9 @@
       "provider_mode": "deepseek_official",
       "calls_used": 1,
       "usage": {
-        "prompt_TOKENs": 566,
-        "completion_TOKENs": 23,
-        "total_TOKENs": 589
+        "prompt_tokens": 566,
+        "completion_tokens": 23,
+        "total_tokens": 589
       }
     },
     "temporary_live_session_deleted_verified": true,
@@ -201,7 +201,7 @@
     "No production account recovery, log_set, RAG/pgvector, commerce, membership or automatic progression",
     "Conversation/session credentials in memory; business confirmations in PostgreSQL",
     "No promised timed background business TTL erasure; explicit delete reads actual404",
-    "Known TOKEN usage not total bill; failed requests may incur unknown charge"
+    "Known token usage not total bill; failed requests may incur unknown charge"
   ],
   "external_source_and_email_delivery": "verify separately by exact remote readback"
 }

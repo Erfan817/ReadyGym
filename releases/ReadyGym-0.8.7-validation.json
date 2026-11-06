@@ -1,0 +1,38 @@
+{
+  "version": "0.8.7",
+  "versionCode": 26,
+  "tests": {
+    "app": {
+      "tests": 141,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "core": {
+      "tests": 93,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "server": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "losslessCrop": true,
+  "cropSize": [
+    506,
+    506
+  ],
+  "releaseUiVerified": [
+    "replacement code",
+    "full square",
+    "safe title",
+    "screenshot instruction",
+    "close",
+    "system back"
+  ],
+  "screenshot": "screenshots/v0.8.7/donate-release.png"
+}

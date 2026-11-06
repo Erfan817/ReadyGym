@@ -55,6 +55,7 @@ import coil.request.ImageRequest
 import com.readygym.core.exercise.ExerciseLibrary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -83,7 +84,12 @@ fun EquipmentGuideScreen(library: ExerciseLibrary, mediaBaseUrl: String? = null,
     val scope = rememberCoroutineScope()
 
     fun recognizePhoto(uri: Uri) {
-        val api = vision ?: return
+        val api = vision
+        if (api == null) {
+            // No bundled vision key: say so at the capture entry instead of silently doing nothing.
+            recognition = Recognition.NoVision
+            return
+        }
         recognition = Recognition.Running
         scope.launch(Dispatchers.IO) {
             val next = try {
@@ -93,11 +99,7 @@ fun EquipmentGuideScreen(library: ExerciseLibrary, mediaBaseUrl: String? = null,
                 }
                 val item = reply?.let { EquipmentGuideCatalog.matchEquipment(it) }
                 when {
-                    item != null -> {
-                        query = item.name
-                        expandedId = item.id
-                        Recognition.Matched(item)
-                    }
+                    item != null -> Recognition.Matched(item)
                     else -> reply?.let { EquipmentGuideCatalog.matchExtraMachine(it) }
                         ?.let { Recognition.Extra(it) }
                         ?: Recognition.NotFound
@@ -105,7 +107,15 @@ fun EquipmentGuideScreen(library: ExerciseLibrary, mediaBaseUrl: String? = null,
             } catch (_: Exception) {
                 Recognition.Failed
             }
-            recognition = next
+            // Compose state writes belong on the main dispatcher; only the network/parse work above
+            // stays on IO.
+            withContext(Dispatchers.Main) {
+                (next as? Recognition.Matched)?.item?.let { item ->
+                    query = item.name
+                    expandedId = item.id
+                }
+                recognition = next
+            }
         }
     }
 
@@ -202,6 +212,10 @@ fun EquipmentGuideScreen(library: ExerciseLibrary, mediaBaseUrl: String? = null,
                     "识别没连上（网络原因），照片已保留；从下面列表手动选，或稍后再拍一张。",
                     fontSize = 13.sp, lineHeight = 19.sp, color = ReadyGymColors.MutedText,
                     modifier = Modifier.testTag("equipment-recognize-failed"))
+                Recognition.NoVision -> Text(
+                    "当前版本没有配置图像识别，可以手动选择器械或在动作库里查找。",
+                    fontSize = 13.sp, lineHeight = 19.sp, color = ReadyGymColors.MutedText,
+                    modifier = Modifier.testTag("equipment-recognize-unavailable"))
                 null -> Unit
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(GymSpacing.Sm)) {
@@ -355,6 +369,8 @@ private sealed interface Recognition {
     data class Extra(val machine: EquipmentGuideCatalog.ExtraMachine) : Recognition
     data object NotFound : Recognition
     data object Failed : Recognition
+    /** Built without a bundled vision key: recognition is unavailable, so say so explicitly. */
+    data object NoVision : Recognition
 }
 
 /**

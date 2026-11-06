@@ -12,7 +12,7 @@
 - `touch target safe area --domain web`：此域包含原生界面指南，Android 使用48dp触控区、至少8dp间距与系统栏避让。
 - `error summary validation --domain ux`：逐字段错误与可发现错误反馈；其中Web aria示例只提炼语义，安卓使用Compose等效能力。
 - 浅色重配 `text color contrast --domain ux`：普通文字4.5:1、选中不能只靠颜色。
-- 浅色重配 `color light theme --stack jetpack-compose`：集中Material3语义TOKENs，不升级依赖、不引入动态配色。
+- 浅色重配 `color light theme --stack jetpack-compose`：集中Material3语义tokens，不升级依赖、不引入动态配色。
 
 Skill部分输出偏营销网页（Hero/社交证明/重复CTA），不适合本APP建档，不照搬。资料库中的版本标注也不作为升级现有Compose的依据。
 

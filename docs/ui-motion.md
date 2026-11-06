@@ -136,7 +136,7 @@ android/app/build/test-results/testDebugUnitTest/
 
 构建：`gradle --offline --rerun-tasks :core:test :app:testDebugUnitTest :app:assembleDebug` → `BUILD SUCCESSFUL in 1m 55s`，产物 `app/build/outputs/apk/debug/app-debug.apk`（28.1 MB）。
 
-测试覆盖的是**行为与不变量**（状态转移、风险优先级、减少动效下仍可操作、TOKEN 不外泄），不是"动画好不好看"。视觉手感需要真机确认，本文件不作此声明。
+测试覆盖的是**行为与不变量**（状态转移、风险优先级、减少动效下仍可操作、token 不外泄），不是"动画好不好看"。视觉手感需要真机确认，本文件不作此声明。
 
 ## 6. 复现环境说明
 

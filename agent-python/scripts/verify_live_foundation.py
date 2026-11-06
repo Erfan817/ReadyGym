@@ -1,6 +1,6 @@
 """Bounded opt-in live acceptance; sends only fictional adult demo data.
 
-Uses private configuration without echoing any key, header or session TOKEN.
+Uses private configuration without echoing any key, header or session token.
 Max two retries are HUMAN-visible reruns of this program; no network auto retry.
 """
 import argparse
@@ -32,7 +32,7 @@ async def main():
                 raise RuntimeError('Live stage failed HTTP '+str(response.status_code)+' '+str(code))
             return response.json() if response.content else {}
         started=check(await client.post('/api/intake/sessions',json={'consent':True}))
-        sid=started['session_id'];headers={'Authorization':'Bearer '+started['session_TOKEN']};root='/api/intake/sessions/'+sid
+        sid=started['session_id'];headers={'Authorization':'Bearer '+started['session_token']};root='/api/intake/sessions/'+sid
         report['stages'].append({'stage':'start','status':started['status'],'calls_used':started['calls_used']})
         print('LIVE_INITIAL_QUESTION_OK',flush=True)
         data=check(await client.post(root+'/messages',headers=headers,json={'message':'我年龄21岁，身高175厘米，体重70公斤，目标增肌，训练地点在家，器械为哑铃，每周3天，每次30分钟，训练经验新手'}))

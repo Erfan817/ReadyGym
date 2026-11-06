@@ -330,7 +330,7 @@ class ReviewFixes(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(resolved.json()["status"], "ready")
 
 
-    async def test_inflight_expiry_never_returns_success_or_an_expired_TOKEN(self):
+    async def test_inflight_expiry_never_returns_success_or_an_expired_token(self):
         for initial in (True, False):
             with self.subTest(initial=initial):
                 await self.setup_app([completion()])
@@ -350,7 +350,7 @@ class ReviewFixes(unittest.IsolatedAsyncioTestCase):
                                 if initial else await self.send("21岁"))
                 self.assertEqual(response.status_code, 410, response.text)
                 self.assertEqual(response.json()["error"]["code"], "session_expired")
-                self.assertNotIn("session_TOKEN", response.json())
+                self.assertNotIn("session_token", response.json())
                 self.assertEqual(self.app.state.sessions, {})
                 self.assertEqual(len(requests), 1)
                 self.assertEqual(self.app.state.provider_attempts, 1 if initial else 2)
@@ -399,7 +399,7 @@ class ReviewFixes(unittest.IsolatedAsyncioTestCase):
             self.assertIn("clarification_fields", schema["required"])
             prop = schema["properties"]["clarification_fields"]
             self.assertEqual(prop["maxItems"], 12)
-            self.assertEqual(set(prop["items"]["enum"]), set(service.Session(TOKEN_digest="test").profile))
+            self.assertEqual(set(prop["items"]["enum"]), set(service.Session(token_digest="test").profile))
 
 
 if __name__ == "__main__":

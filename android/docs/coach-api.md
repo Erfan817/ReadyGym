@@ -8,7 +8,7 @@ App已具备服务端HTTP会话客户端与单屏Compose对话路径；交付包
 
 构建时由Gradle property `readyGymServiceBaseUrl` 或环境变量 `READY_GYM_SERVICE_BASE_URL` 注入Debug `BuildConfig.SERVICE_BASE_URL`；property优先，默认为空。Release值强制为空。无配置仍可使用可选离线入口；不会主动发送任何资料。
 
-URL必须为API origin（无用户名/密码、query、fragment或路径）；客户端自行加 `/api/intake/sessions`。除Debug的`localhost`/`127.0.0.1`外只允许HTTPS。没有硬编码生产IP；session TOKEN仅会话级授权，不等于生产用户认证。
+URL必须为API origin（无用户名/密码、query、fragment或路径）；客户端自行加 `/api/intake/sessions`。除Debug的`localhost`/`127.0.0.1`外只允许HTTPS。没有硬编码生产IP；session token仅会话级授权，不等于生产用户认证。
 
 本机开发服务默认loopback；`127.0.0.1`指手机自身，**不是服务器地址**。仅在USB授权后通过`adb reverse tcp:8000 tcp:8000`桥接到本机开发服务，或提供另行安全部署的HTTPS origin。不要公开暴露开发FastAPI、不要为调试启用LAN/公网明文或绕过TLS。默认发布测试包不配置loopback URL。
 
@@ -20,9 +20,9 @@ adb reverse tcp:8000 tcp:8000
 
 ## 接口与防护
 
-用户明确点击“同意并开始”后POST `/api/intake/sessions`，JSON `{"consent":true}`。服务端返回session_id、session_TOKEN、assistant_text、status、validated_profile、missing_fields、provider_mode。App显示服务端回答，不客户端预编首问；`response_source=server_policy`显示“教练 · 服务端整理”，不把策略问句当作未经处理的模型文本。
+用户明确点击“同意并开始”后POST `/api/intake/sessions`，JSON `{"consent":true}`。服务端返回session_id、session_token、assistant_text、status、validated_profile、missing_fields、provider_mode。App显示服务端回答，不客户端预编首问；`response_source=server_policy`显示“教练 · 服务端整理”，不把策略问句当作未经处理的模型文本。
 
-`POST /api/intake/sessions/{session_id}/messages`以会话Bearer TOKEN授权，JSON `{"message":"用户原始回答"}`；不裁剪/代写用户内容。最大1000个UTF-16 code units（UI以“字”作简短提示），blank不发送。busy禁用且retry逻辑同样guard，失败保留输入并允许人工重试，无自动模型重试。网络/超时错误明确提示请求可能已计费，只有用户点击才再次请求。连接超时10秒、读超时30秒、响应上限65536字节；不跟随重定向、不记录请求body或TOKEN。
+`POST /api/intake/sessions/{session_id}/messages`以会话Bearer token授权，JSON `{"message":"用户原始回答"}`；不裁剪/代写用户内容。最大1000个UTF-16 code units（UI以“字”作简短提示），blank不发送。busy禁用且retry逻辑同样guard，失败保留输入并允许人工重试，无自动模型重试。网络/超时错误明确提示请求可能已计费，只有用户点击才再次请求。连接超时10秒、读超时30秒、响应上限65536字节；不跟随重定向、不记录请求body或token。
 
 仅`provider_mode=deepseek_official`且status为collecting/ready/blocked可采用。所有start/messages/confirm响应及GET确认读回均要求显式`safety_route`键：collecting/ready必须为JSON null；blocked必须精确为`stop_and_seek_care`、`professional_review`或`unsupported_experience`之一，不trim、不猜测、不接受其他类型。缺失、未知值、类型错误或status不一致均拒绝invalid_response；契约不明保守保留专业评估阻断，已辨识急性路线即使其余响应无效也保留更高风险。不能把契约缺失当作没有风险。
 
@@ -38,13 +38,13 @@ Activity级CoachConversation保留该风险，TrainingPlanScreen的生成、确�
 
 ## 用户批准的统一响应异常边界
 
-`checkedIntakeResponse`统一包住start、messages、confirm及其POST/GET读回。2xx root-array、损坏JSON、截断JSON等解码前错误和结构化契约错误都携带保守专业评估反馈；响应过大、重定向也不能丢失阻断。已验证的更强安全反馈保留，不从未解析片段猜STOP症状。删除的实际404取证独立，不把网络失败伪装成已删除。`parseReply`内部所有校验均属于服务端响应；非法返回session_id/TOKEN也统一为`invalid_response`并带已解析STOP或保守PRO反馈，不能以`invalid_session`漏出。请求前本地session校验仍独立返回`invalid_session`、不假造远端风险。
+`checkedIntakeResponse`统一包住start、messages、confirm及其POST/GET读回。2xx root-array、损坏JSON、截断JSON等解码前错误和结构化契约错误都携带保守专业评估反馈；响应过大、重定向也不能丢失阻断。已验证的更强安全反馈保留，不从未解析片段猜STOP症状。删除的实际404取证独立，不把网络失败伪装成已删除。`parseReply`内部所有校验均属于服务端响应；非法返回session_id/token也统一为`invalid_response`并带已解析STOP或保守PRO反馈，不能以`invalid_session`漏出。请求前本地session校验仍独立返回`invalid_session`、不假造远端风险。
 
 新增两个真实HTTP/Compose回归先运行时RED再GREEN：3种损坏body×4种建档请求，以及HTTP→Activity保留输入/风险→离线建档→真实PlanningEngine拒绝草稿/确认。完整全量由父重新执行；最新统计与artifact见`../README.md`。证据目录`build/verification/v0.3.0/shared-boundary-fixes/`。测试场景循环用Compose `key(client)`隔离各client的remember状态，不改产品逻辑掩盖测试问题；最初编译参数错误和运行时RED日志分开保留。
 
 ## 生命周期与测试证据
 
-对话、未发送input、状态/TOKEN与最高本地风险在Activity ViewModel内存，配置重建保留；无磁盘持久化、账号或历史同步。进程回收/finish清空；规则资料和计划仍为原页面session-memory，不能声称跨重建保存，不能声称风险跨进程留存。
+对话、未发送input、状态/token与最高本地风险在Activity ViewModel内存，配置重建保留；无磁盘持久化、账号或历史同步。进程回收/finish清空；规则资料和计划仍为原页面session-memory，不能声称跨重建保存，不能声称风险跨进程留存。
 
 CoachChatScreenTest使用明确TestOnlyCoachClient执行额外Compose行为；CoachHttpContractTest使用真实ServerSocket loopback HTTP验证方法、路径、Bearer、UTF-8、限长、禁止公网HTTP、响应类型/ready、安全、confirm/delete精确读回。新增CoachStructuredSafetyTest全部通过真实HttpCoachClient + ServerSocket，主slice实际201 start→200 blocked message→离线OnboardingScreen→真实PlanningEngine，断言不出草稿/确认入口；覆盖STOP、professional、unsupported不误latch、未知/缺失/类型/status错误的fail-closed、confirm POST和GET风险丢失、clear/restart/Activity recreate、新无风险摘要及lower-route不能降级。没有新增Retrofit/OkHttp依赖，网络用平台HttpURLConnection/HttpsURLConnection。
 

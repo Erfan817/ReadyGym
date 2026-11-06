@@ -6,9 +6,9 @@
 ## 1. 项目是什么（30 秒版）
 
 - **安卓 App**（Kotlin + Jetpack Compose）：AI 健身教练。流程 = 聊天建档 → 确认档案 → AI 排训练计划 → 跟着练 → 练后反馈动态调整。中文 UI，面向健身新手。
-- **后端**（Spring Boot, Java 21）：注册、排行榜、器械演示 GIF 分发、用户反馈、语音识别中转、APK 下载。**不做 AI 中转**（AI 由 App 直连网关）。
+- **后端**（Spring Boot, Java 21）：注册、排行榜、器械演示 GIF 分发、用户反馈、语音识别中转、APK 下载，以及**可触发的 AI 代理回落** `/api/ai/chat/completions`（Bearer 鉴权 + 按设备每日限额 + 服务端话题护栏）。默认发行包 App 直连网关；`AI_API_KEY` / `AI_BASE_URL` 任一为空时 App 立即回落到该代理（新克隆仓库、CI 构建、漏配 `local.properties` 都会触发）。**不要误删 `server/ai/` 包或 systemd 的 `DEEPSEEK_*` 变量**。
 - **分发**：个人分发，无商店。蒲公英（主）+ VPS 直链（备）。当前版本见 `android/app/build.gradle.kts` 的 `versionCode/versionName`。
-- **AI 模型**：App 直连 OpenAI 兼容网关（PackyAPI，模型 `deepseek-flash`）。该模型是**推理型 + 原生视觉**（思考耗 TOKEN；能看图）。
+- **AI 模型**：App 直连 OpenAI 兼容网关（PackyAPI，模型 `deepseek-flash`）。该模型是**推理型 + 原生视觉**（思考耗 token；能看图）。
 - **动作库**：287 个动作（12 个杠铃动作标 HIGH_RISK 对新手隐藏），60 个演示 GIF 打包进 APK、其余 227 个从服务器流式加载。
 - 用户是项目主人（个人项目），改动风格可以快，但**测试基线和下面列的硬约束不许破**。
 
@@ -94,14 +94,14 @@ cd ../server && ./gradlew test bootJar                                          
 
 ### 4.4 器械指南 + 拍照识别
 - 16 台器械离线教程 + 15 个演示 GIF（服务器 `/gifs/` 分发；划船机无匹配，不用相近图冒充）。
-- 拍照识别：照片本机压到 ≤1280px/JPEG70 → `DeepSeekApi.recognizeImage()`（OpenAI `image_url` 格式，**不走 JSON 模式**，**max_TOKENs ≥ 2000**——推理型模型思考也耗 TOKEN，给少了个位数的预算 content 会是空）。回复先 `matchEquipment()` 匹配 16 台（名称/别名/英文，最长命中，平局→不自动选）；不在 16 台则 `matchExtraMachine()` 匹配 9 类常见器械（蝴蝶机/史密斯机/龙门架/哈克/腿弯举/髋外展内收/提踵/山羊挺身/辅助引体机，中英文关键词），给出动作库动作+GIF 面板；再不行回手动。照片只在这一步出本机。
+- 拍照识别：照片本机压到 ≤1280px/JPEG70 → `DeepSeekApi.recognizeImage()`（OpenAI `image_url` 格式，**不走 JSON 模式**，**max_tokens ≥ 2000**——推理型模型思考也耗 token，给少了个位数的预算 content 会是空）。回复先 `matchEquipment()` 匹配 16 台（名称/别名/英文，最长命中，平局→不自动选）；不在 16 台则 `matchExtraMachine()` 匹配 9 类常见器械（蝴蝶机/史密斯机/龙门架/哈克/腿弯举/髋外展内收/提踵/山羊挺身/辅助引体机，中英文关键词），给出动作库动作+GIF 面板；再不行回手动。照片只在这一步出本机。
 - 隐藏 bug 教训：TakePicture 成功回调里别忘了赋值 photoUri（0.7.0 修过一次漏赋值导致照片不显示）。
 
 ### 4.5 其他
 - **头像**：首页/聊天统一 `coachGender(聊天 statedGender) ?: profile.gender`，默认男。两页必须一致。
 - **检查更新**：蒲公英 `buildHaveNewVersion` 字段不可靠，App 端自己比对 `远端 versionCode > 本地`（`PgyerUpdate.parseCheckReply`）。老用户 App 每天静默查一次。
 - **反馈**：匿名 `POST /api/feedback`；查看 `GET /api/admin/feedback`（头 `X-Admin-Token`，在服务器 systemd unit）。
-- **明文 HTTP 白名单**只放开当前后端主机（`app/src/main/res/xml/network_security.xml` + debug 变体同名文件，换服务器时两处同步修改）。
+- **明文 HTTP 白名单**只放开当前后端主机（`app/src/main/res/xml/network_security.xml` + debug 变体 `app/src/debug/res/xml/debug_network_security.xml`，后者经 `app/src/debug/AndroidManifest.xml` 的 `tools:replace` 覆盖）。**两个文件名不同**；加上 `android/gradle.properties:13` 写死的同一地址，换服务器或切 HTTPS 时**三处**必须同步修改。
 
 ## 5. 配置与凭据（都不进 git）
 
@@ -109,7 +109,7 @@ cd ../server && ./gradlew test bootJar                                          
 |---|---|
 | `android/local.properties` | `readyGymAiBaseUrl/AiModel/AiApiKey`（AI 网关）、`readyGymPgyerApiKey/PgyerAppKey`（蒲公英）——打包注入 BuildConfig |
 | `android/gradle.properties` | `readyGymServiceBaseUrl`（进 git；本地调试用 `-PreadyGymServiceBaseUrl=http://10.0.2.2:8080`） |
-| VPS systemd unit | `READYGYM_ADMIN_TOKEN`、`READYGYM_XFYUN_APP_ID/API_KEY/API_SECRET` |
+| VPS systemd `EnvironmentFile`（权限 600） | `READYGYM_ADMIN_TOKEN`、`READYGYM_XFYUN_APP_ID/API_KEY/API_SECRET`、`DEEPSEEK_API_KEY`、`READYGYM_DEEPSEEK_BASE_URL/MODEL`、`READYGYM_H2_PASSWORD`；完整清单见 `server/.env.example` 与 `docs/CONFIG.md` |
 | `.tmp-tools/deploy_chunked.py` | 部署凭据（不进仓库，过期时向用户索取） |
 
 | 凭据 | 找谁/在哪 |
@@ -154,13 +154,17 @@ cd ../server && ./gradlew test bootJar                                          
 
 1. 测试全绿才算完成；`UncaughtExceptionsBeforeTest`（Room 跨测试泄漏）重跑一次即可，`AppShellTest` 的 @After 别删。
 2. 凭据/密码不进 git、不进文档、不进 APK 注释。Key 只在 `local.properties` 和服务器 systemd。
-3. 讯飞/蒲公英/AI 网关的行为差异（WS-only、buildHaveNewVersion 失效、控制台编码乱码、推理模型 TOKEN 预算）都已在本文件注明，别靠猜。
+3. 讯飞/蒲公英/AI 网关的行为差异（WS-only、buildHaveNewVersion 失效、控制台编码乱码、推理模型 token 预算）都已在本文件注明，别靠猜。
 4. HIGH_RISK 动作对新手不可见是安全约束，不可绕过。
 5. 服务器老接口不删（旧版 App 在外面跑着）：`/api/asr` 整段上传必须保留。
 6. 改服务器地址要同步改两处 network_security.xml；明文白名单只有这一个 IP。
 7. 用户界面文案用中文、口语化、不出现技术术语；错误提示要告诉用户"现在能做什么"。
 
-## 10. 当前状态（2026-11-02，v0.8.13 / code 32）
+## 10. 当前状态（2026-11-05，v0.8.13 / code 32）
+
+> 版本流水账已迁到 [CHANGELOG.md](CHANGELOG.md)。本节保留各版本的验证与数据迁移细节，供排查历史问题；
+> **新增版本请写进 CHANGELOG，不要再往这里追加长段落**。当前版本与验证结论以本节首段为准。
+> 环境变量清单见 [docs/CONFIG.md](docs/CONFIG.md)，备份/回滚/轮换见 [docs/OPERATIONS.md](docs/OPERATIONS.md)。
 
 v0.8.13：训练页按动作、组号沿用上次实际完成的重量、次数及秒数，修复稀疏完成组错位，跨无关计划变更仍沿用；明确修改的计划字段采用新安排。每次结束仅训练总结与勋章；每完成3次训练，从次日起首页恢复回访，可跳过且重启保持，主动反馈随时可用。回访问最近几次训练及现在的身体感觉，保存单独回访时间，模型不再误称刚练完。全量378项通过、1项原有跳过；正式包从0.8.12覆盖升级所有数据库表哈希一致，模拟器验证18.5kg×7次、44秒实际记录带入与重启、跳过持久化、完成总结分流、保存反馈不改档案及计划。已发布蒲公英code32。包 `releases/ReadyGym-0.8.13-lite.apk`，验证 `releases/ReadyGym-0.8.13-validation.json`，发布 `releases/ReadyGym-0.8.13-published.json`，截图 `screenshots/v0.8.13/`，说明 `docs/design/training-carry-recovery-v0.8.13.md`。未做真机验证。
 

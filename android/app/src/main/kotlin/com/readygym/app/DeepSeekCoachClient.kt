@@ -48,7 +48,7 @@ class DeepSeekCoachClient(
     private val candidates = mutableMapOf<String, CoachCandidate>()
     private val messageMutex = Mutex()
 
-    override suspend fun start(): CoachReply {
+    override suspend fun start(): CoachReply = messageMutex.withLock {
         val session = newSession()
         // A returning user must not be re-interviewed: the saved profile rides in the system
         // prompt, the greeting says so, and the card only comes back if they ask for a change.
@@ -59,21 +59,25 @@ class DeepSeekCoachClient(
         )
         // The first turn is a local greeting, not a model call: it costs nothing and it cannot fail
         // for network reasons before the user has typed anything.
-        return CoachReply(session, if (returning) RETURNING_GREETING else FIRST_QUESTION, "collecting", responseSource = "local_prompt")
+        CoachReply(session, if (returning) RETURNING_GREETING else FIRST_QUESTION, "collecting", responseSource = "local_prompt")
     }
 
-    override suspend fun message(session: CoachSession, text: String): CoachReply = messageMutex.withLock {
+    override suspend fun message(session: CoachSession, text: String): CoachReply {
         if (text.isBlank() || text.length > 1000) throw CoachException("invalid_input")
-        val history = transcripts[session.id] ?: throw CoachException("session_not_found")
         val userTurn = JSONObject().put("role", "user").put("content", text)
+        // Take a consistent snapshot of the shared history under the lock, then release it so the
+        // (slow) model round-trips below never run while messageMutex is held.
+        val snapshot = messageMutex.withLock {
+            transcripts[session.id]?.toList() ?: throw CoachException("session_not_found")
+        }
         // Snapshot the authoritative plan for this request. A later save checks this same base
         // again, so a stale model response can never overwrite a newer plan.
         val base = planProvider()
         val contract = if (base != null && existingProfile != null && library != null)
             ConversationPlanContract(library, existingProfile, base) else null
         val context = contract?.let { JSONObject().put("role", "system").put("content", it.prompt()) }
-        val request = if (context == null) history.toList() + userTurn
-            else listOf(history.first(), context) + history.drop(1) + userTurn
+        val request = if (context == null) snapshot + userTurn
+            else listOf(snapshot.first(), context) + snapshot.drop(1) + userTurn
         var reply = callModel(request, if (contract != null) 6000 else null)
         fun parseTurn(json: JSONObject): CoachReply {
             val parsedReply = toCoachReply(json, session)
@@ -105,14 +109,19 @@ class DeepSeekCoachClient(
             throw CoachException("plan_options_invalid", true,
                 detail = "这次调整有不合适的动作或安排，没有改动原计划。请点重试，或补充能用的器械。")
         }
-        // Commit a complete, validated turn together. A failed request leaves no hidden user
-        // turn or malformed assistant reply to be duplicated when the user taps retry.
-        history.add(userTurn)
-        history.add(JSONObject().put("role", "assistant").put("content", reply.toString()))
-        // Models intermittently drop the gender field even when told to repeat it; the avatar would
-        // flip back to the default mid-chat. This keyword pass only feeds the avatar — it never
-        // writes the stored profile, which still requires the explicit confirm step.
-        if (parsed.statedGender == null) parsed.copy(statedGender = genderStatedIn(text)) else parsed
+        // Commit a complete, validated turn together, back under the lock. A failed request leaves
+        // no hidden user turn or malformed assistant reply to be duplicated when the user taps retry.
+        return messageMutex.withLock {
+            val history = transcripts[session.id]
+            if (history != null) {
+                history.add(userTurn)
+                history.add(JSONObject().put("role", "assistant").put("content", reply.toString()))
+            }
+            // Models intermittently drop the gender field even when told to repeat it; the avatar would
+            // flip back to the default mid-chat. This keyword pass only feeds the avatar — it never
+            // writes the stored profile, which still requires the explicit confirm step.
+            if (parsed.statedGender == null) parsed.copy(statedGender = genderStatedIn(text)) else parsed
+        }
     }
 
     /** Explicit self-descriptions only; female markers win so mixed sentences cannot flip it. */
@@ -129,16 +138,19 @@ class DeepSeekCoachClient(
 
     override suspend fun confirm(reply: CoachReply): CoachReply {
         val candidate = reply.confirmedCandidate ?: throw CoachException("invalid_response")
-        candidates[reply.session.id] = candidate
+        messageMutex.withLock { candidates[reply.session.id] = candidate }
         return reply.copy(status = "ready", confirmed = true, confirmedCandidate = candidate,
             assistantText = reply.assistantText, responseSource = reply.responseSource)
     }
 
     override suspend fun delete(session: CoachSession) {
-        transcripts.remove(session.id)
-        candidates.remove(session.id)
+        messageMutex.withLock {
+            transcripts.remove(session.id)
+            candidates.remove(session.id)
+        }
     }
 
+    /** Caller must hold messageMutex; it is the sole writer of [sessionCounter]. */
     private fun newSession(): CoachSession {
         sessionCounter += 1
         return CoachSession("local-$sessionCounter", "local")
@@ -147,8 +159,8 @@ class DeepSeekCoachClient(
     // ---------------------------------------------------------------- model call
 
 
-    private suspend fun callModel(history: List<JSONObject>, TOKENBudget: Int? = null): JSONObject = withContext(Dispatchers.IO) {
-        val content = api.completeRaw(JSONArray(history.toList()), TOKENBudget)
+    private suspend fun callModel(history: List<JSONObject>, tokenBudget: Int? = null): JSONObject = withContext(Dispatchers.IO) {
+        val content = api.completeRaw(JSONArray(history.toList()), tokenBudget)
         try {
             JSONObject(content)
         } catch (_: JSONException) {
@@ -311,7 +323,7 @@ class DeepSeekCoachClient(
                 "若另有当前计划上下文，换动作、缺器械、组数重量及整周安排必须按计划上下文给调整选项，不要误当成修改档案。"
 
         /**
-         * Kept short on purpose: every TOKEN here is paid for by the user on every request, and a
+         * Kept short on purpose: every token here is paid for by the user on every request, and a
          * long prompt is also a place for the model to find room to improvise.
          */
         private val SYSTEM_PROMPT = """

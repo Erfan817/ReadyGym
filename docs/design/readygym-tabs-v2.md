@@ -28,7 +28,7 @@
 | 圆角 | 6 / 10 / 14 / 18 / 22 dp | 沿用 GymShapes |
 | 间距 | 4 / 8 / 12 / 16 / 20 / 28 dp | 沿用 GymSpacing |
 
-参考图（`refs/start-training.jpg`、`refs/stats.jpg`）实测：页面底 `#F3F2F7`、卡片纯白、唯一饱和色绿 `#34C85A`、左右留白 16–20dp、训练日行高 60dp、行距 8dp、指标卡 78dp 高、双列间距 12dp。与现有 TOKEN 完全一致，因此这次只重排结构，不换配色。
+参考图（`refs/start-training.jpg`、`refs/stats.jpg`）实测：页面底 `#F3F2F7`、卡片纯白、唯一饱和色绿 `#34C85A`、左右留白 16–20dp、训练日行高 60dp、行距 8dp、指标卡 78dp 高、双列间距 12dp。与现有 token 完全一致，因此这次只重排结构，不换配色。
 
 ## 布局骨架
 

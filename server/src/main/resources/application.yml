@@ -1,13 +1,20 @@
 server:
   port: 8080
+  shutdown: graceful
+  tomcat:
+    # Second line of defence behind RequestBodyLimitFilter (which also covers JSON bodies).
+    max-http-form-post-size: 3MB
+    max-swallow-size: 3MB
 
 spring:
   application.name: readygym-server
+  lifecycle.timeout-per-shutdown-phase: 30s
   datasource:
     # Local development: an H2 file next to the server, nothing to install.
-    url: jdbc:h2:file:./data/readygym;MODE=MySQL;AUTO_SERVER=TRUE
+    # AUTO_SERVER would open a TCP console on 9092 reachable with the sa/empty credentials.
+    url: jdbc:h2:file:./data/readygym;MODE=MySQL
     username: sa
-    password: ""
+    password: ${READYGYM_H2_PASSWORD:}
   jpa:
     hibernate.ddl-auto: update
     open-in-view: false
@@ -22,8 +29,8 @@ readygym:
     model: ${READYGYM_DEEPSEEK_MODEL:deepseek-chat}
   ai:
     daily-limit-per-device: 60
-    max-TOKENs: 1500
-  admin-TOKEN: ${READYGYM_ADMIN_TOKEN:}
+    max-tokens: 1500
+  admin-token: ${READYGYM_ADMIN_TOKEN:}
   # Optional host path of the full ExerciseGymGifsDB mirror (repo gifdb). Blank = serve the
   # curated subset packaged in the jar. Windows paths work: D:/readygym/gifdb
   gifs-dir: ${READYGYM_GIFS_DIR:}

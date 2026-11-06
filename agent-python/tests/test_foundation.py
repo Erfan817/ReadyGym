@@ -13,7 +13,7 @@ def tool_completion(name, arguments):
     return {"id": "fixture-agent-1", "choices": [{"finish_reason": "tool_calls", "message": {
         "role": "assistant", "content": None, "tool_calls": [{"id": "call_fixture_1", "type": "function",
         "function": {"name": name, "arguments": json.dumps(arguments)}}]
-    }}], "usage": {"prompt_TOKENs": 80, "completion_TOKENs": 20, "total_TOKENs": 100}}
+    }}], "usage": {"prompt_tokens": 80, "completion_tokens": 20, "total_tokens": 100}}
 
 
 class FoundationAgentContract(unittest.IsolatedAsyncioTestCase):
@@ -40,14 +40,14 @@ class FoundationAgentContract(unittest.IsolatedAsyncioTestCase):
         async with httpx.AsyncClient(transport=httpx.MockTransport(upstream)) as agent_client:
             app = create_app(provider=DeepSeekAdapter("fixture-only"), business=BlockingBusiness(),
                 agent_provider=FoundationProvider("fixture-only", client=agent_client))
-            sid, TOKEN = "concurrent_fixture", "concurrent-fixture-TOKEN"
-            app.state.sessions[sid] = Session(TOKEN_digest=hashlib.sha256(TOKEN.encode()).hexdigest(),
+            sid, token = "concurrent_fixture", "concurrent-fixture-token"
+            app.state.sessions[sid] = Session(token_digest=hashlib.sha256(token.encode()).hexdigest(),
                 profile={"age":21,"height_cm":175.,"weight_kg":70.,"goal":"muscle","location":"home",
                     "equipment":["dumbbell"],"days_per_week":3,"minutes_per_session":30,"experience":"beginner",
                     "current_discomfort":"none","medical_restrictions":"none","gender":None}, revision=1,expires_at=time.monotonic()+60)
             async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://fixture") as client:
                 path=f"/api/intake/sessions/{sid}/foundation/confirm-profile"
-                headers={"Authorization":"Bearer "+TOKEN};payload={"confirmed":True,"expected_revision":1}
+                headers={"Authorization":"Bearer "+token};payload={"confirmed":True,"expected_revision":1}
                 first=asyncio.create_task(client.post(path, headers=headers, json=payload))
                 await entered.wait()
                 self.assertTrue(app.state.sessions[sid].in_flight,"Concurrent confirmation must be blocked before a Java/model request starts")
@@ -80,7 +80,7 @@ class FoundationAgentContract(unittest.IsolatedAsyncioTestCase):
         async def upstream(request):
             envelope = {"assistant_text": "请先告诉我年龄", "profile_patch": {}, "clarification_fields": ["age"]}
             return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
-                "content": json.dumps(envelope)}}], "usage": {"prompt_TOKENs": 20, "completion_TOKENs": 20, "total_TOKENs": 40}})
+                "content": json.dumps(envelope)}}], "usage": {"prompt_tokens": 20, "completion_tokens": 20, "total_tokens": 40}})
         async with httpx.AsyncClient(transport=httpx.MockTransport(upstream)) as provider_client:
             app = create_app(provider=DeepSeekAdapter("fixture-only-not-secret", client=provider_client))
             async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://fixture") as client:
@@ -120,7 +120,7 @@ class FoundationAgentContract(unittest.IsolatedAsyncioTestCase):
         async def intake_upstream(request):
             return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
                 "content": json.dumps({"assistant_text": "请提供资料", "profile_patch": {}})}}],
-                "usage": {"prompt_TOKENs": 20, "completion_TOKENs": 20, "total_TOKENs": 40}})
+                "usage": {"prompt_tokens": 20, "completion_tokens": 20, "total_tokens": 40}})
         async def agent_upstream(request):
             return httpx.Response(200, json=tool_completion("propose_plan", {}))
         async with httpx.AsyncClient(transport=httpx.MockTransport(intake_upstream)) as pi, httpx.AsyncClient(transport=httpx.MockTransport(agent_upstream)) as pa:
@@ -133,7 +133,7 @@ class FoundationAgentContract(unittest.IsolatedAsyncioTestCase):
                 sid = started["session_id"]
                 session = app.state.sessions[sid]
                 session.profile, session.revision = profile, 1
-                headers = {"Authorization": "Bearer " + started["session_TOKEN"]}
+                headers = {"Authorization": "Bearer " + started["session_token"]}
                 reply = await client.post(f"/api/intake/sessions/{sid}/foundation/confirm-profile",
                     json={"confirmed": True, "expected_revision": 1}, headers=headers)
         self.assertEqual(reply.status_code, 200)
@@ -164,5 +164,5 @@ class FoundationAgentContract(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("confirm_plan", tool_names)
         self.assertNotIn("save_profile", tool_names)
         self.assertEqual(result.source, "deepseek_tool_calls")
-        self.assertEqual(result.usage["total_TOKENs"], 100)
+        self.assertEqual(result.usage["total_tokens"], 100)
         self.assertEqual(len(requests), 1)

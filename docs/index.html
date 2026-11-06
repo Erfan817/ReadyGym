@@ -61,8 +61,8 @@ footer{padding:36px 0 56px;color:var(--hint);font-size:12px;line-height:1.8}
   <p class="sub">面向健身新手的 AI 健身教练 · Android 客户端 + Spring Boot 服务 + AI 网关适配</p>
   <div class="btnrow">
     <a class="btn primary" href="https://www.pgyer.com/readygym">下载安装 Android 版</a>
-    <a class="btn" href="https://github.com/Erfan817/ready-gym">查看 GitHub 仓库</a>
-    <a class="btn" href="https://github.com/Erfan817/ready-gym#readme">README / 文档</a>
+    <a class="btn" href="https://github.com/Erfan817/ReadyGym">查看 GitHub 仓库</a>
+    <a class="btn" href="https://github.com/Erfan817/ReadyGym#readme">README / 文档</a>
   </div>
   <div class="tags">
     <span class="tag">Kotlin · Jetpack Compose</span>
@@ -118,7 +118,7 @@ footer{padding:36px 0 56px;color:var(--hint);font-size:12px;line-height:1.8}
     <div class="card"><h3>AI 输出必须过契约校验</h3><p>推理型模型的 JSON 输出先由 PlanContract 校验，最多两次重试，仍不合规则拒绝保存，不把无效内容写进对话历史</p></div>
     <div class="card"><h3>新手安全双重过滤</h3><p>杠铃蹲/推/拉等高风险动作对新手与恢复训练者同时被动作筛选和计划提示词排除，用户要求也不放行</p></div>
     <div class="card"><h3>计划版本事务化</h3><p>聊天确认换动作后，未做的动作、组次、重量立即同步，已完成的实际组记录保留；已结束的训练不会重新打开</p></div>
-    <div class="card"><h3>推理模型的 TOKEN 预算</h3><p>计划生成与聊天分开给预算，视觉识别另留更高额度，因为推理型模型的思考过程同样消耗 TOKEN</p></div>
+    <div class="card"><h3>推理模型的 token 预算</h3><p>计划生成与聊天分开给预算，视觉识别另留更高额度，因为推理型模型的思考过程同样消耗 token</p></div>
   </div>
 </section>
 
@@ -144,9 +144,9 @@ footer{padding:36px 0 56px;color:var(--hint);font-size:12px;line-height:1.8}
     <tr><td>已知限制</td><td>仅 Android APK；档案与训练记录存本机、无跨设备同步；素材为非商用授权；0.8.13 已完成模拟器验证，尚未做真机验收</td></tr>
   </table>
   <p style="margin-top:18px;font-size:14px">
-    <a href="https://github.com/Erfan817/ready-gym/blob/main/docs/tech-retrospective.md">技术复盘：手写 WebSocket 与流式语音识别</a> ·
-    <a href="https://github.com/Erfan817/ready-gym/blob/main/docs/ai-plan-eval.md">AI 计划评测矩阵</a> ·
-    <a href="https://github.com/Erfan817/ready-gym/blob/main/AGENTS.md">开发手册</a>
+    <a href="https://github.com/Erfan817/ReadyGym/blob/main/docs/tech-retrospective.md">技术复盘：手写 WebSocket 与流式语音识别</a> ·
+    <a href="https://github.com/Erfan817/ReadyGym/blob/main/docs/ai-plan-eval.md">AI 计划评测矩阵</a> ·
+    <a href="https://github.com/Erfan817/ReadyGym/blob/main/AGENTS.md">开发手册</a>
   </p>
 </section>
 

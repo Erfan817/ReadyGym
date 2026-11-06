@@ -43,7 +43,7 @@ class FoundationRoutes(unittest.IsolatedAsyncioTestCase):
         async def intake(request):
             return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {
                 "content": '{"assistant_text":"请输入资料","profile_patch":{}}'}}],
-                "usage": {"prompt_TOKENs": 20, "completion_TOKENs": 10, "total_TOKENs": 30}})
+                "usage": {"prompt_tokens": 20, "completion_tokens": 10, "total_tokens": 30}})
         self.agent_calls = []
         async def agent(request):
             self.agent_calls.append(request)
@@ -59,7 +59,7 @@ class FoundationRoutes(unittest.IsolatedAsyncioTestCase):
         self.addAsyncCleanup(self.client.aclose)
         started = (await self.client.post("/api/intake/sessions", json={"consent": True})).json()
         self.sid = started["session_id"]
-        self.headers = {"Authorization": "Bearer " + started["session_TOKEN"]}
+        self.headers = {"Authorization": "Bearer " + started["session_token"]}
         self.root = f"/api/intake/sessions/{self.sid}/foundation"
         self.session = self.app.state.sessions[self.sid]
         self.session.profile, self.session.revision = copy.deepcopy(PROFILE), 1

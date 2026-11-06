@@ -19,17 +19,17 @@ public class AuthController {
     }
 
     public record RegisterRequest(@NotNull String nickname) {}
-    public record RegisterResponse(String deviceId, String TOKEN, String nickname) {}
+    public record RegisterResponse(String deviceId, String token, String nickname) {}
     public record MeResponse(String deviceId, String nickname) {}
 
-    /** Creates an anonymous account. The TOKEN is returned once; only its hash is kept. */
+    /** Creates an anonymous account. The token is returned once; only its hash is kept. */
     @PostMapping("/auth/register")
     @ResponseStatus(HttpStatus.CREATED)
     public RegisterResponse register(@RequestBody @Valid RegisterRequest request) {
-        String TOKEN = Tokens.newToken();
+        String token = Tokens.newToken();
         Device device = devices.save(new Device(UUID.randomUUID().toString(), Nicknames.clean(request.nickname()),
-            Tokens.hash(TOKEN), Instant.now()));
-        return new RegisterResponse(device.getId(), TOKEN, device.getNickname());
+            Tokens.hash(token), Instant.now()));
+        return new RegisterResponse(device.getId(), token, device.getNickname());
     }
 
     @GetMapping("/me")

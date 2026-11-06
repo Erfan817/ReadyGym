@@ -51,7 +51,7 @@ internal object ReadyGymColors {
     /**
      * Control outlines: 3.71:1 on white, 3.33:1 on the page background, 3.14:1 on the inset block.
      *
-     * A decorative hairline is drawn at low alpha instead — this TOKEN is only for the edges that
+     * A decorative hairline is drawn at low alpha instead — this token is only for the edges that
      * carry meaning (an input box, an unselected radio), so it has to clear 3:1 everywhere.
      */
     val Outline = Color(0xFF84848D)

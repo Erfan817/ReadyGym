@@ -63,7 +63,7 @@ fun RecordsCalendar(vm: GymViewModel) {
     val profile by vm.profile.collectAsState()
     val p = profile.valueOrNull()
     val zone = remember { ZoneId.systemDefault() }
-    val today = remember { LocalDate.now(zone) }
+    val today = vm.today
     var monthIndex by rememberSaveable { mutableStateOf(YearMonth.from(today).let { it.year * 12 + it.monthValue - 1 }) }
     val month = YearMonth.of(monthIndex / 12, monthIndex % 12 + 1)
     var selectedEpochDay by rememberSaveable { mutableStateOf(today.toEpochDay()) }
@@ -95,7 +95,8 @@ fun RecordsCalendar(vm: GymViewModel) {
             else "这天没有训练。",
             color = ReadyGymColors.MutedText, fontSize = 14.sp)
         sessions.forEach { SessionCard(it, vm, awards[it.id], zone) }
-        BadgeWall(BadgeRules.earned(history, p?.daysPerWeek ?: 3, zone))
+        val earned = remember(history, p?.daysPerWeek, zone) { BadgeRules.earned(history, p?.daysPerWeek ?: 3, zone) }
+        BadgeWall(earned)
     }
 }
 

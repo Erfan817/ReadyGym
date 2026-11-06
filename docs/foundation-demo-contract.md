@@ -73,4 +73,4 @@ Android `CoachReply` extra properties default null/empty. `CoachClient` new opti
 
 ## Deliberate demo scope
 
-No anatomical SVG, log_set, RAG/pgvector, commerce, production account, automagic progression or medical safety certification in this slice. `get_training_history` = saved PLAN version history, clearly labelled, not workouts performed. PostgreSQL business persistence is real; conversation/TOKEN lifespan remains bounded and device process-loss session recovery is not a production account feature. A runnable bounded demo is the deliverable, not just tests or a plan.
+No anatomical SVG, log_set, RAG/pgvector, commerce, production account, automagic progression or medical safety certification in this slice. `get_training_history` = saved PLAN version history, clearly labelled, not workouts performed. PostgreSQL business persistence is real; conversation/token lifespan remains bounded and device process-loss session recovery is not a production account feature. A runnable bounded demo is the deliverable, not just tests or a plan.

@@ -70,7 +70,7 @@ fun StatsScreen(vm: GymViewModel, onOpenRecords: () -> Unit) {
     val history by vm.history.collectAsState()
     val profile by vm.profile.collectAsState()
     val zone = remember { ZoneId.systemDefault() }
-    val today = remember { LocalDate.now(zone) }
+    val today = vm.today
     val p = profile.valueOrNull()
 
     Column(
@@ -115,13 +115,15 @@ fun StatsScreen(vm: GymViewModel, onOpenRecords: () -> Unit) {
 @Composable
 private fun MetricGrid(history: List<WorkoutSession>, today: LocalDate, zone: ZoneId, daysPerWeek: Int?) {
     val finished = remember(history) { history.filter { it.endedAtMillis != null } }
-    val thisMonth = finished.count {
-        val d = Instant.ofEpochMilli(it.startedAtMillis).atZone(zone).toLocalDate()
-        d.year == today.year && d.monthValue == today.monthValue
+    val thisMonth = remember(finished, today, zone) {
+        finished.count {
+            val d = Instant.ofEpochMilli(it.startedAtMillis).atZone(zone).toLocalDate()
+            d.year == today.year && d.monthValue == today.monthValue
+        }
     }
-    val weekDone = weeklyTrainingCount(finished, today, zone)
+    val weekDone = remember(finished, today, zone) { weeklyTrainingCount(finished, today, zone) }
     val goal = daysPerWeek?.coerceAtLeast(1)
-    val streak = goal?.let { streakOf(finished, it, today, zone) }
+    val streak = remember(finished, goal, today, zone) { goal?.let { streakOf(finished, it, today, zone) } }
     val remaining = goal?.let { (it - weekDone).coerceAtLeast(0) }
 
     Panel(modifier = Modifier.testTag("metric-本周"), container = ReadyGymColors.AccentWash) {

@@ -1592,7 +1592,7 @@
             ],
             "title": "Agent Notice"
           },
-          "session_TOKEN": {
+          "session_token": {
             "type": "string",
             "title": "Session Token"
           }
@@ -1615,23 +1615,23 @@
           "safety_route",
           "calls_used",
           "expires_in_seconds",
-          "session_TOKEN"
+          "session_token"
         ],
         "title": "StartResponse"
       },
       "TokenUsage": {
         "properties": {
-          "prompt_TOKENs": {
+          "prompt_tokens": {
             "type": "integer",
             "minimum": 0.0,
             "title": "Prompt Tokens"
           },
-          "completion_TOKENs": {
+          "completion_tokens": {
             "type": "integer",
             "minimum": 0.0,
             "title": "Completion Tokens"
           },
-          "total_TOKENs": {
+          "total_tokens": {
             "type": "integer",
             "minimum": 0.0,
             "title": "Total Tokens"
@@ -1640,9 +1640,9 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "prompt_TOKENs",
-          "completion_TOKENs",
-          "total_TOKENs"
+          "prompt_tokens",
+          "completion_tokens",
+          "total_tokens"
         ],
         "title": "TokenUsage"
       },

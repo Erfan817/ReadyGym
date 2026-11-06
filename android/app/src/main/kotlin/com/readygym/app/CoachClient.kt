@@ -9,7 +9,7 @@ class CoachException(val code: String, val retryable: Boolean = false, val httpS
     val safetyFeedback: SafetyFeedback? = null,
     /** A user-facing Chinese explanation from the server, when it sent one. */
     val detail: String? = null) : IOException(code)
-data class CoachSession(val id: String, val TOKEN: String) {
+data class CoachSession(val id: String, val token: String) {
     override fun toString() = "CoachSession(<redacted>)"
 }
 data class CoachReply(val session: CoachSession, val assistantText: String, val status: String,

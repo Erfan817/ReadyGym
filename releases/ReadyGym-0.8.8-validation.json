@@ -1,0 +1,42 @@
+{
+  "version": "0.8.8",
+  "versionCode": 27,
+  "tests": {
+    "app": {
+      "tests": 155,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "core": {
+      "tests": 96,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "server": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "passed": 261,
+  "skipped": 1,
+  "schemaMigration": "1 to 2, every legacy table unchanged on emulator",
+  "releaseUiVerified": [
+    "record",
+    "past date",
+    "target",
+    "point selection",
+    "edit",
+    "delete",
+    "clear goal",
+    "restart persistence"
+  ],
+  "demoWeightDataRemoved": true,
+  "screenshots": "screenshots/v0.8.8/",
+  "publishedDownloadMatchesRelease": true,
+  "finalLegacyTablesUnchanged": true,
+  "finalWeightEntryCount": 0
+}

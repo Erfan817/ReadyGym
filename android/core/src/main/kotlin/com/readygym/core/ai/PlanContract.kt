@@ -19,7 +19,7 @@ import kotlinx.serialization.json.Json
 
 data class ChatMessage(val role: String, val content: String)
 
-/** What the model must return, in a deliberately small shape (short keys keep TOKENs down). */
+/** What the model must return, in a deliberately small shape (short keys keep tokens down). */
 @Serializable
 internal data class ModelItem(
     val id: String,

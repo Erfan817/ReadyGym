@@ -17,7 +17,7 @@ async def main():
     try:
         await client.call('/internal/profile/confirm',{'session_id':sid,'profile':profile,'profile_revision':1,'confirmed':True})
         draft=await client.call('/internal/tools/propose_plan',{'session_id':sid})
-        session=Session(TOKEN_digest='fixture-never-authenticated',profile=profile,revision=1,confirmed=True,foundation_enabled=True)
+        session=Session(token_digest='fixture-never-authenticated',profile=profile,revision=1,confirmed=True,foundation_enabled=True)
         session.foundation_state={'plan_proposal':draft,'active_plan':None}
         replies=[view(session,sid)]
         await client.call('/internal/plan/confirm',{'session_id':sid,'draft_id':draft['id'],'expected_revision':1,'confirmed':True})
@@ -29,7 +29,7 @@ async def main():
         replies.append(view(session,sid))
         dest=ROOT/'android/app/src/test/resources/foundation-real-java-replies.json'
         dest.parent.mkdir(parents=True,exist_ok=True)
-        dest.write_text(json.dumps({'provenance':'Captured actual Java17/PostgreSQL HTTP replies; profile is fictional, no model/key/TOKENs', 'replies':replies},ensure_ascii=False,indent=2)+'\n')
+        dest.write_text(json.dumps({'provenance':'Captured actual Java17/PostgreSQL HTTP replies; profile is fictional, no model/key/tokens', 'replies':replies},ensure_ascii=False,indent=2)+'\n')
         print('CAPTURED_REAL_JAVA_REPLY_CONTRACTS',len(replies))
     finally:
         await client.call('/internal/sessions/'+sid,method='DELETE')

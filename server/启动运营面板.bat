@@ -3,7 +3,7 @@ chcp 65001 >nul
 cd /d %~dp0
 
 rem 本地一键启动：设好 Admin Token，起服务器，等健康检查通过后自动打开运营面板。
-rem 公网/生产环境必须先 set READYGYM_ADMIN_TOKEN=<随机值> 再运行；未设置时脚本生成一次性本地随机 TOKEN。
+rem 公网/生产环境必须先 set READYGYM_ADMIN_TOKEN=<随机值> 再运行；未设置时脚本生成一次性本地随机 token。
 
 if "%READYGYM_ADMIN_TOKEN%"=="" set "READYGYM_ADMIN_TOKEN=local-%RANDOM%-%RANDOM%"
 

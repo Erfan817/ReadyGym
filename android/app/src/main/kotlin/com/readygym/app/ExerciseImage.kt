@@ -149,14 +149,21 @@ internal fun preloadWindow(firstVisible: Int, lastVisible: Int, size: Int, radiu
     return start..stop
 }
 
+@Volatile
 private var gif: ImageLoader? = null
+@Volatile
 private var still: ImageLoader? = null
+private val loaderLock = Any()
 
 /** Shared animated-GIF loader: the workout list and the equipment guide both play through it. */
-internal fun gifLoader(context: Context): ImageLoader = gif ?: ImageLoader.Builder(context.applicationContext)
-    .components { add(if (Build.VERSION.SDK_INT >= 28) ImageDecoderDecoder.Factory() else GifDecoder.Factory()) }
-    .build().also { gif = it }
+internal fun gifLoader(context: Context): ImageLoader = gif ?: synchronized(loaderLock) {
+    gif ?: ImageLoader.Builder(context.applicationContext)
+        .components { add(if (Build.VERSION.SDK_INT >= 28) ImageDecoderDecoder.Factory() else GifDecoder.Factory()) }
+        .build().also { gif = it }
+}
 
 /** No GIF decoder registered, so Coil decodes the first frame as a bitmap. */
-private fun stillLoader(context: Context): ImageLoader = still ?: ImageLoader.Builder(context.applicationContext)
-    .build().also { still = it }
+private fun stillLoader(context: Context): ImageLoader = still ?: synchronized(loaderLock) {
+    still ?: ImageLoader.Builder(context.applicationContext)
+        .build().also { still = it }
+}

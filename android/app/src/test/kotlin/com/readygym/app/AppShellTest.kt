@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
@@ -14,6 +15,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import com.readygym.app.data.GymDatabase
 import com.readygym.core.Equipment
@@ -191,7 +193,7 @@ class AppShellTest {
                 goal = Goal.MUSCLE, location = Location.GYM, equipment = setOf(Equipment.DUMBBELL)),
             PlanningPreferences(3, 40, TrainingExperience.BEGINNER, SafetyFeedback(screenCompleted = true)),
         )
-        val ready = CoachReply(CoachSession("ready-session", "fake-TOKEN"), "资料整理好了，请你确认。",
+        val ready = CoachReply(CoachSession("ready-session", "fake-token"), "资料整理好了，请你确认。",
             "ready", confirmedCandidate = candidate)
         val readyClient = object : CoachClient {
             var confirmations = 0
@@ -205,8 +207,15 @@ class AppShellTest {
         launch(readyClient)
         compose.onNodeWithTag("home-open-coach").performClick()
         compose.onNodeWithText("同意并开始").performClick()
-        awaitTag("coach-confirm-profile")
-        compose.onNodeWithTag("coach-confirm-profile").performScrollTo().assertIsEnabled().performClick()
+        // The header state badge sits outside the (now lazy) transcript, so it is the stable
+        // wait anchor; the confirm card itself may be disposed above the fold after the
+        // auto-scroll and must be scrolled back into the viewport via the list.
+        awaitTag("coach-state-awaiting_confirm")
+        compose.onNodeWithTag("coach-messages").performScrollToNode(hasTestTag("coach-confirm-profile"))
+        // scrollToNode only guarantees the item is composed; for a card taller than the viewport
+        // the button can still sit below the fold, so ask for full visibility before clicking.
+        compose.onNodeWithTag("coach-confirm-profile").performScrollTo()
+        compose.onNodeWithTag("coach-confirm-profile").assertIsEnabled().performClick()
 
         // Room saves asynchronously: wait for both the handoff notice and the usable next action.
         awaitTag("plan-profile-saved")

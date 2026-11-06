@@ -45,8 +45,8 @@ public class AdminController {
     public record DayPoint(String date, long newUsers, long workouts, long aiCalls) {}
 
     @GetMapping("/stats")
-    public Stats stats(@RequestHeader(value = "X-Admin-Token", required = false) String TOKEN) {
-        requireAdmin(TOKEN);
+    public Stats stats(@RequestHeader(value = "X-Admin-Token", required = false) String token) {
+        requireAdmin(token);
         LocalDate today = LocalDate.now(props.zoneId());
         Instant startOfToday = today.atStartOfDay(props.zoneId()).toInstant();
         return new Stats(
@@ -64,9 +64,9 @@ public class AdminController {
      * capped at 90), so loading plain timestamps is cheaper than date functions per database.
      */
     @GetMapping("/stats/daily")
-    public List<DayPoint> daily(@RequestHeader(value = "X-Admin-Token", required = false) String TOKEN,
+    public List<DayPoint> daily(@RequestHeader(value = "X-Admin-Token", required = false) String token,
                                 @RequestParam(defaultValue = "30") int days) {
-        requireAdmin(TOKEN);
+        requireAdmin(token);
         int span = Math.min(Math.max(days, 1), 90);
         var zone = props.zoneId();
         LocalDate today = LocalDate.now(zone);
@@ -93,11 +93,11 @@ public class AdminController {
             .toList();
     }
 
-    private void requireAdmin(String TOKEN) {
+    private void requireAdmin(String token) {
         String expected = props.adminToken();
-        // No configured TOKEN means the admin API is off, not open.
-        if (expected == null || expected.isBlank() || TOKEN == null
-            || !MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8), TOKEN.getBytes(StandardCharsets.UTF_8))) {
+        // No configured token means the admin API is off, not open.
+        if (expected == null || expected.isBlank() || token == null
+            || !MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8), token.getBytes(StandardCharsets.UTF_8))) {
             throw new ApiException(HttpStatus.FORBIDDEN, "forbidden", "无权访问");
         }
     }

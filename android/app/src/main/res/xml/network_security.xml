@@ -3,13 +3,15 @@
   Production network policy: HTTPS-only, except the one ReadyGym server IP.
 
   The ReadyGym backend currently runs on plain HTTP on a high port (an un-ICP-filed host where
-  80/443 are blocked by the provider), so that single IP gets an explicit cleartext exception.
+  80/443 are blocked by the provider), so the backend host gets an explicit cleartext exception.
+  The literal host is not committed to the public repo (this file ships a placeholder); a local
+  release build injects the real host through the release network-security variant.
   When the server moves behind HTTPS with a domain, delete this exception and the SERVICE_BASE_URL
   becomes https:// and nothing else changes.
 -->
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">REDACTED_HOST</domain>
+        <domain includeSubdomains="false">readygym.example.invalid</domain>
     </domain-config>
 </network-security-config>

@@ -27,19 +27,19 @@
   }
   header h1 { font-size: 18px; margin: 0; }
   header .spacer { flex: 1; }
-  .TOKEN-box { display: flex; align-items: center; gap: 8px; }
-  .TOKEN-box input {
+  .token-box { display: flex; align-items: center; gap: 8px; }
+  .token-box input {
     width: 240px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px;
     font: inherit; outline: none;
   }
-  .TOKEN-box input:focus { border-color: var(--accent); }
+  .token-box input:focus { border-color: var(--accent); }
   button {
     padding: 7px 14px; border: none; border-radius: 8px; font: inherit; cursor: pointer;
     background: var(--accent); color: #fff;
   }
   button:hover { filter: brightness(1.05); }
   button.ghost { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-  #TOKEN-msg { font-size: 13px; color: var(--danger); }
+  #token-msg { font-size: 13px; color: var(--danger); }
   main { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
   #gate {
     max-width: 380px; margin: 80px auto; text-align: center;
@@ -99,10 +99,10 @@
 <header>
   <h1>🏋️ ReadyGym 运营面板</h1>
   <div class="spacer"></div>
-  <div class="TOKEN-box" id="header-TOKEN" style="display:none">
-    <input type="password" id="TOKEN-input" placeholder="Admin Token">
-    <button class="ghost" id="save-TOKEN">连接</button>
-    <span id="TOKEN-msg"></span>
+  <div class="token-box" id="header-token" style="display:none">
+    <input type="password" id="token-input" placeholder="Admin Token">
+    <button class="ghost" id="save-token">连接</button>
+    <span id="token-msg"></span>
   </div>
 </header>
 
@@ -151,8 +151,8 @@
 <script>
 (function () {
   "use strict";
-  var TOKEN_KEY = "readygym-admin-token";
-  var TOKEN = localStorage.getItem(TOKEN_KEY) || "";
+  var TOKEN_KEY = "admin-console-token";
+  var token = localStorage.getItem(TOKEN_KEY) || "";
   var daily = [];          // [{date,newUsers,workouts,aiCalls}, ...] oldest first
   var metric = "newUsers";
   var METRIC_LABEL = { newUsers: "新增用户", workouts: "训练次数", aiCalls: "AI 调用" };
@@ -165,7 +165,7 @@
   function showGate(message) {
     $("app").style.display = "none";
     $("gate").style.display = "block";
-    $("header-TOKEN").style.display = "none";
+    $("header-token").style.display = "none";
     $("gate-msg").textContent = message || "";
     if (!message) $("gate-input").focus();
   }
@@ -173,9 +173,9 @@
   function showApp() {
     $("gate").style.display = "none";
     $("app").style.display = "block";
-    $("header-TOKEN").style.display = "flex";
-    $("TOKEN-input").value = "";
-    $("TOKEN-msg").textContent = "";
+    $("header-token").style.display = "flex";
+    $("token-input").value = "";
+    $("token-msg").textContent = "";
   }
 
   function fail(message) {
@@ -188,10 +188,10 @@
     $("error-banner").style.display = "none";
   }
 
-  // One API call with the admin TOKEN. Failures carry {auth:true} (403), {status:404} (old jar)
+  // One API call with the admin token. Failures carry {auth:true} (403), {status:404} (old jar)
   // or a plain message (network), so loadAll can tell the operator exactly what to fix.
   function api(path) {
-    return fetch(path, { headers: { "X-Admin-Token": TOKEN } }).then(function (res) {
+    return fetch(path, { headers: { "X-Admin-Token": token } }).then(function (res) {
       if (res.status === 403) throw { auth: true };
       if (!res.ok) throw { status: res.status, message: path + " 返回 HTTP " + res.status };
       return res.json();
@@ -227,9 +227,9 @@
       $("updated-at").textContent = "更新于 " + new Date().toLocaleTimeString("zh-CN", { hour12: false });
     }).catch(function (err) {
       if (err && err.auth) {
-        // 保留已保存的 TOKEN：输错了直接在输入框里改，服务器补配好 TOKEN 后刷新即恢复。
+        // 保留已保存的 token：输错了直接在输入框里改，服务器补配好 token 后刷新即恢复。
         if (timer) { clearInterval(timer); timer = null; }
-        $("gate-input").value = TOKEN;
+        $("gate-input").value = token;
         showGate(describeError(err));
         return;
       }
@@ -240,12 +240,12 @@
   }
 
   function enter(savedToken) {
-    TOKEN = (savedToken || "").trim();
-    if (!TOKEN) {
+    token = (savedToken || "").trim();
+    if (!token) {
       showGate("请输入 Token。");
       return;
     }
-    localStorage.setItem(TOKEN_KEY, TOKEN);   // 先记住：本次连接失败，刷新后也不用重填
+    localStorage.setItem(TOKEN_KEY, token);   // 先记住：本次连接失败，刷新后也不用重填
     loadAll().then(function () {
       showApp();
       if (timer) clearInterval(timer);
@@ -368,9 +368,9 @@
   $("gate-input").addEventListener("keydown", function (e) {
     if (e.key === "Enter") enter($("gate-input").value);
   });
-  $("save-TOKEN").addEventListener("click", function () { enter($("TOKEN-input").value); });
-  $("TOKEN-input").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") enter($("TOKEN-input").value);
+  $("save-token").addEventListener("click", function () { enter($("token-input").value); });
+  $("token-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") enter($("token-input").value);
   });
   $("refresh").addEventListener("click", function () {
     $("refresh").disabled = true;
@@ -389,11 +389,11 @@
   });
   $("fb-filter").addEventListener("input", renderFeedback);
 
-  // Boot: with a saved TOKEN go straight in (pre-filling the gate input so a visible failure
-  // still shows what would be retried); a 403 keeps the TOKEN and explains itself on the gate.
-  if (TOKEN) {
-    $("gate-input").value = TOKEN;
-    enter(TOKEN);
+  // Boot: with a saved token go straight in (pre-filling the gate input so a visible failure
+  // still shows what would be retried); a 403 keeps the token and explains itself on the gate.
+  if (token) {
+    $("gate-input").value = token;
+    enter(token);
   } else {
     showGate();
   }

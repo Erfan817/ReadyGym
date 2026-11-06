@@ -6,7 +6,7 @@
   <p><strong>v0.8.13</strong> · Android 8.0+ · Kotlin / Jetpack Compose · Spring Boot</p>
   <p>
     <a href="https://www.pgyer.com/readygym">下载安装</a> ·
-    <a href="https://erfan817.github.io/ready-gym/">项目作品页</a> ·
+    <a href="https://erfan817.github.io/ReadyGym/">项目作品页</a> ·
     <a href="#功能一览">功能一览</a> ·
     <a href="#开始使用">开始使用</a> ·
     <a href="#技术结构">技术结构</a> ·
@@ -102,7 +102,7 @@ GIF 在 App 内动态播放；这里展示的是页面截图。
 
 ## 技术结构
 
-当前正式客户端为 **Kotlin + Jetpack Compose 安卓 App**，业务后端为 **Spring Boot**。AI 聊天、计划生成和照片识别使用 App 直连的 OpenAI 兼容网关；当前发行配置采用 PackyAPI 的 `deepseek-flash`。
+当前正式客户端为 **Kotlin + Jetpack Compose 安卓 App**，业务后端为 **Spring Boot**。AI 聊天、计划生成和照片识别默认由 App 直连 OpenAI 兼容网关（当前发行配置采用 PackyAPI 的 `deepseek-flash`）；当构建未注入网关凭据时，App 会自动回落到服务端 `/api/ai` 代理（带鉴权、按设备每日限额与话题护栏）。两条通路的差异见 [AGENTS.md](AGENTS.md)。
 
 ```mermaid
 flowchart LR
@@ -112,6 +112,8 @@ flowchart LR
     Check --> Preview[方案预览与用户确认]
     Preview --> DB[(Room 本地数据库)]
     App --> Server[Spring Boot 服务]
+    App -.->|未注入网关凭据时回落| Server
+    Server --> Proxy[服务端 AI 代理：鉴权/限额/护栏]
     Server --> Services[注册、训练摘要、周榜、反馈、GIF 与安装包]
     Server --> ASR[讯飞语音识别]
 ```
@@ -136,6 +138,7 @@ flowchart LR
 - **意见反馈**：提交反馈文字、填写的联系方式及 App 版本、机型和系统信息。
 
 本地数据保存不等于云端备份，当前也没有跨设备恢复本地档案、计划和体重记录的完整功能。
+涉及聊天内容、语音、器械照片与反馈的告知同意、留存期限与第三方共享清单，见 [隐私说明](docs/PRIVACY.md)。
 
 ## 本地开发
 
@@ -147,8 +150,8 @@ flowchart LR
 - 如需使用 AI 功能，准备可用的 OpenAI 兼容网关配置。
 
 ```bash
-git clone https://github.com/Erfan817/ready-gym.git
-cd ready-gym
+git clone https://github.com/Erfan817/ReadyGym.git
+cd ReadyGym
 ```
 
 ### 配置客户端
@@ -205,7 +208,7 @@ Windows PowerShell 下将 `./gradlew` 换成 `.\gradlew.bat`。正式包启用 R
 ### 目录导航
 
 ```text
-ready-gym/
+ReadyGym/
 ├── android/
 │   ├── app/              # Compose 界面、ViewModel、网络与本地数据
 │   └── core/             # 动作库模型、计划规则、校验与训练逻辑
@@ -272,17 +275,26 @@ AI 对话、计划生成、照片识别、周榜和在线 GIF 需要网络。已
 
 软件交流群：**QQ 158476703**。App 的“我的 → 软件交流群”提供二维码与群号复制入口。
 
-欢迎通过 [GitHub Issues](https://github.com/Erfan817/ready-gym/issues) 反馈缺陷或提出功能建议。提交代码前可先阅读 [AGENTS.md](AGENTS.md)，了解计划保存、训练记录、数据迁移与动作筛选的约束。
+欢迎通过 [GitHub Issues](https://github.com/Erfan817/ReadyGym/issues) 反馈缺陷或提出功能建议。提交代码前可先阅读 [AGENTS.md](AGENTS.md)，了解计划保存、训练记录、数据迁移与动作筛选的约束。
 
 ## 动作素材与使用边界
 
-动作图片与 GIF 保留 **© Gym visual** 署名。项目主人已声明取得 Ready Gym 使用授权；媒体不属于代码或数据结构的 MIT 许可，使用本仓库不自动授予额外媒体授权。来源与映射见 [动作数据源评估](动作数据源评估.md)、[媒体署名](android/docs/media-attribution.md) 和 [数据说明](data/README.md)。
+动作图片与 GIF 保留 **© Gym visual** 署名。项目主人已声明取得 Ready Gym 使用授权；媒体**不属于上游非媒体数据/说明的 MIT 许可范围**，也不属于本项目源码的 Apache-2.0 授权范围，使用本仓库不自动授予任何媒体使用权，第三方须自行向 Gym visual 取得许可。来源与映射见 [动作数据源评估](动作数据源评估.md)、[媒体署名](android/docs/media-attribution.md)、[第三方许可与素材边界](THIRD_PARTY_NOTICES.md) 和 [数据说明](data/README.md)。
 
 Ready Gym 是个人健身辅助项目，训练建议与动作说明未经专业训练或医疗认证；身体疼痛或存在医学限制时，应停止不适合的训练并寻求专业帮助。
 
+## 开源与许可
+
+原创源码与文档正文采用 [Apache License 2.0](LICENSE)。第三方素材、动作媒体与品牌图片
+有独立授权边界，见 [NOTICE](NOTICE)、[第三方许可与素材边界](THIRD_PARTY_NOTICES.md)、
+[品牌与宣传素材](BRAND_ASSETS.md)。参与贡献前请阅读 [贡献指南](CONTRIBUTING.md)。
+
+本仓库由原先两个公开仓库合并而来：开发主线继续在此维护，
+此前的 v0.8.8 开源快照已归档为 [ReadyGym-legacy](https://github.com/Erfan817/ReadyGym-legacy)。
+
 ## 工程视角
 
-> 这一节写给想了解实现方式与取舍的人；面向使用者的产品说明见上文。项目作品页：https://erfan817.github.io/ready-gym/
+> 这一节写给想了解实现方式与取舍的人；面向使用者的产品说明见上文。项目作品页：https://erfan817.github.io/ReadyGym/
 
 ### 30 秒演示
 
@@ -292,7 +304,7 @@ Ready Gym 是个人健身辅助项目，训练建议与动作说明未经专业�
 
 | 决策 | 取舍 | 代价 / 边界 |
 | --- | --- | --- |
-| App 直连 AI 网关，后端不做中转 | 少一层延迟与转发成本 | 密钥在客户端；若做 Web 版须改为后端代理并加鉴权与限流 |
+| 默认 App 直连 AI 网关，保留可触发的服务端代理回落 | 少一层延迟与转发成本；缺凭据的构建仍能用 | 直连模式下网关凭据必然随 APK 分发，需可轮换并限制额度；代理通路已有鉴权与按设备每日限额，但预算与视觉能力需与直连对齐 |
 | `PlanContract` 契约校验 + 最多两次重试 | 推理模型输出先过代码校验才允许保存 | 多一次调用成本；仍不合规就拒绝，不把无效内容写进历史 |
 | 新手 / 恢复训练者双重排除 HIGH_RISK 动作 | `Exercise.allowedFor` 与计划提示词只喂可用动作 | 牺牲动作丰富度，用户要求也不放行 |
 | 60 个 GIF 打包进 APK、227 个从服务器加载 | 常用动作离线可看，长尾不撑大安装包 | 长尾演示依赖服务器可达，失败可重试 |
@@ -303,7 +315,7 @@ Ready Gym 是个人健身辅助项目，训练建议与动作说明未经专业�
 
 0.8.13 正式包 378 项通过、1 项原有测试跳过（app 237 / core 131 / server 11）。网络测试使用注入连接，禁止真实联网。发版基线为 app + core + server 单测全绿。
 
-持续集成与覆盖率徽章规划中，接入 GitHub Actions 后在页首补齐；未启用前不展示徽章。
+持续集成见 `.github/workflows/ci.yml`（app / core / server 三模块单测门禁）。覆盖率统计尚未接入，徽章暂不展示。
 
 ### 运行数据（待实测）
 
@@ -326,5 +338,5 @@ Ready Gym 是个人健身辅助项目，训练建议与动作说明未经专业�
 
 ### 延伸阅读
 
-- [项目作品页](https://erfan817.github.io/ready-gym/) · [技术复盘：手写 WebSocket 与流式语音识别](docs/tech-retrospective.md) · [AI 计划评测集](docs/ai-plan-eval.md)
+- [项目作品页](https://erfan817.github.io/ReadyGym/) · [技术复盘：手写 WebSocket 与流式语音识别](docs/tech-retrospective.md) · [AI 计划评测集](docs/ai-plan-eval.md)
 - [开发手册](AGENTS.md) · [部署文档](docs/deploy-vps.md) · [Android 说明](android/README.md)

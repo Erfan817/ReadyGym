@@ -69,7 +69,7 @@ class ConversationPlanClientTest {
         val fixture = Fixture(collecting)
         val client = DeepSeekCoachClient(fixture.api, profile, library) { plan }
         client.message(client.start().session, "没有这台器械，帮我换一下")
-        assertEquals(6000, fixture.connections.single().body().getInt("max_TOKENs"))
+        assertEquals(6000, fixture.connections.single().body().getInt("max_tokens"))
         assertEquals(listOf("system", "system", "user"), roles(fixture.messages(0)))
         val context = fixture.systemContext(0)
         assertTrue(context.contains("权威版本 v7"))
@@ -82,7 +82,7 @@ class ConversationPlanClientTest {
         val fixture = Fixture(collecting)
         val client = DeepSeekCoachClient(fixture.api, profile, library)
         client.message(client.start().session, "我想了解怎么开始训练")
-        assertEquals(1500, fixture.connections.single().body().getInt("max_TOKENs"))
+        assertEquals(1500, fixture.connections.single().body().getInt("max_tokens"))
         assertEquals(listOf("system", "user"), roles(fixture.messages(0)))
         assertFalse(fixture.systemContext(0).contains("当前整周计划的权威版本"))
     }

@@ -36,13 +36,13 @@ class DeepSeekApi(
     override fun complete(messages: List<ChatMessage>): String =
         completeRaw(JSONArray(messages.map { JSONObject().put("role", it.role).put("content", it.content) }))
 
-    fun completeRaw(messages: JSONArray, TOKENBudget: Int? = null): String {
+    fun completeRaw(messages: JSONArray, tokenBudget: Int? = null): String {
         val body = JSONObject()
             .put("model", model)
             .put("messages", messages)
             .put("response_format", JSONObject().put("type", "json_object"))
             .put("temperature", 0.3)
-            .put("max_TOKENs", TOKENBudget ?: maxTokens)
+            .put("max_tokens", tokenBudget ?: maxTokens)
             .put("stream", false)
         return post(body)
     }
@@ -50,7 +50,7 @@ class DeepSeekApi(
     /**
      * One vision turn: a text prompt plus one image (raw base64) through the same
      * OpenAI-compatible gateway. The bundled model is a reasoning vision model — its thinking
-     * spends TOKENs before the answer lands, so the budget must cover both. JSON mode is not
+     * spends tokens before the answer lands, so the budget must cover both. JSON mode is not
      * forced: relays may reject it for image payloads, and the caller matches the answer itself.
      */
     fun recognizeImage(prompt: String, imageB64: String, mime: String, visionMaxTokens: Int = 2000): String {
@@ -61,7 +61,7 @@ class DeepSeekApi(
             .put("model", model)
             .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", content)))
             .put("temperature", 0.2)
-            .put("max_TOKENs", visionMaxTokens)
+            .put("max_tokens", visionMaxTokens)
             .put("stream", false)
         return post(body)
     }
@@ -77,9 +77,9 @@ class DeepSeekApi(
             } catch (failure: TemporaryFailure) {
                 if (attempt == 1 || (failure.retryAfterMs ?: 0) > 2_000) throw failure.error
                 if (failure.needsMoreTokens) {
-                    val previous = request.getInt("max_TOKENs")
+                    val previous = request.getInt("max_tokens")
                     if (previous >= 8_000) throw failure.error
-                    request = JSONObject(request.toString()).put("max_TOKENs", (previous * 2).coerceAtMost(8_000))
+                    request = JSONObject(request.toString()).put("max_tokens", (previous * 2).coerceAtMost(8_000))
                 }
                 try {
                     retryDelay(failure.retryAfterMs ?: 750)

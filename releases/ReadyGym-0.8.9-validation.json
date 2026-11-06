@@ -1,0 +1,240 @@
+{
+  "versionName": "0.8.9",
+  "versionCode": 28,
+  "verifiedAt": "2026-10-28T13:04:57.787036+00:00",
+  "apk": {
+    "file": "releases/ReadyGym-0.8.9-lite.apk",
+    "bytes": 21404024,
+    "sha256": "2389c624876efe88651338a7bcb04082f78e551678998134d5164e7116bec4ed",
+    "installedSha256": "2389c624876efe88651338a7bcb04082f78e551678998134d5164e7116bec4ed"
+  },
+  "tests": {
+    "app": {
+      "total": 183,
+      "passed": 182,
+      "skipped": 1
+    },
+    "core": {
+      "total": 103,
+      "passed": 103,
+      "skipped": 0
+    },
+    "server": {
+      "total": 11,
+      "passed": 11,
+      "skipped": 0
+    },
+    "passed": 296,
+    "skipped": 1,
+    "failed": 0,
+    "source": "Root agent final Gradle app/core/server verification"
+  },
+  "device": {
+    "serial": "emulator-5554",
+    "physicalDeviceTested": false,
+    "onlyNamedEmulatorTouched": true
+  },
+  "upgrade": {
+    "baselineVersion": "0.8.8",
+    "allLegacyTableHashesPreserved": true,
+    "schemaVersion": 2,
+    "baselineSummary": {
+      "profile": {
+        "rows": 1,
+        "sha256": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48"
+      },
+      "plan_version": {
+        "rows": 1,
+        "sha256": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7"
+      },
+      "workout_session": {
+        "rows": 35,
+        "sha256": "66570f5b84bcb70f14d82d03386cccbb8d9a7b3e93f965a992a15ac124906815"
+      },
+      "set_log": {
+        "rows": 420,
+        "sha256": "8afa7e3f9d92a72f5e24e81a099f7b15bc00dca35c006f684823fc41ee66b3b0"
+      },
+      "feedback": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "schemaVersion": 2,
+      "weightEntries": 0
+    },
+    "afterUpgradeSummary": {
+      "profile": {
+        "rows": 1,
+        "sha256": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48"
+      },
+      "plan_version": {
+        "rows": 1,
+        "sha256": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7"
+      },
+      "workout_session": {
+        "rows": 35,
+        "sha256": "66570f5b84bcb70f14d82d03386cccbb8d9a7b3e93f965a992a15ac124906815"
+      },
+      "set_log": {
+        "rows": 420,
+        "sha256": "8afa7e3f9d92a72f5e24e81a099f7b15bc00dca35c006f684823fc41ee66b3b0"
+      },
+      "feedback": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "schemaVersion": 2,
+      "weightEntries": 0
+    },
+    "finalNetworkPatchPreservedAllTableHashes": true
+  },
+  "workout": {
+    "behaviorVerificationApkSha256": "727306c60ed993bf5f4c81d729eb595aefe945538622b38da4fabd9711b9e541",
+    "finalApkReinstalledAndDailyStatesReverified": true,
+    "legacyOpenSessionId": 35,
+    "completeSetChangedProgress": "0/3 -> 1/3",
+    "undoSetChangedProgress": "1/3 -> 0/3",
+    "restCountdownAbsent": true,
+    "extendAndSkipRestAbsent": true,
+    "finishedUsingRealUi": true,
+    "completedSets": 1,
+    "totalSets": 12,
+    "feedbackSavedWithoutAi": true,
+    "sessionDatesWrittenOnlyByApplication": true,
+    "sessionMetadata": {
+      "id": 35,
+      "dayIndex": 0,
+      "startedAt": 1792494386332,
+      "endedAt": 1793192119122
+    }
+  },
+  "dailyCompletion": {
+    "homeCompletedState": true,
+    "planCompletedStateAndNoStartActions": true,
+    "middleStartEntryCompletedState": true,
+    "persistsAfterForceStopRestart": true,
+    "foregroundMidnight": {
+      "device": "emulator-5554",
+      "method": "Set only emulator clock to 20 seconds before local midnight, keep app foreground, and let clock naturally cross midnight; no database timestamp edits",
+      "originalLocalTime": "2026-10-28T13:02:37+0000",
+      "originalAutoTime": "1",
+      "beforeMidnightLocalTime": "2026-10-28T23:59:44+0000",
+      "afterMidnightLocalTime": "2026-10-29T00:00:05+0000",
+      "foregroundMidnightRefreshPassed": true,
+      "nextTrainingDayTitle": "下肢+核心",
+      "nextDayPlanStartActionsAvailable": true,
+      "restoredLocalTime": "2026-10-28T13:03:17+0000",
+      "restoredAutoTime": "1",
+      "clockRestored": true,
+      "restoredDayCompletionPassed": true
+    }
+  },
+  "finalData": {
+    "summary": {
+      "profile": {
+        "rows": 1,
+        "sha256": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48"
+      },
+      "plan_version": {
+        "rows": 1,
+        "sha256": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7"
+      },
+      "workout_session": {
+        "rows": 35,
+        "sha256": "c116e0c809bff693d7226dc0a7c2d6a9eb15e6bbb1f43a7e3ae52a2c871d3593"
+      },
+      "set_log": {
+        "rows": 420,
+        "sha256": "72af8a9ad724fe099cc8d3f571ff962c863dea72de18e067284ddec90dc3e927"
+      },
+      "feedback": {
+        "rows": 1,
+        "sha256": "f2b59920055fd6a44cfba59870cdbf086049a343fd27bc773c7a29137faeaed0"
+      },
+      "schemaVersion": 2,
+      "weightEntries": 0
+    },
+    "profileAndPlanByteForByteUnchanged": true,
+    "other34SessionsAndTheirSetsUnchanged": true,
+    "verifiedSessionOnlyOneSetDoneFlagChanged": true,
+    "noOpenSessionRemains": true,
+    "testCleanup": "One empty next-day test session was created through the UI and discarded through the UI; all original 35 session rows and 420 sets remain. No database date editing or deletion of original data."
+  },
+  "screenshots": [
+    {
+      "file": "screenshots/v0.8.9/upgrade-home.png",
+      "sha256": "daf768e87b1bd097ddeb65515ddcd07809b459432feafb2508c1cc9bdeade563",
+      "accessibilityTree": "screenshots/v0.8.9/upgrade-home.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/legacy-workout-resumed.png",
+      "sha256": "850398de72810df7c9d59e847e22db3bff4d455d59605e4ae05b302fb1a869e0",
+      "accessibilityTree": "screenshots/v0.8.9/legacy-workout-resumed.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/legacy-set-completed-no-rest.png",
+      "sha256": "eb3bf5fecaf46429534b8c2002cc5e5a311d88d205a7efad06c551b7013e199c",
+      "accessibilityTree": "screenshots/v0.8.9/legacy-set-completed-no-rest.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/legacy-set-undone-no-rest.png",
+      "sha256": "946000bcb91b1b96b9727463a733fe0a69a337cab3c7d7ff1a5a9a449fa073bb",
+      "accessibilityTree": "screenshots/v0.8.9/legacy-set-undone-no-rest.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/finish-dialog.png",
+      "sha256": "b7efa4137994dd6e2492066da15f297ba9f991e9312028655cd7b8843b31a468",
+      "accessibilityTree": "screenshots/v0.8.9/finish-dialog.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/home-completed-today.png",
+      "sha256": "e2afaadf303891656fcc16122a5afa3d776aaed0ad883f2926e04d3ba0740014",
+      "accessibilityTree": "screenshots/v0.8.9/home-completed-today.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/plan-completed-today.png",
+      "sha256": "b0957f4b38562a1f143f8e10bb4a39107503d401a8079f4a7732867ba3ee08cb",
+      "accessibilityTree": "screenshots/v0.8.9/plan-completed-today.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/start-completed-today.png",
+      "sha256": "ede8b150be70da3edc9473bb79c9381bbdc88b48d36cbb81f293551f14d67b14",
+      "accessibilityTree": "screenshots/v0.8.9/start-completed-today.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/restart-completed-today.png",
+      "sha256": "e2afaadf303891656fcc16122a5afa3d776aaed0ad883f2926e04d3ba0740014",
+      "accessibilityTree": "screenshots/v0.8.9/restart-completed-today.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/before-midnight-completed-today.png",
+      "sha256": "6c66f17b9368d5565e8fa27892eec16d819d5b7d190e9163f61eaae06482b918",
+      "accessibilityTree": "screenshots/v0.8.9/before-midnight-completed-today.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/after-midnight-next-training.png",
+      "sha256": "b25452761d83dc4505f75b41d121dd0ae376784354910b88ca7433d577ed67c4",
+      "accessibilityTree": "screenshots/v0.8.9/after-midnight-next-training.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/next-day-start-entry.png",
+      "sha256": "9ec35206b1e55303c4065fc569f1e62c363d3a3088f2b0289e1159725ab3bc1c",
+      "accessibilityTree": "screenshots/v0.8.9/next-day-start-entry.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/next-day-plan-entry.png",
+      "sha256": "4ecacf2249c5cfc8878cce6148250fed94ac7fde9ca1702d064a4658ebac7b03",
+      "accessibilityTree": "screenshots/v0.8.9/next-day-plan-entry.xml"
+    },
+    {
+      "file": "screenshots/v0.8.9/restored-clock-completed-today.png",
+      "sha256": "a1c390fabf0158274d62f574f0d2958e7d87f016109d50db95e2c9ae4885a9a0",
+      "accessibilityTree": "screenshots/v0.8.9/restored-clock-completed-today.xml"
+    }
+  ],
+  "limitations": [
+    "Emulator-only interaction verification; no physical-device performance measurement.",
+    "AI transport diagnostics are recorded separately by the root agent; emulator UI tests did not call AI.",
+    "Set completion/undo was exercised on the first 0.8.9 release candidate. The final network-only patch was installed and database preservation, all completion entries, restart, and real midnight behavior were reverified."
+  ]
+}

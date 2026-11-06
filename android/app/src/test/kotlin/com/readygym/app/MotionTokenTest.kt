@@ -6,7 +6,7 @@ import org.junit.Test
 
 /**
  * The review gate's acceptance criteria are partly negative: "no scattered `tween(` / `spring(`
- * literals outside the TOKEN file", and "no second motion state source". Those are checked here,
+ * literals outside the token file", and "no second motion state source". Those are checked here,
  * against the real source tree rather than by trusting the diff.
  *
  * This is a plain JUnit test (no Robolectric, no Compose) so it costs nothing and can never be
@@ -20,10 +20,10 @@ class MotionTokenTest {
         File("../app/src/main/kotlin/com/readygym/app"),
     ).firstOrNull { it.isDirectory } ?: error("Cannot locate the app sources from ${File(".").absolutePath}")
 
-    private val TOKENFile = "Motion.kt"
+    private val tokenFile = "Motion.kt"
 
     private fun sources(): List<File> = appSources.walkTopDown()
-        .filter { it.isFile && it.extension == "kt" && it.name != TOKENFile }
+        .filter { it.isFile && it.extension == "kt" && it.name != tokenFile }
         .toList()
 
     @Test fun sourcesWereFound() {
@@ -57,7 +57,7 @@ class MotionTokenTest {
             declaring.size == 1)
 
         // No screen may keep its own "what should be playing" flag alongside the reducer. The
-        // TOKEN plumbing (Motion.kt, SunnyTheme.kt) and the animation components may mention
+        // token plumbing (Motion.kt, SunnyTheme.kt) and the animation components may mention
         // motion; a *state holder* may not.
         val duplicateFlags = sources().filter { file ->
             file.name !in setOf("SunnyTheme.kt", "CoachMotion.kt", "CoachChatScreen.kt") &&
@@ -72,7 +72,7 @@ class MotionTokenTest {
             duplicateFlags.isEmpty())
     }
 
-    /** Duration literals must be the TOKEN's two steps, not new numbers per screen. */
+    /** Duration literals must be the token's two steps, not new numbers per screen. */
     @Test fun noAdHocAnimationDurations() {
         val offenders = buildList {
             for (file in sources()) {

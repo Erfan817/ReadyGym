@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @Service
 public class LeaderboardService {
     public static final int TOP = 50;
+    /** The upload DTO caps the weekly target at 7; clamp again so legacy/tampered rows cannot skew the rate. */
+    static final int MAX_PLANNED_DAYS = 7;
 
     private final WorkoutRepository workouts;
     private final DeviceRepository devices;
@@ -48,7 +50,7 @@ public class LeaderboardService {
         List<Row> rows = byDevice.entrySet().stream().map(e -> {
             List<WorkoutRecord> list = e.getValue();
             WorkoutRecord latest = list.stream().max(Comparator.comparing(WorkoutRecord::getStartedAt)).orElseThrow();
-            int planned = Math.max(1, latest.getPlannedDaysPerWeek());
+            int planned = Math.max(1, Math.min(MAX_PLANNED_DAYS, latest.getPlannedDaysPerWeek()));
             int done = list.size();
             Instant last = list.stream().map(WorkoutRecord::getEndedAt).max(Comparator.naturalOrder()).orElse(from);
             return new Row(e.getKey(), done, planned, Math.min(done, planned) / (double) planned, last);

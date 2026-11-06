@@ -178,7 +178,7 @@ class FoundationReviewRegressions(unittest.IsolatedAsyncioTestCase):
                         "active_plan": active, "plan_proposal": copy.deepcopy(DRAFT), "safety_route": None}
                     self.session.foundation_state = copy.deepcopy(self.business.state)
                     self.session.attempts = 1
-                    self.session.usage = {"prompt_TOKENs": 20, "completion_TOKENs": 10, "total_TOKENs": 30}
+                    self.session.usage = {"prompt_tokens": 20, "completion_tokens": 10, "total_tokens": 30}
                     self.business.calls.clear()
                     self.agent_calls.clear()
                     async def malformed(request):

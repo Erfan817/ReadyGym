@@ -159,8 +159,8 @@ class DeepSeekReliabilityTest {
     @Test fun reasoningBudgetExhaustionRetriesWithMoreRoomBeforeReturningJson() {
         val fixture = Fixture(Connection(payload = response("{", "length")), Connection(payload = response()))
         assertEquals(collecting, fixture.call())
-        assertEquals(1500, fixture.opened[0].body().getInt("max_TOKENs"))
-        assertEquals(3000, fixture.opened[1].body().getInt("max_TOKENs"))
+        assertEquals(1500, fixture.opened[0].body().getInt("max_tokens"))
+        assertEquals(3000, fixture.opened[1].body().getInt("max_tokens"))
     }
 
     @Test fun emptyProviderContentRetriesAndThenSurfacesAnActionableFailure() {

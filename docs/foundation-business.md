@@ -6,7 +6,7 @@ Java17 HttpServer，loopback8766；JDBC PostgreSQL业务唯一写入者。用户
 
 - `sh test.sh --scan-class-path`：默认隔离H2；若显式提供专用 `READY_GYM_JDBC_URL/DB_USER/DB_PASSWORD` 则真实PG，fixture仅清理s1/s2，不应指向生产数据库。
 - `sh run.sh`：JDK17绝对路径可用；堆160MiB，无Gradle常驻。导入私密业务环境后启动，不打印秘密。
-- 内部头`X-Ready-Gym-Internal`随机至少32字符，常量时间比较。严格重复JSON/尾随TOKEN/类型/范围及32KiB请求，模型/调用者不决定sets/reps/load。
+- 内部头`X-Ready-Gym-Internal`随机至少32字符，常量时间比较。严格重复JSON/尾随token/类型/范围及32KiB请求，模型/调用者不决定sets/reps/load。
 - `profile/confirm`与`plan/confirm`为业务确认写入口，风险自动锁存是保护记录。`propose_plan/propose_revision`、检索、资格与历史工具读/仅内存草稿，不付费或真实会员声称。
 - 风险STOP最高不能被专业review/none降级，clearpending取消未确认草稿，active/history保持但客户端阻断时不展示可用；DELETE删所有owned版本并实际GET404。
 

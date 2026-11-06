@@ -57,12 +57,12 @@ class Settings:
     max_calls: int = 12
     max_concurrent_calls: int = 2
     session_ttl_seconds: int = 1800
-    max_total_TOKENs: int = 20000
+    max_total_tokens: int = 20000
     max_app_calls: int = 120
 
     def __post_init__(self):
         limits = {"max_sessions": 1024, "max_calls": 12, "max_concurrent_calls": 8,
-                  "session_ttl_seconds": 86400, "max_total_TOKENs": 100000, "max_app_calls": 10000}
+                  "session_ttl_seconds": 86400, "max_total_tokens": 100000, "max_app_calls": 10000}
         for name, maximum in limits.items():
             value = getattr(self, name)
             if type(value) is not int or not 1 <= value <= maximum:
@@ -71,9 +71,9 @@ class Settings:
 
 @dataclass
 class Session:
-    TOKEN_digest: str = field(repr=False)
+    token_digest: str = field(repr=False)
     profile: dict = field(default_factory=lambda: dict.fromkeys([*QUESTIONS, "gender"]))
-    usage: dict = field(default_factory=lambda: {"prompt_TOKENs": 0, "completion_TOKENs": 0, "total_TOKENs": 0})
+    usage: dict = field(default_factory=lambda: {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0})
     revision: int = 0
     confirmed: bool = False
     urgent: bool = False
@@ -130,9 +130,9 @@ class IntakeProfile(RequestModel):
 
 
 class TokenUsage(RequestModel):
-    prompt_TOKENs: int = Field(ge=0)
-    completion_TOKENs: int = Field(ge=0)
-    total_TOKENs: int = Field(ge=0)
+    prompt_tokens: int = Field(ge=0)
+    completion_tokens: int = Field(ge=0)
+    total_tokens: int = Field(ge=0)
 
 
 class IntakeResponse(RequestModel):
@@ -160,7 +160,7 @@ class IntakeResponse(RequestModel):
 
 
 class StartResponse(IntakeResponse):
-    session_TOKEN: str
+    session_token: str
 
 
 class ApiError(RequestModel):
@@ -179,7 +179,7 @@ ERROR_MESSAGES = {
     "session_expired": "会话已过期，请重新开始。",
     "session_busy": "该会话上一条请求尚未完成。",
     "session_call_limit": "此会话已达到DeepSeek调用次数上限。",
-    "session_TOKEN_limit": "此会话已达到已知TOKEN用量上限。",
+    "session_token_limit": "此会话已达到已知token用量上限。",
     "app_call_limit": "开发服务已达到本次进程调用预算上限。",
     "provider_busy": "DeepSeek调用并发已满，本次没有发起付费调用。",
     "session_capacity": "开发服务会话数量已满。",
@@ -243,7 +243,7 @@ class DeepSeekAdapter:
     async def extract(self, profile, message, *, asked_fields=(), clarification_fields=()):
         payload = {
             "model": MODEL, "thinking": {"type": "disabled"},
-            "response_format": {"type": "json_object"}, "stream": False, "max_TOKENs": 1024,
+            "response_format": {"type": "json_object"}, "stream": False, "max_tokens": 1024,
             "messages": [
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": json.dumps({"validated_profile": profile, "last_question_fields": asked_fields,
@@ -285,14 +285,14 @@ class DeepSeekAdapter:
             if type(text) is not str or not 1 <= len(text) <= 1200 or not text.strip():
                 raise ValueError("invalid assistant text")
             usage = body["usage"]
-            clean_usage = {key: usage[key] for key in ("prompt_TOKENs", "completion_TOKENs", "total_TOKENs")}
+            clean_usage = {key: usage[key] for key in ("prompt_tokens", "completion_tokens", "total_tokens")}
             if any(type(value) is not int or not 0 <= value <= 1000000 for value in clean_usage.values()):
-                raise ValueError("invalid TOKEN usage")
-            if clean_usage["total_TOKENs"] != clean_usage["prompt_TOKENs"] + clean_usage["completion_TOKENs"]:
+                raise ValueError("invalid token usage")
+            if clean_usage["total_tokens"] != clean_usage["prompt_tokens"] + clean_usage["completion_tokens"]:
                 raise ValueError("inconsistent usage")
             request_id = body.get("id")
             safe_id = request_id if type(request_id) is str and re.fullmatch(r"[A-Za-z0-9_-]{1,96}", request_id) else "unavailable"
-            LOGGER.info("deepseek completion request_id=%s total_TOKENs=%d", safe_id, clean_usage["total_TOKENs"])
+            LOGGER.info("deepseek completion request_id=%s total_tokens=%d", safe_id, clean_usage["total_tokens"])
             return patch, clean_usage, clarification
         except (KeyError, IndexError, TypeError, ValueError, RecursionError):
             LOGGER.info("deepseek response rejected code=provider_invalid_response")
@@ -355,7 +355,7 @@ def safety_route(session):
     return None
 
 
-def view(session, session_id, *, TOKEN=None):
+def view(session, session_id, *, token=None):
     missing = [name for name in QUESTIONS if session.profile.get(name) is None or name in session.clarification_fields]
     if "gender" in session.clarification_fields:
         missing.append("gender")
@@ -394,8 +394,8 @@ def view(session, session_id, *, TOKEN=None):
             data["assistant_text"] = "当前计划已由你明确确认并保存。你可以直接告诉我想改的排期或器械条件，我会先展示差异。"
         if session.foundation_notice:
             data["assistant_text"] += " " + session.foundation_notice
-    if TOKEN is not None:
-        data["session_TOKEN"] = TOKEN
+    if token is not None:
+        data["session_token"] = token
     return data
 
 
@@ -461,9 +461,9 @@ def create_app(*, settings=None, provider=None, business=None, agent_provider=No
             raise HTTPException(404, "session_not_found")
         if not authorization or not authorization.startswith("Bearer "):
             raise HTTPException(401, "session_unauthorized")
-        TOKEN = authorization[7:]
-        digest = hashlib.sha256(TOKEN.encode()).hexdigest()
-        if not secrets.compare_digest(digest, session.TOKEN_digest):
+        token = authorization[7:]
+        digest = hashlib.sha256(token.encode()).hexdigest()
+        if not secrets.compare_digest(digest, session.token_digest):
             raise HTTPException(401, "session_unauthorized")
         if session.expires_at <= time.monotonic():
             if not session.in_flight:
@@ -510,8 +510,8 @@ def create_app(*, settings=None, provider=None, business=None, agent_provider=No
             return
         if session.attempts >= settings.max_calls:
             raise HTTPException(429, "session_call_limit")
-        if session.usage["total_TOKENs"] >= settings.max_total_TOKENs:
-            raise HTTPException(429, "session_TOKEN_limit")
+        if session.usage["total_tokens"] >= settings.max_total_tokens:
+            raise HTTPException(429, "session_token_limit")
         if app.state.provider_attempts >= settings.max_app_calls:
             raise HTTPException(429, "app_call_limit")
         if semaphore.locked():
@@ -569,9 +569,9 @@ def create_app(*, settings=None, provider=None, business=None, agent_provider=No
                 del sessions[expired_id]
         if len(sessions) >= settings.max_sessions:
             raise HTTPException(429, "session_capacity")
-        session_id = secrets.TOKEN_urlsafe(18)
-        TOKEN = secrets.TOKEN_urlsafe(32)
-        session = Session(TOKEN_digest=hashlib.sha256(TOKEN.encode()).hexdigest(), expires_at=now + settings.session_ttl_seconds)
+        session_id = secrets.token_urlsafe(18)
+        token = secrets.token_urlsafe(32)
+        session = Session(token_digest=hashlib.sha256(token.encode()).hexdigest(), expires_at=now + settings.session_ttl_seconds)
         sessions[session_id] = session
         try:
             await turn(session, "开始建档；没有提供任何资料，请先问缺失信息。", initial=True)
@@ -580,7 +580,7 @@ def create_app(*, settings=None, provider=None, business=None, agent_provider=No
         except BaseException:
             sessions.pop(session_id, None)
             raise
-        return view(session, session_id, TOKEN=TOKEN)
+        return view(session, session_id, token=token)
 
     @app.get("/api/intake/sessions/{session_id}", response_model=IntakeResponse, responses=ERROR_RESPONSES)
     async def get(session_id: str, authorization: str | None = Depends(auth_header)):

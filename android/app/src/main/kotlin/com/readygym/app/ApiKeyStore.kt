@@ -11,7 +11,7 @@ import javax.crypto.spec.GCMParameterSpec
 import android.util.Base64
 
 /**
- * Stores one bearer credential (now the ReadyGym account TOKEN; [slot] names it) in the Android
+ * Stores one bearer credential (now the ReadyGym account token; [slot] names it) in the Android
  * Keystore, encrypted at rest.
  *
  * Why not plain SharedPreferences: an API key is a bearer credential that bills its owner. Storing

@@ -9,14 +9,17 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.geometry.Offset
 import androidx.test.core.app.ApplicationProvider
 import com.readygym.core.Equipment
 import com.readygym.core.Gender
@@ -70,11 +73,20 @@ class CoachMotionTest {
 
     /**
      * The chat column is taller than Robolectric's 320×470dp viewport and auto-scrolls to the
-     * newest message, so a surface can exist but sit above the fold. Scrolling first is what a
-     * user would do; asserting "displayed" without it would just be asserting the viewport size.
+     * newest message, so a surface can exist but sit above the fold. Since the transcript became a
+     * LazyColumn, an off-screen item is disposed and absent from the semantics tree, so the scroll
+     * must be asked of the *list* (`performScrollToNode` composes items as it scrolls) rather than
+     * of the node itself. Scrolling first is what a user would do; asserting "displayed" without it
+     * would just be asserting the viewport size.
      */
     private fun assertOnScreen(tag: String) {
-        compose.onNodeWithTag(tag).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("coach-messages").performScrollToNode(hasTestTag(tag))
+        compose.onNodeWithTag(tag).assertIsDisplayed()
+    }
+
+    /** Same as [assertOnScreen] for text surfaces, matching on the visible label. */
+    private fun scrollListTo(text: String) {
+        compose.onNodeWithTag("coach-messages").performScrollToNode(hasText(text))
     }
 
     private fun show(coach: CoachConversation, reduceMotion: Boolean = false, voice: VoiceInputController = VoiceInputController(compose.activity, serviceBaseUrl = "")) {
@@ -130,7 +142,8 @@ class CoachMotionTest {
         compose.waitUntil(5_000) { coach.uiState.value == CoachUiState.AWAITING_CONFIRM }
         assertOnScreen("coach-profile-card")
         // The card's own text must survive reduced motion; only the movement is skipped.
-        compose.onNodeWithText("请确认你的资料").performScrollTo().assertIsDisplayed()
+        scrollListTo("请确认你的资料")
+        compose.onNodeWithText("请确认你的资料").assertIsDisplayed()
         compose.onNodeWithTag("coach-confirm-profile").assertIsEnabled()
         compose.onNodeWithTag("coach-input").assertIsDisplayed()
     }
@@ -144,6 +157,7 @@ class CoachMotionTest {
         compose.waitUntil(5_000) { coach.uiState.value == CoachUiState.AWAITING_CONFIRM }
         compose.onNodeWithTag("coach-input").performTextInput("等一下，我先改个体重")
         compose.waitUntil(5_000) { coach.uiState.value == CoachUiState.PROPOSING }
+        compose.onNodeWithTag("coach-messages").performScrollToNode(hasTestTag("coach-confirm-profile"))
         compose.onNodeWithTag("coach-confirm-profile").assertIsNotEnabled()
     }
 
@@ -206,7 +220,7 @@ class CoachMotionTest {
     @Test fun readingEarlierMessagesWhileWaitingDoesNotJumpToTheNewReply() {
         val release = CompletableDeferred<Unit>()
         val client = object : CoachClient {
-            override suspend fun start() = CoachReply(CoachSession("reading", "TOKEN"),
+            override suspend fun start() = CoachReply(CoachSession("reading", "token"),
                 "这是之前的训练建议，慢慢阅读。".repeat(100), "collecting")
             override suspend fun message(session: CoachSession, text: String): CoachReply {
                 release.await()
@@ -219,7 +233,14 @@ class CoachMotionTest {
         compose.onNodeWithTag("coach-input").performTextInput("我想问一个问题")
         compose.onNodeWithTag("coach-send").performClick()
         compose.waitUntil(5_000) { coach.busy }
-        compose.onNodeWithTag("coach-messages").performTouchInput { swipeDown() }
+        // Read earlier messages: a slow explicit drag instead of swipeDown() — the fast canned
+        // swipe does not produce a LazyList drag in this environment, and the point of the test
+        // is the drag itself (the follow logic), not the gesture's speed.
+        compose.onNodeWithTag("coach-messages").performTouchInput {
+            down(center)
+            repeat(6) { moveTo(center + Offset(0f, (it + 1) * 80f)) }
+            up()
+        }
         compose.waitForIdle()
         release.complete(Unit)
         compose.waitUntil(5_000) { !coach.busy }
@@ -237,7 +258,12 @@ class CoachMotionTest {
         client.release.complete(Unit)
         compose.waitUntil(5_000) { coach.uiState.value == CoachUiState.AWAITING_CONFIRM }
         assertOnScreen("coach-profile-card")
-        compose.onNodeWithTag("coach-confirm-profile").performClick()
+        // The card is taller than the viewport; scrolling to the card only composes it. The
+        // confirm button lives at the card's bottom, so scroll to the button itself and then
+        // ask for full visibility (the composer-estimate spacer keeps that reachable) before
+        // clicking.
+        compose.onNodeWithTag("coach-messages").performScrollToNode(hasTestTag("coach-confirm-profile"))
+        compose.onNodeWithTag("coach-confirm-profile").performScrollTo().performClick()
         compose.waitUntil(5_000) { coach.reply?.confirmed == true }
         compose.onNodeWithTag("coach-profile-card").assertDoesNotExist()
     }

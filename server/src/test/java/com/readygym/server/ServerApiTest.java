@@ -36,8 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.datasource.url=jdbc:h2:mem:readygym-test;MODE=MySQL;DB_CLOSE_DELAY=-1",
     "spring.jpa.hibernate.ddl-auto=create-drop",
     "readygym.ai.daily-limit-per-device=2",
-    "readygym.ai.max-TOKENs=1000",
-    "readygym.admin-TOKEN=admin-secret",
+    "readygym.ai.max-tokens=1000",
+    "readygym.admin-token=admin-secret",
 })
 class ServerApiTest {
     @Autowired MockMvc mvc;
@@ -49,19 +49,19 @@ class ServerApiTest {
         String body = mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"nickname\":\"" + nickname + "\"}"))
             .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-        return json.readTree(body).get("TOKEN").asText();
+        return json.readTree(body).get("token").asText();
     }
 
-    private ResultActions chat(String TOKEN, String body) throws Exception {
-        return mvc.perform(post("/api/ai/chat/completions").header("Authorization", "Bearer " + TOKEN)
+    private ResultActions chat(String token, String body) throws Exception {
+        return mvc.perform(post("/api/ai/chat/completions").header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON).content(body));
     }
 
-    private ResultActions upload(String TOKEN, long id, Instant start, int planned) throws Exception {
+    private ResultActions upload(String token, long id, Instant start, int planned) throws Exception {
         String body = """
             {"clientSessionId":%d,"startedAtMillis":%d,"endedAtMillis":%d,"completedSets":10,"totalSets":12,"volumeKg":500,"plannedDaysPerWeek":%d}
             """.formatted(id, start.toEpochMilli(), start.plus(40, ChronoUnit.MINUTES).toEpochMilli(), planned);
-        return mvc.perform(post("/api/workouts").header("Authorization", "Bearer " + TOKEN)
+        return mvc.perform(post("/api/workouts").header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON).content(body));
     }
 
@@ -69,8 +69,8 @@ class ServerApiTest {
     void registrationIssuesATokenAndEverythingElseRequiresIt() throws Exception {
         mvc.perform(get("/api/me")).andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.error.code").value("unauthorized"));
-        String TOKEN = register("小绿");
-        mvc.perform(get("/api/me").header("Authorization", "Bearer " + TOKEN))
+        String token = register("小绿");
+        mvc.perform(get("/api/me").header("Authorization", "Bearer " + token))
             .andExpect(status().isOk()).andExpect(jsonPath("$.nickname").value("小绿"));
         mvc.perform(get("/api/me").header("Authorization", "Bearer wrong")).andExpect(status().isUnauthorized());
         mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"nickname\":\"  \"}"))
@@ -81,34 +81,34 @@ class ServerApiTest {
     void aiProxyAddsTheGuardOwnsTheSettingsAndEnforcesTheDailyLimit() throws Exception {
         when(gateway.complete(anyString())).thenReturn(new ModelGateway.UpstreamResponse(200,
             "{\"choices\":[{\"message\":{\"content\":\"{}\"}}]}"));
-        String TOKEN = register("阿强");
+        String token = register("阿强");
         String request = """
-            {"model":"some-expensive-model","max_TOKENs":99999,"response_format":{"type":"json_object"},
+            {"model":"some-expensive-model","max_tokens":99999,"response_format":{"type":"json_object"},
              "messages":[{"role":"system","content":"app prompt"},{"role":"user","content":"帮我写一段 Python"}]}""";
-        chat(TOKEN, request).andExpect(status().isOk()).andExpect(jsonPath("$.choices[0].message.content").value("{}"));
+        chat(token, request).andExpect(status().isOk()).andExpect(jsonPath("$.choices[0].message.content").value("{}"));
 
         ArgumentCaptor<String> sent = ArgumentCaptor.forClass(String.class);
         verify(gateway).complete(sent.capture());
         JsonNode upstream = json.readTree(sent.getValue());
         assertThat(upstream.get("model").asText()).isEqualTo("deepseek-chat");
-        assertThat(upstream.get("max_TOKENs").asInt()).isEqualTo(1000);
+        assertThat(upstream.get("max_tokens").asInt()).isEqualTo(1000);
         assertThat(upstream.at("/messages/0/role").asText()).isEqualTo("system");
         assertThat(upstream.at("/messages/0/content").asText()).contains("只回答健身");
         assertThat(upstream.at("/messages/1/content").asText()).isEqualTo("app prompt");
         assertThat(upstream.at("/response_format/type").asText()).isEqualTo("json_object");
 
-        chat(TOKEN, request).andExpect(status().isOk());
-        chat(TOKEN, request).andExpect(status().isTooManyRequests()).andExpect(jsonPath("$.error.code").value("daily_limit"));
+        chat(token, request).andExpect(status().isOk());
+        chat(token, request).andExpect(status().isTooManyRequests()).andExpect(jsonPath("$.error.code").value("daily_limit"));
         verify(gateway, times(2)).complete(anyString());
     }
 
     @Test
     void providerAuthFailureIsNotReportedAsTheUsersFault() throws Exception {
         when(gateway.complete(anyString())).thenReturn(new ModelGateway.UpstreamResponse(401, "{}"));
-        String TOKEN = register("测试");
-        chat(TOKEN, "{\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}")
+        String token = register("测试");
+        chat(token, "{\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}")
             .andExpect(status().isServiceUnavailable()).andExpect(jsonPath("$.error.code").value("upstream_unavailable"));
-        chat(TOKEN, "{\"messages\":[{\"role\":\"tool\",\"content\":\"x\"}]}").andExpect(status().isBadRequest());
+        chat(token, "{\"messages\":[{\"role\":\"tool\",\"content\":\"x\"}]}").andExpect(status().isBadRequest());
     }
 
     @Test
@@ -136,9 +136,9 @@ class ServerApiTest {
     void adminStatsNeedTheAdminToken() throws Exception {
         mvc.perform(get("/api/admin/stats")).andExpect(status().isForbidden());
         mvc.perform(get("/api/admin/stats").header("X-Admin-Token", "nope")).andExpect(status().isForbidden());
-        String TOKEN = register("甲");
+        String token = register("甲");
         register("乙");
-        upload(TOKEN, 1, Instant.now().minus(1, ChronoUnit.HOURS), 3);
+        upload(token, 1, Instant.now().minus(1, ChronoUnit.HOURS), 3);
         mvc.perform(get("/api/admin/stats").header("X-Admin-Token", "admin-secret"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.totalUsers").value(2))
@@ -153,9 +153,9 @@ class ServerApiTest {
         mvc.perform(get("/api/admin/stats/daily?days=400").header("X-Admin-Token", "admin-secret"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()").value(90));   // the span is capped
-        String TOKEN = register("丙");
+        String token = register("丙");
         register("丁");
-        upload(TOKEN, 1, Instant.now().minus(1, ChronoUnit.HOURS), 3);
+        upload(token, 1, Instant.now().minus(1, ChronoUnit.HOURS), 3);
         String today = LocalDate.now(ZoneId.of("Asia/Shanghai")).toString();
         mvc.perform(get("/api/admin/stats/daily?days=7").header("X-Admin-Token", "admin-secret"))
             .andExpect(status().isOk())
@@ -167,7 +167,7 @@ class ServerApiTest {
             .andExpect(jsonPath("$[5].newUsers").value(0));
     }
 
-    /** The operator console is a static page; its data stays behind the admin TOKEN. */
+    /** The operator console is a static page; its data stays behind the admin token. */
     @Test
     void adminConsolePageIsServedAsAStaticAsset() throws Exception {
         var response = mvc.perform(get("/admin.html")).andExpect(status().isOk()).andReturn().getResponse();
@@ -229,7 +229,7 @@ class ServerApiTest {
             .andExpect(status().isOk());
     }
 
-    /** Feedback is anonymous (no TOKEN), validated, and readable only with the admin TOKEN. */
+    /** Feedback is anonymous (no token), validated, and readable only with the admin token. */
     @Test
     void feedbackCanBeSubmittedAnonymouslyAndReadByTheOperator() throws Exception {
         mvc.perform(post("/api/feedback").contentType(MediaType.APPLICATION_JSON).content("{}"))

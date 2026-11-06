@@ -7,6 +7,8 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -131,6 +133,12 @@ internal class VoiceInputController(private val context: Context, private val se
         stopRecording()
         recognizer?.destroy()
         recognizer = null
+        // A late recognition result must never reach a UI that has already left the screen: drop
+        // the callback first, then give the in-flight finish thread a brief bounded join.
+        onFinal = null
+        val finisher = finishThread
+        finishThread = null
+        if (finisher != null) try { finisher.join(1000) } catch (_: Exception) {}
     }
 
     // ---------------------------------------------------------------- native engine
@@ -227,21 +235,29 @@ internal class VoiceInputController(private val context: Context, private val se
 
     private fun finishCloud() {
         recording = false
-        val clip = pcmBuffer
-        pcmBuffer = null
         recorder?.let { try { it.stop() } catch (_: Exception) {} }
         recorder?.release(); recorder = null
-        val bytes = clip?.toByteArray() ?: byteArrayOf()
         val thread = recordingThread
         recordingThread = null
         thread?.join(1000)
+        // The recording thread is the only writer of pcmBuffer. Read it only after that thread has
+        // fully stopped, so ByteArrayOutputStream is never read while audio is still appended and
+        // the tail of the clip is not lost on release.
+        val clip = pcmBuffer
+        pcmBuffer = null
+        val bytes = clip?.toByteArray() ?: byteArrayOf()
         if (bytes.size < 3200) { // < 0.1 s: an accidental tap
             abortStream()
             _state.value = State.Error("没听清，再试一次")
             return
         }
         _state.value = State.Listening("识别中…")
-        Thread {
+        // onFinal feeds a Compose mutableStateOf downstream (the composer's input field), so the
+        // callback itself must run on the main looper. State updates are a StateFlow, which is
+        // thread-safe and immediately visible to collectors, so they stay on this worker thread —
+        // deferring them with main.post made the state unobservable until the looper is drained.
+        val main = Handler(Looper.getMainLooper())
+        finishThread = Thread {
             // Fast path: the session already holds all but the tail; only the final words remain.
             val worker = streamWorker
             val id = streamId
@@ -252,7 +268,11 @@ internal class VoiceInputController(private val context: Context, private val se
                     worker.join(8_000)
                     if (!worker.isAlive) {
                         val text = asrPost("/api/asr/finish", JSONObject().put("id", id), 5_000, 20_000).optString("text")
-                        if (text.isNotEmpty()) { onFinal?.invoke(text); _state.value = State.Idle; return@Thread }
+                        if (text.isNotEmpty()) {
+                            main.post { onFinal?.invoke(text) }
+                            _state.value = State.Idle
+                            return@Thread
+                        }
                         _state.value = State.Error("没听清，再试一次")
                         return@Thread
                     }
@@ -262,10 +282,16 @@ internal class VoiceInputController(private val context: Context, private val se
             }
             // Fallback: the whole clip still sits in [bytes]; the one-shot path needs no session.
             val text = try { uploadToServer(bytes) } catch (e: AsrServerMessage) {
-                _state.value = State.Error(e.message ?: "语音服务暂时不可用，请用键盘输入"); return@Thread
+                _state.value = State.Error(e.message ?: "语音服务暂时不可用，请用键盘输入")
+                return@Thread
             } catch (_: Exception) { null }
-            _state.value = if (!text.isNullOrEmpty()) { onFinal?.invoke(text); State.Idle } else State.Error("语音服务暂时不可用，请用键盘输入")
-        }.start()
+            if (!text.isNullOrEmpty()) {
+                main.post { onFinal?.invoke(text) }
+                _state.value = State.Idle
+            } else {
+                _state.value = State.Error("语音服务暂时不可用，请用键盘输入")
+            }
+        }.also { it.start() }
     }
 
     /** Abandon a hold: stop the worker and free the server-side session (best effort). */
@@ -325,6 +351,7 @@ internal class VoiceInputController(private val context: Context, private val se
 
     private var recorder: AudioRecord? = null
     private var recordingThread: Thread? = null
+    private var finishThread: Thread? = null
     private var pcmBuffer: ByteArrayOutputStream? = null
 
     /** The relay answered with a user-facing Chinese message; surface it instead of a generic one. */

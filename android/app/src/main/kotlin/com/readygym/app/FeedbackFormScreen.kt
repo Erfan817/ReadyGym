@@ -48,7 +48,7 @@ import kotlinx.coroutines.withContext
  * 意见反馈: free text plus optional contact, submitted anonymously to the ReadyGym server.
  *
  * The form shows exactly what will be attached (app version, phone model, OS) so nothing is sent
- * silently; the operator reads the list with the admin TOKEN on the server.
+ * silently; the operator reads the list with the admin token on the server.
  */
 @Composable
 fun FeedbackFormScreen(onSubmit: suspend (content: String, contact: String, appVersion: String, deviceModel: String, osVersion: String) -> Unit,

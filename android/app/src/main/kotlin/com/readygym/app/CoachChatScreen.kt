@@ -195,13 +195,17 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
                 recordServerSafety(accepted)
                 if (localSafetyBlocked) throw CoachException("local_safety_block")
                 if (accepted.status != "ready" || accepted.confirmedCandidate != reviewed.confirmedCandidate) throw CoachException("invalid_response")
-                reply = accepted; retryAction = null
-                lastConfirmed = accepted.confirmedCandidate
                 if (supportsFoundation) {
                     messages = messages + CoachBubble(false, accepted.assistantText, accepted.agentSource ?: accepted.responseSource)
                 } else onConfirmed(requireNotNull(accepted.confirmedCandidate))
+                // Commit the confirmation only after the profile was actually saved. If onConfirmed
+                // rejects it, keep the card on screen and let the catch below show a visible error
+                // instead of hiding the card with nothing saved.
+                reply = accepted; retryAction = null
+                lastConfirmed = accepted.confirmedCandidate
             } catch (e: CoachException) { e.safetyFeedback?.let(::recordSafety); error = e }
             catch (_: IOException) { error = CoachException("network_error", true) }
+            catch (e: Exception) { error = CoachException("internal_error", detail = "刚才没能完成，请再试一次。") }
             finally { busy = false; pending = CoachPending.NONE; publishState() }
         }
     }
@@ -222,6 +226,7 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
                 messages = messages + CoachBubble(false, accepted.assistantText, accepted.agentSource ?: accepted.responseSource)
             } catch (e: CoachException) { e.safetyFeedback?.let(::recordSafety); planConfirmationUnknown = true; error = e }
             catch (_: IOException) { planConfirmationUnknown = true; error = CoachException("network_error", true) }
+            catch (e: Exception) { error = CoachException("internal_error", detail = "刚才没能完成，请再试一次。") }
             finally { busy = false; pending = CoachPending.NONE; publishState() }
         }
     }
@@ -237,6 +242,7 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
                 reply = accepted; planConfirmationUnknown = false; retryAction = null
             } catch (e: CoachException) { e.safetyFeedback?.let(::recordSafety); error = e }
             catch (_: IOException) { error = CoachException("network_error", true) }
+            catch (e: Exception) { error = CoachException("internal_error", detail = "刚才没能完成，请再试一次。") }
             finally { busy = false; pending = CoachPending.NONE; publishState() }
         }
     }
@@ -251,6 +257,7 @@ class CoachConversation(private val client: CoachClient) : ViewModel() {
                 session = null; reply = null; messages = emptyList(); input = ""; correction = false; retryAction = null; planConfirmationUnknown = false; statedGender = null
             } catch (e: CoachException) { e.safetyFeedback?.let(::recordSafety); error = e }
             catch (_: IOException) { error = CoachException("network_error", true) }
+            catch (e: Exception) { error = CoachException("internal_error", detail = "刚才没能完成，请再试一次。") }
             finally { busy = false; pending = CoachPending.NONE; publishState() }
         }
     }

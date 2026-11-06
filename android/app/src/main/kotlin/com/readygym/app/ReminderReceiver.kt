@@ -12,9 +12,10 @@ import androidx.core.content.ContextCompat
 import com.readygym.app.data.GymDatabase
 import com.readygym.app.data.GymRepository
 import com.readygym.core.workout.latestWorkoutOnDate
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-import java.time.Instant
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -22,27 +23,29 @@ import java.time.ZoneId
  * Fires on the scheduled moment: posts the "time to train" notification (unless today's workout is
  * already logged — no nagging after the work is done) and re-arms the alarm for the next day.
  *
- * Reading the plan and history from Room is quick but asynchronous, so the receiver goes async via
- * [goAsync] and finishes once the notification decision is made.
+ * [goAsync] only extends the receiver's lifetime; it does NOT switch threads. All Room reads run
+ * on [Dispatchers.IO], so a cold start, a WAL checkpoint or a migration cannot block the main
+ * thread and cause an ANR.
  */
 internal class ReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != ACTION_FIRE) return
         val result = goAsync()
-        try {
-            val app = context.applicationContext
-            val repo = GymRepository(GymDatabase.get(app))
-            val zone = ZoneId.systemDefault()
-            val today = LocalDate.now(zone)
-            val (plan, trainedToday) = runBlocking {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val app = context.applicationContext
+                val repo = GymRepository(GymDatabase.get(app))
+                val zone = ZoneId.systemDefault()
+                val today = LocalDate.now(zone)
                 val history = repo.history.first()
-                repo.activePlan.first() to (latestWorkoutOnDate(history, today, zone) != null)
+                val plan = repo.activePlan.first()
+                val trainedToday = latestWorkoutOnDate(history, today, zone) != null
+                if (!trainedToday) postNotification(app, plan?.version)
+                ReminderScheduler.reschedule(app)
+            } finally {
+                result.finish()
             }
-            if (!trainedToday) postNotification(app, plan?.version)
-            ReminderScheduler.reschedule(app)
-        } finally {
-            result.finish()
         }
     }
 

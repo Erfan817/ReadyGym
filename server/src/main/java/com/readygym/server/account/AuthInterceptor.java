@@ -10,7 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.time.Duration;
 import java.time.Instant;
 
-/** Resolves the bearer TOKEN to a {@link Device} and exposes it as the "device" request attribute. */
+/** Resolves the bearer token to a {@link Device} and exposes it as the "device" request attribute. */
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
     public static final String DEVICE = "device";

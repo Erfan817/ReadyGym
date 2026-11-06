@@ -51,7 +51,7 @@ class AgentResult:
 class FoundationProvider(DeepSeekAdapter):
     async def complete(self, messages):
         payload = {"model": MODEL, "thinking": {"type": "disabled"}, "stream": False,
-                   "max_TOKENs": 800, "messages": messages, "tools": TOOLS, "tool_choice": "auto"}
+                   "max_tokens": 800, "messages": messages, "tools": TOOLS, "tool_choice": "auto"}
         try:
             if self._client is not None:
                 raw = await self._request(self._client, payload)
@@ -87,8 +87,8 @@ class FoundationProvider(DeepSeekAdapter):
                 clean_calls.append({"id": call["id"], "type": "function", "function": {"name": fn["name"], "arguments": fn["arguments"]}})
             if len({c["id"] for c in clean_calls}) != len(clean_calls):
                 raise ValueError("duplicate calls")
-            usage = {key: body["usage"][key] for key in ("prompt_TOKENs", "completion_TOKENs", "total_TOKENs")}
-            if any(type(v) is not int or not 0 <= v <= 1000000 for v in usage.values()) or usage["total_TOKENs"] != usage["prompt_TOKENs"] + usage["completion_TOKENs"]:
+            usage = {key: body["usage"][key] for key in ("prompt_tokens", "completion_tokens", "total_tokens")}
+            if any(type(v) is not int or not 0 <= v <= 1000000 for v in usage.values()) or usage["total_tokens"] != usage["prompt_tokens"] + usage["completion_tokens"]:
                 raise ValueError("invalid usage")
             return {"role": "assistant", "content": content, **({"tool_calls": clean_calls} if clean_calls else {})}, usage
         except (KeyError, IndexError, TypeError, ValueError, RecursionError):
@@ -197,7 +197,7 @@ class FoundationAgent:
     async def run(self, session_id, text, context):
         messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": json.dumps(
             {"user_message": text, "verified_business_context": context}, ensure_ascii=False)}]
-        trace, total = [], dict.fromkeys(("prompt_TOKENs", "completion_TOKENs", "total_TOKENs"), 0)
+        trace, total = [], dict.fromkeys(("prompt_tokens", "completion_tokens", "total_tokens"), 0)
         for _ in range(self.max_rounds):
             reply, usage = await self.provider.complete(messages)
             for key in total:
@@ -223,17 +223,17 @@ class FoundationAgent:
 
 class JavaBusinessClient:
     """Fixed loopback origin, no model-controlled URLs or automatic retries."""
-    def __init__(self, TOKEN, *, base_url="http://127.0.0.1:8766", client=None):
-        if base_url != "http://127.0.0.1:8766" or not TOKEN:
+    def __init__(self, token, *, base_url="http://127.0.0.1:8766", client=None):
+        if base_url != "http://127.0.0.1:8766" or not token:
             raise ValueError("Invalid internal business configuration")
-        self._TOKEN, self._base, self._client = TOKEN, base_url, client
+        self._token, self._base, self._client = token, base_url, client
 
     async def call(self, path, payload=None, method="POST"):
         if not path.startswith("/internal/") or ".." in path or "?" in path or method not in {"GET", "POST", "DELETE"}:
             raise HTTPException(502, "business_invalid_request")
         async def request(client):
             async with client.stream(method, self._base + path, json=payload if method == "POST" else None,
-                    headers={"X-Ready-Gym-Internal": self._TOKEN}, timeout=5, follow_redirects=False) as response:
+                    headers={"X-Ready-Gym-Internal": self._token}, timeout=5, follow_redirects=False) as response:
                 data = bytearray()
                 async for chunk in response.aiter_bytes():
                     if len(data) + len(chunk) > 65536:
@@ -298,8 +298,8 @@ def install_foundation_routes(app, *, business, provider, settings, semaphore, a
             raise HTTPException(503, "provider_not_configured")
         if session.attempts >= settings.max_calls or app.state.provider_attempts >= settings.max_app_calls:
             raise HTTPException(429, "session_call_limit")
-        if session.usage["total_TOKENs"] >= settings.max_total_TOKENs:
-            raise HTTPException(429, "session_TOKEN_limit")
+        if session.usage["total_tokens"] >= settings.max_total_tokens:
+            raise HTTPException(429, "session_token_limit")
         if semaphore.locked():
             raise HTTPException(429, "provider_busy")
         async def execute(name, arguments):
@@ -315,8 +315,8 @@ def install_foundation_routes(app, *, business, provider, settings, semaphore, a
                 check_ready()
                 if session.attempts >= settings.max_calls or app.state.provider_attempts >= settings.max_app_calls:
                     raise HTTPException(429, "session_call_limit")
-                if session.usage["total_TOKENs"] >= settings.max_total_TOKENs:
-                    raise HTTPException(429, "session_TOKEN_limit")
+                if session.usage["total_tokens"] >= settings.max_total_tokens:
+                    raise HTTPException(429, "session_token_limit")
                 session.attempts += 1
                 app.state.provider_attempts += 1
                 reply, usage = await provider.complete(messages)

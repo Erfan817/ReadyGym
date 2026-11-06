@@ -1,0 +1,146 @@
+{
+  "version": "0.8.11",
+  "versionCode": 30,
+  "date": "2026-11-01",
+  "tests": {
+    "app": {
+      "tests": 227,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "core": {
+      "tests": 126,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "server": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "passed": 363,
+  "apkSha256": "af96c79fa181f99a9ee857d15204f725c271982bbe0fb037255871ed2cc1414b",
+  "upgrade": {
+    "legacyRowsPreserved": true,
+    "before": {
+      "profile": {
+        "rows": 1,
+        "sha256": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48"
+      },
+      "plan_version": {
+        "rows": 1,
+        "sha256": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7"
+      },
+      "workout_session": {
+        "rows": 35,
+        "sha256": "66570f5b84bcb70f14d82d03386cccbb8d9a7b3e93f965a992a15ac124906815"
+      },
+      "set_log": {
+        "rows": 420,
+        "sha256": "8afa7e3f9d92a72f5e24e81a099f7b15bc00dca35c006f684823fc41ee66b3b0"
+      },
+      "feedback": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "schemaVersion": 1
+    },
+    "after": {
+      "profile": {
+        "rows": 1,
+        "sha256": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48"
+      },
+      "plan_version": {
+        "rows": 1,
+        "sha256": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7"
+      },
+      "workout_session": {
+        "rows": 35,
+        "sha256": "66570f5b84bcb70f14d82d03386cccbb8d9a7b3e93f965a992a15ac124906815"
+      },
+      "set_log": {
+        "rows": 420,
+        "sha256": "8afa7e3f9d92a72f5e24e81a099f7b15bc00dca35c006f684823fc41ee66b3b0"
+      },
+      "feedback": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "schemaVersion": 2,
+      "weightEntries": 0
+    }
+  },
+  "liveChat": {
+    "confirmedSessionUpdated": true,
+    "version": 3,
+    "sets": [
+      [
+        "dumbbell-reverse-lunge",
+        0,
+        12,
+        null,
+        null,
+        0
+      ],
+      [
+        "dumbbell-reverse-lunge",
+        1,
+        12,
+        null,
+        null,
+        0
+      ],
+      [
+        "plank",
+        0,
+        null,
+        31,
+        null,
+        1
+      ],
+      [
+        "plank",
+        1,
+        null,
+        20,
+        null,
+        0
+      ],
+      [
+        "dumbbell-row",
+        0,
+        12,
+        null,
+        null,
+        0
+      ],
+      [
+        "dumbbell-row",
+        1,
+        12,
+        null,
+        null,
+        0
+      ]
+    ],
+    "completedRecordsPreserved": true,
+    "historicalRowsPreserved": true
+  },
+  "previewDoesNotSave": true,
+  "restartPersistenceVerified": true,
+  "restDayVerifiedOn": [
+    "home",
+    "start",
+    "plan"
+  ],
+  "fixtureRemovedAfterVerification": true,
+  "screenshots": "D:\\readygym\\screenshots\\v0.8.11",
+  "limits": [
+    "Emulator and automated tests; no physical phone test.",
+    "Previously unsaved chat weekday preferences cannot be reconstructed; confirm weekdays in profile or chat."
+  ]
+}

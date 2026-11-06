@@ -38,6 +38,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -60,7 +62,7 @@ data class PlanAdjustment(val base: WorkoutPlan, val proposal: PlanProposal, val
 class GymViewModel(
     private val repo: GymRepository,
     val library: ExerciseLibrary,
-    /** The account TOKEN; null until the user has registered. */
+    /** The account token; null until the user has registered. */
     private val apiKey: () -> String?,
     private val modelFor: (String) -> ChatModel,
     /** Workout upload and leaderboard; null in tests and when no server is configured. */
@@ -184,12 +186,18 @@ class GymViewModel(
             try {
                 repo.saveProfile(p)
                 // The next screen reads this StateFlow, not the repository's completed write.
-                profile.first { it is Loaded.Ready && it.value == p }
+                // Bound the wait: a write that never becomes observable must not leave
+                // savingProfile=true forever (which would block generatePlan/confirmChatPlan).
+                withTimeout(10_000L) {
+                    profile.first { it is Loaded.Ready && it.value == p }
+                }
                 if (saveEpoch == profileSaveEpoch) {
                     savingProfile = false
                     profileSaveJob = null
                     onSaved()
                 }
+            } catch (_: TimeoutCancellationException) {
+                if (saveEpoch == profileSaveEpoch) planError = "档案保存超时，请重试。"
             } finally {
                 if (saveEpoch == profileSaveEpoch) { savingProfile = false; profileSaveJob = null }
             }
@@ -454,14 +462,26 @@ class GymViewModel(
             .stateIn(viewModelScope, SharingStarted.Eagerly, Loaded.Loading)
 
     companion object {
+        // Parsing the bundled 185KB library is synchronous; keep one parsed instance for the whole
+        // process so creating a Factory (or recreating the ViewModel) never re-reads it.
+        @Volatile
+        private var cachedLibrary: ExerciseLibrary? = null
+        private val libraryLock = Any()
+
+        private fun libraryFor(context: Context): ExerciseLibrary = cachedLibrary ?: synchronized(libraryLock) {
+            cachedLibrary ?: ExerciseLibrary.parse(
+                context.applicationContext.assets.open("exercise-library.json").bufferedReader().use { it.readText() }
+            ).also { cachedLibrary = it }
+        }
+
         fun factory(context: Context): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val app = context.applicationContext
-                val library = ExerciseLibrary.parse(app.assets.open("exercise-library.json").bufferedReader().use { it.readText() })
+                val library = libraryFor(app)
                 val account = AccountStore(app)
-                val server = ServerApi(BuildConfig.SERVICE_BASE_URL) { account.load()?.TOKEN }
-                return GymViewModel(GymRepository(GymDatabase.get(app)), library, apiKey = { account.load()?.TOKEN },
+                val server = ServerApi(BuildConfig.SERVICE_BASE_URL) { account.load()?.token }
+                return GymViewModel(GymRepository(GymDatabase.get(app)), library, apiKey = { account.load()?.token },
                     modelFor = { DeepSeekApi.bundled(maxTokens = 4000, readTimeoutMs = 120_000)
                         ?: server.chatModel(maxTokens = 4000, readTimeoutMs = 120_000) },
                     server = server, recoveryStore = RecoveryCheckInStore(app)) as T

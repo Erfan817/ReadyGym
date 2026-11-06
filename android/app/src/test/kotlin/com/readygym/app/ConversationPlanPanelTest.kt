@@ -228,7 +228,7 @@ class ConversationPlanPanelTest {
         }
         val reviewed = draft(base)
         val client = object : CoachClient {
-            override suspend fun start() = CoachReply(CoachSession("local-test", "test-TOKEN"), "先选择，再确认。",
+            override suspend fun start() = CoachReply(CoachSession("local-test", "test-token"), "先选择，再确认。",
                 "collecting", conversationPlan = reviewed)
             override suspend fun message(session: CoachSession, text: String): CoachReply = error("No network needed")
         }

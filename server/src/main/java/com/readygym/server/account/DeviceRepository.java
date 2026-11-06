@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DeviceRepository extends JpaRepository<Device, String> {
-    Optional<Device> findByTokenHash(String TOKENHash);
+    Optional<Device> findByTokenHash(String tokenHash);
     long countByCreatedAtAfter(Instant since);
     long countByLastSeenAtAfter(Instant since);
 

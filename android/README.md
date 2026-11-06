@@ -1,6 +1,6 @@
-# Ready Gym Android · v0.8.12
+# Ready Gym Android · v0.8.13
 
-当前版本：**0.8.12 / code 31**；Android 8.0+，Kotlin + Jetpack Compose，SDK 35。完整功能与验证见 [项目 README](../README.md) 和 [开发手册](../AGENTS.md)。
+当前版本：**0.8.13 / code 32**；Android 8.0+，Kotlin + Jetpack Compose，SDK 35。完整功能与验证见 [项目 README](../README.md) 和 [开发手册](../AGENTS.md)。
 
 ## 配置与构建
 
@@ -47,7 +47,7 @@ versionCode5，Android8.0+。新增对话内规则计划草稿/生效版/修订�
 在最后正常确认GET边界修正后，父以 `--rerun-tasks --init-script scripts/isolated-native-tests.gradle` 无过滤重跑全部14测试类，并重建主APK/设备测试APK：**BUILD SUCCESSFUL in6m23s，77 tasks全执行**。JUnit143项：**142通过、1明确legacy跳过、0失败/错误**；后端61项、真实PG Java13项通过。最晚限定独立复验`deleg_ffe3c6c2`通过；设备测试APK只是编译，未连接手机运行。
 
 - 主APK SHA256 `ddf3bbc0528c3de40f8486cdfc069d3b39ec01b09840f72d103c54418e811ebd`，10,111,363bytes，package`com.readygym.app`，v0.4.0/code5。
-- 签名沿用既有证书、zipalign/ZIP/13媒体asset字节核验通过；实际专用Key/访问码/DB密码/internalTOKEN字节扫描无泄露。
+- 签名沿用既有证书、zipalign/ZIP/13媒体asset字节核验通过；实际专用Key/访问码/DB密码/internaltoken字节扫描无泄露。
 - 交付ZIP只含唯一主APK，9,643,476bytes，SHA256 `650f24dd35294e69439cec88678abd2ba9cebc3e141533d68e95c26d67ac722f`。源码上传/邮件以精确目标回读验收，不能只凭入队或命令成功。
 - 证据 `build/verification/v0.4.0/final-confirm-boundary-full-build.log` / `final-confirm-boundary-artifact.json`，精确unknownREDGREEN在`unknown-recovery/`。
 
@@ -71,7 +71,7 @@ Kotlin + Jetpack Compose；包名 `com.readygym.app`，versionCode4，min SDK26�
 
 ## 重要边界
 
-- 对话、会话TOKEN、输入和错误仅在Activity ViewModel内存；旋转/Activity配置重建保留，不落盘，结束Activity或进程回收后清空。服务端会话另有过期；可主动删除并GET读回确认后清空。本地规则资料和计划仍仅页面内存，旋转/退出可清空。
+- 对话、会话token、输入和错误仅在Activity ViewModel内存；旋转/Activity配置重建保留，不落盘，结束Activity或进程回收后清空。服务端会话另有过期；可主动删除并GET读回确认后清空。本地规则资料和计划仍仅页面内存，旋转/退出可清空。
 - AI路径用户同意后需要INTERNET权限访问服务端；不直接访问DeepSeek，不含模型Key。Debug仅localhost/127.0.0.1契约测试可明文，其余必须HTTPS；默认地址为空，Release地址强制空，当前不得公开部署开发API。
 - 无生产账号、训练日志、自动进阶、广告或支付；AI个性化计划provider后续工程未做。规则模板未经专业审核，不是医疗处方或安全认证。
 - 经验/器械/时长是约束；不据身高体重/BMI/性别推算负重。缺动作覆盖或未明确具体固定器械时提示缺口，不假定所有机器都有。

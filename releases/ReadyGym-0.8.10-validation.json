@@ -1,0 +1,458 @@
+{
+  "versionName": "0.8.10",
+  "versionCode": 29,
+  "verifiedAt": "2026-10-28T14:05:22.607916+00:00",
+  "apk": {
+    "file": "releases\\ReadyGym-0.8.10-lite.apk",
+    "sha256": "7ac4f1fe299d12d995490021a27c4f38a57e7130bf6d4511d80cbade8ef7c68f",
+    "installedSha256": "7ac4f1fe299d12d995490021a27c4f38a57e7130bf6d4511d80cbade8ef7c68f",
+    "bytes": 21697420
+  },
+  "tests": {
+    "app": {
+      "total": 216,
+      "passed": 215,
+      "skipped": 1
+    },
+    "core": {
+      "passed": 122
+    },
+    "server": {
+      "passed": 11
+    },
+    "passed": 348,
+    "skipped": 1,
+    "failed": 0
+  },
+  "device": {
+    "serial": "emulator-5554",
+    "physicalDeviceTested": false
+  },
+  "upgrade": {
+    "baselineVersion": "0.8.9",
+    "allLegacyTableHashesPreserved": true,
+    "schemaVersion": 2,
+    "baselineSummary": {
+      "profile": {
+        "rows": 1,
+        "sha256": "cd1874a5850cdcdff5db42f681626fe2dfc16789a9fa541b21f94473bbbf2b48"
+      },
+      "plan_version": {
+        "rows": 1,
+        "sha256": "8121a9236b6ab70225919fa43fc9e423ed89f41772679c334f08dc2a4a07d0a7"
+      },
+      "workout_session": {
+        "rows": 35,
+        "sha256": "c116e0c809bff693d7226dc0a7c2d6a9eb15e6bbb1f43a7e3ae52a2c871d3593"
+      },
+      "set_log": {
+        "rows": 420,
+        "sha256": "72af8a9ad724fe099cc8d3f571ff962c863dea72de18e067284ddec90dc3e927"
+      },
+      "feedback": {
+        "rows": 1,
+        "sha256": "f2b59920055fd6a44cfba59870cdbf086049a343fd27bc773c7a29137faeaed0"
+      },
+      "schemaVersion": 2,
+      "weightEntries": 0
+    }
+  },
+  "messageDelivery": {
+    "userBubbleVisibleBeforeReply": true,
+    "sentLabelVisible": true,
+    "composerEmptyWhileThinking": true,
+    "waitingOnlyTypingNoLargeSkeleton": true,
+    "failureKeepsOneUserBubble": true
+  },
+  "liveAi": {
+    "userInitiatedRequests": 2,
+    "firstAttempt": {
+      "apkSha256": "b6cac387586dd83149ec75e449ad485189e1a1f98c151726722ef4c98e99bbe5",
+      "result": "plan_options_invalid",
+      "oldPlanUnchanged": true,
+      "rootCause": "Historical plan contained a beginner-ineligible pull-up and bodyweight lunge with invalid load; corrected by explicit legacy repair instructions and validation"
+    },
+    "successfulAttempt": {
+      "apkSha256": "3baddb62b337d9887495457b69395209da5f5fe14cbb598b2bde35cca20339ea",
+      "request": "I do not want dumbbell-bench-press or dumbbell-incline-press. This gym has no benches. I have dumbbells and floor space. Offer 2 alternatives replacing these exercises wherever used in my whole current plan. Keep other exercises unchanged. I have no pain or medical restrictions.",
+      "validatedOptions": 2,
+      "selectedOption": 0,
+      "compactMultiDayReplacements": true
+    },
+    "automaticProviderAttemptsNotMeasured": true
+  },
+  "planAdjustment": {
+    "receivingOptionsDoesNotSave": true,
+    "selectingPreviewDoesNotSave": true,
+    "explicitConfirmationSaves": true,
+    "oldVersion": 1,
+    "newVersion": 2,
+    "progressionBaseVersion": 1,
+    "oldVersionRawRowUnchanged": true,
+    "unchangedTables": [
+      "profile",
+      "workout_session",
+      "set_log",
+      "feedback",
+      "weight_entry",
+      "weight_target"
+    ],
+    "all35SessionsAnd420SetsUnchanged": true,
+    "allRequestedBenchExercisesRemovedAcrossWeek": true,
+    "legacyBeginnerIneligiblePullupReplaced": true,
+    "bodyweightLungeInvalidLoadRemovedWithVisibleDiff": true,
+    "newExerciseLoadNotInherited": true,
+    "newPlanVisibleInPlanPage": true,
+    "persistsAfterForceStopRestart": true,
+    "activePlan": {
+      "version": 2,
+      "createdAtMillis": 1793195852919,
+      "reason": "聊天调整：方案一：纯哑铃+地面（不依赖任何器械）",
+      "summary": "四天分化新手增肌计划，以多关节动作为主、固定器械打基础，重量保守递增。",
+      "daysPerWeek": 4,
+      "days": [
+        {
+          "title": "上肢推+核心",
+          "focus": "胸肩三头",
+          "items": [
+            {
+              "exerciseId": "wide-hand-push-up",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "push-up-plus",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "knee-push-up",
+              "sets": 3,
+              "repsMin": 12,
+              "repsMax": 12,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "plank",
+              "sets": 3,
+              "repsMin": null,
+              "repsMax": null,
+              "seconds": 45,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            }
+          ]
+        },
+        {
+          "title": "下肢+核心",
+          "focus": "腿臀",
+          "items": [
+            {
+              "exerciseId": "goblet-squat",
+              "sets": 3,
+              "repsMin": 12,
+              "repsMax": 12,
+              "seconds": null,
+              "loadKg": 16.0,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "walking-lunge",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "glute-bridge",
+              "sets": 3,
+              "repsMin": 15,
+              "repsMax": 15,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "dead-bug",
+              "sets": 3,
+              "repsMin": 12,
+              "repsMax": 12,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            }
+          ]
+        },
+        {
+          "title": "上肢拉+核心",
+          "focus": "背二头",
+          "items": [
+            {
+              "exerciseId": "dumbbell-row",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": 12.0,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "inverted-row-bent-knees",
+              "sets": 3,
+              "repsMin": 6,
+              "repsMax": 6,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "dumbbell-curl",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": 8.0,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "side-plank",
+              "sets": 3,
+              "repsMin": null,
+              "repsMax": null,
+              "seconds": 30,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            }
+          ]
+        },
+        {
+          "title": "全身+核心",
+          "focus": "全身协调",
+          "items": [
+            {
+              "exerciseId": "goblet-squat",
+              "sets": 3,
+              "repsMin": 12,
+              "repsMax": 12,
+              "seconds": null,
+              "loadKg": 16.0,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "knee-push-up",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "inverted-row",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            },
+            {
+              "exerciseId": "burpee",
+              "sets": 3,
+              "repsMin": 10,
+              "repsMax": 10,
+              "seconds": null,
+              "loadKg": null,
+              "restSeconds": 30,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "progressionBaseVersion": 1
+    }
+  },
+  "dailyCompletion": {
+    "homeStillCompleted": true,
+    "planStillCompleted": true,
+    "middleStartStillCompleted": true,
+    "noNewOpenSession": true
+  },
+  "finalApk": {
+    "promptOnlyPatch": true,
+    "allTableHashesUnchangedAfterReinstall": true,
+    "persistedVersionAndCompletedStateReverified": true,
+    "noFurtherPaidModelRequest": true
+  },
+  "screenshots": [
+    {
+      "file": "screenshots\\v0.8.10\\attempt1-rejected\\chat-input-before-send.png",
+      "sha256": "a5a8d3fe97b359b50208b8d362ebefebc860fca2f716b648f3b275d88053cff6",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt1-rejected\\chat-input-before-send.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt1-rejected\\chat-message-sent-thinking.png",
+      "sha256": "7352446de058af861841e22985c152b69bf2d63e9bcb3a5fea0104a25daa8dd7",
+      "accessibilityTree": null
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt1-rejected\\chat-plan-options.png",
+      "sha256": "6f392e2ca9cf407d7fee7980b19e83a79e72b93dcfd24afa6525130a83e9fdef",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt1-rejected\\chat-plan-options.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt1-rejected\\chat-sent-state.png",
+      "sha256": "d0083c386197373a87074c58edcaf6a38c6596ae0373092608fe5f4c5a91c32d",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt1-rejected\\chat-sent-state.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-chat-input-before-send.png",
+      "sha256": "0a69405e339754f35ce490739c6a0ec7c66d393f5ad613e4427f6709640b0361",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-chat-input-before-send.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-chat-message-sent-thinking.png",
+      "sha256": "dcee24d602e67da89099748ffd2a916c74f7f175b47327445ee5ce39405e98ce",
+      "accessibilityTree": null
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-chat-sent-state.png",
+      "sha256": "2eda160c28a39250d7197ed8426b36e903d94d2b5d05ca6b84efa2cac30fc0dc",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-chat-sent-state.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-plan-options-first.png",
+      "sha256": "c892fb82b739262ec424d5875e17c2649d43cae792d7d618d4c8d35822f7c743",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-plan-options-first.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-plan-options-upper.png",
+      "sha256": "9a33440becba2c7cb04ab4a20da01f1b7532337794d4bae4b42e48d42de47a56",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-plan-options-upper.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-plan-options.png",
+      "sha256": "493e782292c521644818ae39b25219052ee06c81a8061930a4b959d47d85067f",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-plan-options.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-plan-saved.png",
+      "sha256": "5ec3d2fd6bc49d0725c55f6846afd7048dd9a3e2314cc4cd121e6a3069d608e2",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-plan-saved.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-preview-confirm.png",
+      "sha256": "9612ae70ea1c898058cb9e29781ed0888e24f0e9155e8a0efa6c02bdabe01fc4",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-preview-confirm.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\attempt2-selected-preview.png",
+      "sha256": "3e0c8603e29dffb28041670dc0d5645c96fe2dd24d4f1dcdfb45bb6a0a61f798",
+      "accessibilityTree": "screenshots\\v0.8.10\\attempt2-selected-preview.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\chat-input-before-send.png",
+      "sha256": "a5a8d3fe97b359b50208b8d362ebefebc860fca2f716b648f3b275d88053cff6",
+      "accessibilityTree": "screenshots\\v0.8.10\\chat-input-before-send.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\chat-message-sent-thinking.png",
+      "sha256": "7352446de058af861841e22985c152b69bf2d63e9bcb3a5fea0104a25daa8dd7",
+      "accessibilityTree": null
+    },
+    {
+      "file": "screenshots\\v0.8.10\\chat-plan-options.png",
+      "sha256": "6f392e2ca9cf407d7fee7980b19e83a79e72b93dcfd24afa6525130a83e9fdef",
+      "accessibilityTree": "screenshots\\v0.8.10\\chat-plan-options.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\chat-sent-state.png",
+      "sha256": "d0083c386197373a87074c58edcaf6a38c6596ae0373092608fe5f4c5a91c32d",
+      "accessibilityTree": "screenshots\\v0.8.10\\chat-sent-state.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\current.png",
+      "sha256": "384a42c73ad262fdd3de711da6de3d768d4d26e49d725d84950d8b7a05118ecd",
+      "accessibilityTree": "screenshots\\v0.8.10\\current.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\final-apk-home-completed.png",
+      "sha256": "a65a22994f1b806b42067e075a516d007ffc7a1a717e2b720dab19556f1d2d48",
+      "accessibilityTree": "screenshots\\v0.8.10\\final-apk-home-completed.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\final-apk-plan-v2.png",
+      "sha256": "384a42c73ad262fdd3de711da6de3d768d4d26e49d725d84950d8b7a05118ecd",
+      "accessibilityTree": "screenshots\\v0.8.10\\final-apk-plan-v2.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\home-completed-after-chat-adjustment.png",
+      "sha256": "0a78b737c6b521d3d74059214203887224054a9a409f77443250a9f58ca7daa3",
+      "accessibilityTree": "screenshots\\v0.8.10\\home-completed-after-chat-adjustment.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\plan-v2-after-chat-adjustment.png",
+      "sha256": "17efdf0318b61c25e5c4a573a8d3c2089adff47a5940cd7a4521569fafabc734",
+      "accessibilityTree": "screenshots\\v0.8.10\\plan-v2-after-chat-adjustment.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\plan-v2-expanded-new-exercises.png",
+      "sha256": "bee61bb7a2c15c6399f71bf5b3e1fc413324a1896e44dd77b8813801093eaef3",
+      "accessibilityTree": "screenshots\\v0.8.10\\plan-v2-expanded-new-exercises.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\restart-completed-and-plan-preserved.png",
+      "sha256": "19ad06113a0f431008d96f153531c79b761701b745b13290485d1104ba6811e7",
+      "accessibilityTree": "screenshots\\v0.8.10\\restart-completed-and-plan-preserved.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\restart-plan-v2.png",
+      "sha256": "71bb32d559a3b9340a76bb3dd03e83eed3e502f4d3492a05a5b9c9db241200bd",
+      "accessibilityTree": "screenshots\\v0.8.10\\restart-plan-v2.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\start-completed-after-chat-adjustment.png",
+      "sha256": "ba6f866454c612450383cc572e04e3a54e950a6233600c9694a6ab5e015e6087",
+      "accessibilityTree": "screenshots\\v0.8.10\\start-completed-after-chat-adjustment.xml"
+    },
+    {
+      "file": "screenshots\\v0.8.10\\upgrade-home.png",
+      "sha256": "85fad76907d06829561668ade656315af183122b6f3a1e8d3923b780c271e811",
+      "accessibilityTree": "screenshots\\v0.8.10\\upgrade-home.xml"
+    }
+  ],
+  "limitations": [
+    "Emulator verification; no physical-device speech or performance measurement.",
+    "Successful AI option 1 titled itself dumbbells plus floor only, but its detail explicitly stated the replacement row requires a low bar or Smith bar. This condition and title inconsistency were reported; final prompt additionally requires titles to agree with auxiliary-equipment requirements. No further paid call was made to claim the wording is guaranteed.",
+    "The first provider attempt was safely rejected before any data write; evidence retained under attempt1-rejected.",
+    "Actual option generation and confirmation were exercised on the preceding release candidate; the final prompt-only build was reinstalled and all data hashes, persisted plan and daily state reverified.",
+    "Existing open-workout preservation is covered by automated repository tests; this emulator baseline had no open workout."
+  ]
+}

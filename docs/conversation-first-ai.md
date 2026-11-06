@@ -24,13 +24,13 @@ App在首次发送训练资料前明确说明会发送至Ready Gym服务端和De
 
 ## 当前实现接口（机器契约见intake-api.json）
 
-- `POST /api/intake/sessions`：明确用户同意后开始；返回随机session_id、session_TOKEN、首问、档案状态；问句由服务端安全策略整理，provider提取模式和response_source明确区分。
-- `POST /api/intake/sessions/{session_id}/messages`：Bearer使用仅该会话的session_TOKEN，提交自然语言回答；返回assistant_text、validated_profile、missing_fields、status（collecting/ready/blocked）、usage与provider_mode。
+- `POST /api/intake/sessions`：明确用户同意后开始；返回随机session_id、session_token、首问、档案状态；问句由服务端安全策略整理，provider提取模式和response_source明确区分。
+- `POST /api/intake/sessions/{session_id}/messages`：Bearer使用仅该会话的session_token，提交自然语言回答；返回assistant_text、validated_profile、missing_fields、status（collecting/ready/blocked）、usage与provider_mode。
 - `GET /api/intake/sessions/{session_id}`：授权读取精确会话快照，无模型调用。
 - `POST /api/intake/sessions/{session_id}/confirm`：用户显式确认，校验expected_revision和完整/安全档案；客户端读回精确快照才继续，不把模型文字当确认。
 - `DELETE /api/intake/sessions/{session_id}`：删除当前服务端会话；客户端读回404才清除本地。
 
-会话有过期、长度、并发和调用次数限制；日志不记录Key或原始健康文本。配置未完成拒绝真实请求。开发默认仅绑定127.0.0.1，正式对外前另行实现鉴权/配对、TLS和费用配额。会话TOKEN不等于生产用户认证，不能直接把开发API暴露公网。
+会话有过期、长度、并发和调用次数限制；日志不记录Key或原始健康文本。配置未完成拒绝真实请求。开发默认仅绑定127.0.0.1，正式对外前另行实现鉴权/配对、TLS和费用配额。会话token不等于生产用户认证，不能直接把开发API暴露公网。
 
 ## 原始仓库核验与媒体边界
 

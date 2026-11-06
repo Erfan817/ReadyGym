@@ -104,7 +104,7 @@ class SecondReview(unittest.IsolatedAsyncioTestCase):
             ({}, completion()),
             ({}, httpx.Response(500)),
             ({"max_calls": 2}, None),
-            ({"max_total_TOKENs": 300}, None),
+            ({"max_total_tokens": 300}, None),
             ({"max_app_calls": 2}, None),
         )
         for message, route, field in cases:

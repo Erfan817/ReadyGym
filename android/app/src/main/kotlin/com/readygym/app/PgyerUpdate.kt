@@ -66,7 +66,7 @@ internal object PgyerUpdate {
         val data = root.optJSONObject("data") ?: return CheckResult.Failed("蒲公英没有返回版本信息")
         val remoteCode = data.optLong("buildVersionNo", -1L)
         if (remoteCode <= 0) return CheckResult.UpToDate  // no builds yet
-        return if (remoteCode > BuildConfig.VERSION_CODE || data.optBoolean("buildHaveNewVersion", false)) {
+        return if (remoteCode > BuildConfig.VERSION_CODE) {
             CheckResult.Newer(UpdateInfo(
                 versionName = data.optString("buildVersion").ifBlank { "新版本" },
                 versionCode = remoteCode,

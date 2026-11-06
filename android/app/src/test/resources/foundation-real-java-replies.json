@@ -1,5 +1,5 @@
 {
-  "provenance": "Captured actual Java17/PostgreSQL HTTP replies; profile is fictional, no model/key/TOKENs",
+  "provenance": "Captured actual Java17/PostgreSQL HTTP replies; profile is fictional, no model/key/tokens",
   "replies": [
     {
       "session_id": "captured_java_contract_fixture",
@@ -42,9 +42,9 @@
       "provider_mode": "deepseek_official",
       "response_source": "server_policy",
       "usage": {
-        "prompt_TOKENs": 0,
-        "completion_TOKENs": 0,
-        "total_TOKENs": 0
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
       },
       "revision": 1,
       "confirmed": true,
@@ -317,9 +317,9 @@
       "provider_mode": "deepseek_official",
       "response_source": "server_policy",
       "usage": {
-        "prompt_TOKENs": 0,
-        "completion_TOKENs": 0,
-        "total_TOKENs": 0
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
       },
       "revision": 1,
       "confirmed": true,
@@ -592,9 +592,9 @@
       "provider_mode": "deepseek_official",
       "response_source": "server_policy",
       "usage": {
-        "prompt_TOKENs": 0,
-        "completion_TOKENs": 0,
-        "total_TOKENs": 0
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
       },
       "revision": 1,
       "confirmed": true,

@@ -9,27 +9,27 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
-/** The anonymous account: a bearer TOKEN (encrypted at rest) and the nickname shown on the leaderboard. */
+/** The anonymous account: a bearer token (encrypted at rest) and the nickname shown on the leaderboard. */
 internal class AccountStore(context: Context) {
-    private val TOKEN = ApiKeyStore(context, slot = "account_TOKEN")
+    private val token = ApiKeyStore(context, slot = "account_token")
     private val prefs = context.applicationContext.getSharedPreferences("readygym.account", Context.MODE_PRIVATE)
 
     fun load(): Account? {
-        val t = TOKEN.load() ?: return null
+        val t = token.load() ?: return null
         return Account(t, prefs.getString("nickname", null).orEmpty())
     }
 
     fun save(account: Account) {
-        TOKEN.save(account.TOKEN)
+        token.save(account.token)
         prefs.edit().putString("nickname", account.nickname).apply()
     }
 
     fun rename(nickname: String) { prefs.edit().putString("nickname", nickname).apply() }
 
-    fun clear() { TOKEN.clear(); prefs.edit().clear().apply() }
+    fun clear() { token.clear(); prefs.edit().clear().apply() }
 }
 
-data class Account(val TOKEN: String, val nickname: String)
+data class Account(val token: String, val nickname: String)
 
 data class RankEntry(val rank: Int, val nickname: String, val done: Int, val planned: Int, val rate: Double, val me: Boolean)
 data class Leaderboard(val weekStart: String, val entries: List<RankEntry>, val me: RankEntry?, val participants: Int)
@@ -38,11 +38,11 @@ data class Leaderboard(val weekStart: String, val entries: List<RankEntry>, val 
  * Blocking calls to the ReadyGym server; run them off the main thread. Failures surface as
  * [CoachException] with the server's own code and Chinese message in [CoachException.detail].
  */
-class ServerApi(private val baseUrl: String, private val TOKEN: () -> String?) {
+class ServerApi(private val baseUrl: String, private val token: () -> String?) {
 
     fun register(nickname: String): Account {
         val json = call("POST", "/api/auth/register", JSONObject().put("nickname", nickname), auth = false)
-        return Account(json.getString("TOKEN"), json.getString("nickname"))
+        return Account(json.getString("token"), json.getString("nickname"))
     }
 
     fun rename(nickname: String): String =
@@ -68,7 +68,7 @@ class ServerApi(private val baseUrl: String, private val TOKEN: () -> String?) {
 
     /** Chat completions go through the server's AI proxy; the provider key never reaches the phone. */
     fun chatModel(maxTokens: Int = 1500, readTimeoutMs: Int = 60_000): DeepSeekApi =
-        DeepSeekApi(TOKEN().orEmpty(), baseUrl = "$baseUrl/api/ai", maxTokens = maxTokens, readTimeoutMs = readTimeoutMs)
+        DeepSeekApi(token().orEmpty(), baseUrl = "$baseUrl/api/ai", maxTokens = maxTokens, readTimeoutMs = readTimeoutMs)
 
     private fun parseBoard(json: JSONObject): Leaderboard {
         fun entry(o: JSONObject) = RankEntry(o.getInt("rank"), o.getString("nickname"), o.getInt("done"),
@@ -76,6 +76,14 @@ class ServerApi(private val baseUrl: String, private val TOKEN: () -> String?) {
         val list = json.getJSONArray("entries")
         return Leaderboard(json.getString("weekStart"), (0 until list.length()).map { entry(list.getJSONObject(it)) },
             json.optJSONObject("me")?.let(::entry), json.getInt("participants"))
+    }
+
+    /** Routes the server deliberately leaves unauthenticated; a Bearer header here is unnecessary
+     *  and can trip relay/proxy rules, so never attach one even when a token is present. */
+    private fun isAnonymousPath(path: String): Boolean {
+        val p = path.substringBefore('?')
+        return p == "/api/asr" || p.startsWith("/api/asr/") || p == "/api/feedback" ||
+            p == "/api/auth/register" || p == "/api/health"
     }
 
     private fun call(method: String, path: String, body: JSONObject?, auth: Boolean = true): JSONObject {
@@ -86,7 +94,7 @@ class ServerApi(private val baseUrl: String, private val TOKEN: () -> String?) {
             readTimeout = 20_000
             instanceFollowRedirects = false
             setRequestProperty("Accept", "application/json")
-            if (auth) TOKEN()?.let { setRequestProperty("Authorization", "Bearer $it") }
+            if (auth && !isAnonymousPath(path)) token()?.let { setRequestProperty("Authorization", "Bearer $it") }
         }
         try {
             if (body != null) {

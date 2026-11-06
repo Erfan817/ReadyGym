@@ -17,13 +17,13 @@ public final class BusinessServer implements AutoCloseable {
         .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
     private final HttpServer server;
     private final String jdbcUrl, user, password;
-    private final byte[] TOKEN;
+    private final byte[] token;
     private final java.util.Map<String, ObjectNode> pending = new java.util.HashMap<>();
     private final java.util.Map<String, Integer> draftProfiles = new java.util.HashMap<>();
     public BusinessServer(String jdbcUrl, String user, String password, String internalToken, int port) throws Exception {
         this.jdbcUrl = jdbcUrl; this.user = user; this.password = password;
         if (internalToken == null || internalToken.length() < 32) throw new IllegalArgumentException("internal auth must have at least 32 characters");
-        TOKEN = internalToken.getBytes(StandardCharsets.UTF_8);
+        token = internalToken.getBytes(StandardCharsets.UTF_8);
         try (var c = connection(); var s = c.createStatement()) {
             s.execute("CREATE SCHEMA IF NOT EXISTS ready_gym_business");
             s.execute("CREATE TABLE IF NOT EXISTS ready_gym_business.sessions (session_id VARCHAR(128) PRIMARY KEY, profile_revision INTEGER NOT NULL, profile_json TEXT, safety_route VARCHAR(40), active_revision INTEGER NOT NULL DEFAULT 0, touched_at BIGINT NOT NULL)");
@@ -52,7 +52,7 @@ public final class BusinessServer implements AutoCloseable {
     }
     private JsonNode dispatch(HttpExchange e) throws Exception {
         var header = e.getRequestHeaders().get("X-Ready-Gym-Internal");
-        if (header == null || header.size() != 1 || !MessageDigest.isEqual(TOKEN, header.get(0).getBytes(StandardCharsets.UTF_8)))
+        if (header == null || header.size() != 1 || !MessageDigest.isEqual(token, header.get(0).getBytes(StandardCharsets.UTF_8)))
             throw new Problem(401, "unauthorized", "内部认证失败");
         String path = e.getRequestURI().getPath();
         if (e.getRequestMethod().equals("GET") && path.equals("/internal/health")) {
