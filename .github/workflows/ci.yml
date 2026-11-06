@@ -5,9 +5,6 @@ on:
     branches: [main]
   pull_request:
 
-permissions:
-  contents: write
-
 jobs:
   android:
     name: Android app + core unit tests
@@ -38,36 +35,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
       - name: app + core unit tests
         working-directory: android
-        run: |
-          set -o pipefail
-          ./gradlew :app:testDebugUnitTest :core:test --no-daemon --console=plain 2>&1 \
-            | tee "$GITHUB_WORKSPACE/gradle-android.log"
-
-      # Temporary diagnostic: stash the failure detail on a side branch so it can
-      # be read without access to the Actions log storage.
-      - name: Publish failure diagnostics
-        if: failure()
-        working-directory: ${{ github.workspace }}
-        run: |
-          mkdir -p ci-diag
-          {
-            echo "exit: android job failed"
-            echo "=== gradle tail ==="
-            tail -c 15000 gradle-android.log 2>/dev/null || echo "(no log)"
-            echo
-            echo "=== distinct test failure messages ==="
-            grep -rho 'message="[^"]\{0,400\}"' android/app/build/test-results 2>/dev/null \
-              | sort -u | head -30 || echo "(none)"
-            echo
-            echo "=== first test stack trace ==="
-            grep -rho 'java.lang[^<]\{0,600\}' android/app/build/test-results 2>/dev/null \
-              | head -20 || echo "(none)"
-          } > ci-diag/android.txt
-          git config user.name "ci"
-          git config user.email "ci@users.noreply.github.com"
-          git add -f ci-diag
-          git commit -m "ci diagnostics: android job" || true
-          git push -f origin HEAD:refs/heads/ci-diag
+        run: ./gradlew :app:testDebugUnitTest :core:test --no-daemon --console=plain
 
   server:
     name: Spring Boot unit tests
